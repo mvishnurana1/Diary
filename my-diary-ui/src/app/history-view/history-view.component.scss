@@ -1,4 +1,5 @@
 .history-view {
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -8,6 +9,13 @@
   .layout {
     display: flex;
     justify-content: space-around;
+  }
+
+  .logout-button {
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin: 1rem;
   }
 
   textarea {
@@ -37,9 +45,20 @@
     width: 70%;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 765px) {
     .layout {
       flex-direction: column;
     }
+
+    .vertical {
+      display: none;
+    }
+
+    .textarea-container {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 765px) {
   }
 }
