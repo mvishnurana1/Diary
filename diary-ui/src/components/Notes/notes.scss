@@ -1,0 +1,29 @@
+.notes-layout {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.save-button {
+    border: none;
+    border-radius: 0.5rem;
+    background-color: rgb(238, 137, 238);
+    font-size: 1rem;
+    font-weight: 600;
+    outline: none;
+    padding: .5rem 1rem;
+
+    &:hover {
+        background-color: rgb(235, 88, 88);
+    }
+}
+
+.textArea {
+    border-radius: 0.5rem;
+    width: 80%;
+    margin-left: 1rem;
+    padding: 0.5rem;
+}
+
+.textArea-container {
+    max-width: 70%;
+}
