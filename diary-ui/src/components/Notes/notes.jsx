@@ -20,14 +20,17 @@ export function Notes() {
                     className='textArea' 
                     rows={15} 
                     onChange={(e) => setContent(e.target.value)}
+                    placeholder="Dear Diary..."
+                    spellCheck={false}
                     value={content} 
                 />
             </div>
-
             <button 
                 className='save-button'
                 variant="outline-primary"
-                onClick={() => setPost(!post)}
+                onClick={() => {
+                    setPost(!post);
+                }}
                 disabled={content.length === 0}> 
                 SAVE
             </button>
