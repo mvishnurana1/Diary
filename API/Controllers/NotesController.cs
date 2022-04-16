@@ -5,6 +5,8 @@ using API.model;
 using API.Helpers.Services;
 using System.Collections.Generic;
 using API.Helpers.Interfaces;
+using System.Threading.Tasks;
+using API.Helpers.Entities;
 
 namespace API.Controllers
 {
@@ -24,44 +26,43 @@ namespace API.Controllers
             _diaryService = diaryService;
         }
 
-        [HttpGet("{date}")]
-        public IEnumerable<DiaryEntry> GetEntryByDate(DateTime date)
+        [HttpGet("/get/{date}")]
+        public ActionResult<IEnumerable<DiaryEntry>> GetEntryByDate(DateTime date)
         {
-            _logger.LogInformation($"Executed at {DateTime.UtcNow.ToLongTimeString()}");
+            Console.WriteLine(date);
 
             var x = _diaryService.GetEntryByDate(date);
 
-            return x;
+            return Ok(x);
         }
 
-        [HttpGet("{content}")]
-        public IEnumerable<DiaryEntry> SearchByContent(string content)
+        [HttpGet("/searchbycontent/{content}")]
+        public ActionResult<IEnumerable<DiaryEntry>> SearchByContent(string content)
         {
-            _logger.LogInformation($"Executed at {DateTime.UtcNow.ToLongTimeString()}");
-
-            var x = _diaryService.SearchEntriesByContext(content);
-
-            return x;
+            var x = _diaryService.SearchEntriesByContent(content);
+            return Ok(x);
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<DiaryEntry>> PostNotes(PostDiaryEntry entry)
-        //{
-        //    try
-        //    {
-        //        if (entry == null)
-        //        {
-        //            return BadRequest();
-        //        }
+        [HttpPost("/post")]
+        public ActionResult<DiaryEntry> PostEntry([FromBody] PostDiaryEntry entry)
+        {
+            _logger.LogInformation($"Executed at {entry.SubmittedDateTime}");
 
+            if (String.IsNullOrEmpty(entry.Content))
+            {
+                return BadRequest();
+            }
 
+            var diaryEntry = new DiaryEntry()
+            {
+                EntryID = Guid.NewGuid(),
+                SubmittedDateTime = entry.SubmittedDateTime,
+                Content = entry.Content
+            };
 
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError,
-        //        "Error creating new employee record");
-        //    }
-        //}
+            var x = _diaryService.AddNewEntries(diaryEntry);
+
+            return StatusCode(201, x.Result);
+        }
     }
 }

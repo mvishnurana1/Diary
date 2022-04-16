@@ -24,14 +24,25 @@ namespace API.Helpers.Services
             _logger = logger;
         }
 
-        public DiaryEntry AddNewEntries(PostDiaryEntry newEntry)
+        public async Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry)
         {
-            return new DiaryEntry() { };
+            try
+            {
+                _context.Entries.Add(newEntry);
+                await _context.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            return newEntry;
         }
 
         public IEnumerable<DiaryEntry> GetEntryByDate(DateTime date)
         {
-            return  _context.Entries.Where(x => x.SubmittedDateTime.Date == date.Date).ToList();
+            return  _context.Entries
+                    .Where(x => x.SubmittedDateTime.Date == date.Date)
+                    .ToList();
         }
 
         public DiaryEntry UpdateEntry(DateTime date)
@@ -39,15 +50,27 @@ namespace API.Helpers.Services
             return new DiaryEntry() { };
         }
 
-        public DiaryEntry DeleteEntry(DateTime date)
+        public DiaryEntry DeleteEntryByDate(DateTime date)
         {
             return new DiaryEntry() { };
         }
 
-        public IEnumerable<DiaryEntry> SearchEntriesByContext(string content)
+        public IEnumerable<DiaryEntry> SearchEntriesByContent(string content)
+        {
+            return _context.Entries
+                            .Where(x => x.Content.Contains(content))
+                            .ToList();
+        }
+        
+        public DiaryEntry DeleteEntryByID(Guid id)
         {
 
-            return new List<DiaryEntry> { };
+            return new DiaryEntry() { };
+        }
+
+        public DiaryEntry DeleteEntryByID(DateTime date)
+        {
+            throw new NotImplementedException();
         }
     }
 }

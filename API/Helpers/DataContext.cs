@@ -13,6 +13,10 @@ namespace API.Helpers
             Configuration = configuration;
         }
 
+        public DataContext()
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sql server with connection string from app settings
