@@ -32,10 +32,30 @@ namespace API.Helpers.Services
                 await _context.SaveChangesAsync();
             } catch(Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogInformation($"Executed at {ex}");
             }
 
             return newEntry;
+        }
+
+        public async Task<DiaryEntry> UpdateEntry(DateTime date, DiaryEntry newContent)
+        {
+            var x = GetEntryByDate(date);
+                
+            if (x == null) {
+                return null;
+            }
+
+            try
+            {
+                _context.Update(newContent);
+                await _context.SaveChangesAsync();
+            } catch(Exception ex)
+            {
+                _logger.LogInformation($"Executed at {ex}");
+            }
+
+            return newContent;
         }
 
         public IEnumerable<DiaryEntry> GetEntryByDate(DateTime date)
@@ -43,11 +63,6 @@ namespace API.Helpers.Services
             return  _context.Entries
                     .Where(x => x.SubmittedDateTime.Date == date.Date)
                     .ToList();
-        }
-
-        public DiaryEntry UpdateEntry(DateTime date)
-        {
-            return new DiaryEntry() { };
         }
 
         public DiaryEntry DeleteEntryByDate(DateTime date)
@@ -64,7 +79,6 @@ namespace API.Helpers.Services
         
         public DiaryEntry DeleteEntryByID(Guid id)
         {
-
             return new DiaryEntry() { };
         }
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using API.Helpers.Interfaces;
 using System.Threading.Tasks;
 using API.Helpers.Entities;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -29,8 +30,6 @@ namespace API.Controllers
         [HttpGet("/get/{date}")]
         public ActionResult<IEnumerable<DiaryEntry>> GetEntryByDate(DateTime date)
         {
-            Console.WriteLine(date);
-
             var x = _diaryService.GetEntryByDate(date);
 
             return Ok(x);
@@ -39,6 +38,11 @@ namespace API.Controllers
         [HttpGet("/searchbycontent/{content}")]
         public ActionResult<IEnumerable<DiaryEntry>> SearchByContent(string content)
         {
+            if (String.IsNullOrEmpty(content))
+            {
+                return BadRequest();
+            }
+
             var x = _diaryService.SearchEntriesByContent(content);
             return Ok(x);
         }
@@ -63,6 +67,25 @@ namespace API.Controllers
             var x = _diaryService.AddNewEntries(diaryEntry);
 
             return StatusCode(201, x.Result);
+        }
+
+        [HttpPut("/update/{date}")]
+        public ActionResult<DiaryEntry> UpdateDiaryEntry(DateTime date, [FromBody]PostDiaryEntry newEntry)
+        {
+            if (newEntry?.Content == null)
+            {
+                return BadRequest();
+            }
+
+            var updatedEntry = new DiaryEntry()
+            {
+                SubmittedDateTime = newEntry.SubmittedDateTime,
+                Content = newEntry.Content,
+            };
+
+            var x = _diaryService.UpdateEntry(date, updatedEntry);
+            
+            return StatusCode(204, x.Result);
         }
     }
 }
