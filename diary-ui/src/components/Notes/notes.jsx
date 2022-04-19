@@ -13,7 +13,10 @@ export function Notes() {
             <h1>Notes App</h1>
             <div className="notes-layout">
                 <div>
-                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                    <DatePicker 
+                        selected={startDate} 
+                        onChange={(date) => setStartDate(date)} 
+                    />
                 </div>
 
                 <textarea 
