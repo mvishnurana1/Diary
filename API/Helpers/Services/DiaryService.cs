@@ -28,7 +28,21 @@ namespace API.Helpers.Services
         {
             try
             {
-                _context.Entries.Add(newEntry);
+                var date = newEntry.SubmittedDateTime;
+
+                var entry = GetEntryByDate(date).FirstOrDefault();
+
+                if (entry != null)
+                {
+                    entry.Content = newEntry.Content;
+                    entry.SubmittedDateTime = newEntry.SubmittedDateTime;
+                    
+                    _context.Entries.Add(entry);
+                } else
+                {
+                    _context.Entries.Add(newEntry);
+                }
+
                 await _context.SaveChangesAsync();
             } catch(Exception ex)
             {
@@ -40,7 +54,7 @@ namespace API.Helpers.Services
 
         public async Task<DiaryEntry> UpdateEntry(DateTime date, DiaryEntry newContent)
         {
-            var x = GetEntryByDate(date);
+            var x = GetEntryByDate(date).FirstOrDefault();
                 
             if (x == null) {
                 return null;
@@ -48,7 +62,10 @@ namespace API.Helpers.Services
 
             try
             {
-                _context.Update(newContent);
+                x.Content = newContent.Content;
+                x.SubmittedDateTime = newContent.SubmittedDateTime;
+                _context.Update(x);
+
                 await _context.SaveChangesAsync();
             } catch(Exception ex)
             {
