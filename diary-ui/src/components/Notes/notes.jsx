@@ -9,10 +9,10 @@ export function Notes() {
     const [startDate, setStartDate] = useState(new Date());
 
     return (
-        <>
-            <h1>Notes App</h1>
-            <div className="notes-layout">
-                <div>
+        <div className='notes-landing-page'>
+            <h1 className='left'>Notes App</h1>
+            <div className='notes-layout'>
+                <div className='left'>
                     <DatePicker 
                         selected={startDate} 
                         onChange={(date) => setStartDate(date)} 
@@ -37,6 +37,6 @@ export function Notes() {
                 disabled={content.length === 0}> 
                 SAVE
             </button>
-        </>
+        </div>
     )
 }
