@@ -25,8 +25,15 @@
         }
     }
 
+    .title-container {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
     .textArea {
         border-radius: 1rem;
+        font-size: medium;
+        font-weight: 500;
         width: 80%;
         margin-left: 1rem;
         padding: 0.5rem;

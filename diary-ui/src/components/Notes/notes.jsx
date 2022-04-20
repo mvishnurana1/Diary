@@ -10,7 +10,9 @@ export function Notes() {
 
     return (
         <div className='notes-landing-page'>
-            <h1 className='left'>Notes App</h1>
+            <div className='title-container'>
+                <h1>Notes App</h1>
+            </div>
             <div className='notes-layout'>
                 <div className='left'>
                     <DatePicker 
@@ -33,6 +35,8 @@ export function Notes() {
                 variant="outline-primary"
                 onClick={() => {
                     setPost(!post);
+                    console.log(content, startDate);
+                    setContent('')
                 }}
                 disabled={content.length === 0}> 
                 SAVE
