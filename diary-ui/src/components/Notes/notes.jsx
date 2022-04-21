@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -7,16 +9,40 @@ export function Notes() {
     const [content, setContent] = useState('');
     const [post, setPost] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
+    const [displaySearch, setDisplaySearch] = useState(false);
+
+    function displaySearchBox() {
+        if (displaySearch) {
+            return (
+                <input
+                    className='search'
+                    placeholder='find submitted entries...'
+                />
+            )
+        }
+    }
 
     return (
         <div className='notes-landing-page'>
             <div className='button-container'>
                 <button className='logout button'>Log out</button>
             </div>
+            <div className='search-box-container'>
+                {displaySearchBox()}
+                <FontAwesomeIcon 
+                    className={displaySearch ? 'highlight': ''} 
+                    icon={faMagnifyingGlass}
+                    onClick={() => {
+                        setDisplaySearch(!displaySearch)
+                    }}
+                    size="lg"
+                />
+            </div>
+
             <div className='notes-layout'>
                 <div className='left'>
                     <DatePicker 
-                        className='date-picker'
+                        className='input'
                         selected={startDate} 
                         onChange={(date) => setStartDate(date)} 
                     />
