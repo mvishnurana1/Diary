@@ -10,12 +10,13 @@ export function Notes() {
 
     return (
         <div className='notes-landing-page'>
-            <div className='title-container'>
-                <h1>Notes App</h1>
+            <div className='button-container'>
+                <button className='logout button'>Log out</button>
             </div>
             <div className='notes-layout'>
                 <div className='left'>
                     <DatePicker 
+                        className='date-picker'
                         selected={startDate} 
                         onChange={(date) => setStartDate(date)} 
                     />
@@ -31,7 +32,7 @@ export function Notes() {
                 />
             </div>
             <button 
-                className='save-button'
+                className='save button'
                 variant="outline-primary"
                 onClick={() => {
                     setPost(!post);
