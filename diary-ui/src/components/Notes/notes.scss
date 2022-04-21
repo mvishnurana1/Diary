@@ -1,8 +1,37 @@
 .notes-landing-page {
-    margin: 2rem;
+    margin: 1rem 0.25rem;
+
+    .button {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 2rem 2rem;
+        outline: none;
+        padding: .5rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -2rem;
+    }
+
+    .date-picker {
+        box-shadow: 1rem 1rem 1rem 1rem rgb(187, 186, 186);
+        border-radius: 1rem;
+    }
 
     .left {
         margin-left: 1.5rem;
+    }
+
+    .logout {
+        background-color: rgb(235, 88, 88);
+
+        &:hover {
+            background-color: rgb(238, 137, 238); 
+        }
     }
 
     .notes-layout {
@@ -10,24 +39,12 @@
         justify-content: space-evenly;
     }
 
-    .save-button {
-        border: none;
-        border-radius: 0.5rem;
+    .save {
         background-color: rgb(238, 137, 238);
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 2rem 2rem;
-        outline: none;
-        padding: .5rem 1rem;
-    
+
         &:hover {
             background-color: rgb(235, 88, 88);
         }
-    }
-
-    .title-container {
-        margin-bottom: 3rem;
-        text-align: center;
     }
 
     .textArea {
