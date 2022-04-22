@@ -66,7 +66,7 @@ export function Notes() {
                     setContent('')
                 }}
                 disabled={content.length === 0}> 
-                SAVE
+                {content.length === 0 ? 'Write note' : 'SAVE'}
             </button>
         </div>
     )
