@@ -10,6 +10,7 @@ export function Notes() {
     const [post, setPost] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [displaySearch, setDisplaySearch] = useState(false);
+    const [searchedContent,  setSearchedContent] = useState('');
 
     function displaySearchBox() {
         if (displaySearch) {
@@ -17,6 +18,7 @@ export function Notes() {
                 <input
                     className='search'
                     placeholder='find submitted entries...'
+                    onChange={(e) => setSearchedContent(e.target.value)}
                 />
             )
         }
