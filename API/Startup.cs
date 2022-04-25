@@ -33,35 +33,13 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //string domain = $"https://{Configuration["Auth0:Domain"]}/";
-            //services
-            //    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.Authority = domain;
-            //        options.Audience = Configuration["Auth0:Audience"];
-            //        // If the access token does not have a `sub` claim, `User.Identity.Name` will be `null`. Map it to a different claim by setting the NameClaimType below.
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            NameClaimType = ClaimTypes.NameIdentifier
-            //        };
-            //    });
-
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
             services.AddDbContext<DataContext>();
+            
             services.AddTransient<IDiaryService, DiaryService>();
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.WithOrigins("https://localhost:3000", "http://localhost:4200")
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod();
-                    });
-            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -81,6 +59,10 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(policy => {
+                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+            });
 
             app.UseAuthorization();
 
