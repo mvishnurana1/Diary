@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import DatePicker from "react-datepicker";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +25,21 @@ export function Notes() {
         }
     }
 
+    function getDate(date) {
+        const YEAR = date.getFullYear();
+        const MONTH = date.getMonth() + 1;
+        const DATE = date.getDate();
+
+        fetchData(`${YEAR}-${MONTH}-${DATE}`);
+    }
+
+    function fetchData(date) {
+        axios.get(`https://localhost:44315/get/${date}`)
+            .then((val) => {
+                console.log(val.data);
+            });
+    }
+
     return (
         <div className='notes-landing-page'>
             <div className='button-container'>
@@ -31,8 +47,8 @@ export function Notes() {
             </div>
             <div className='search-box-container'>
                 {displaySearchBox()}
-                <FontAwesomeIcon 
-                    className={displaySearch ? 'highlight': ''} 
+                <FontAwesomeIcon
+                    className={displaySearch ? 'highlight': ''}
                     icon={faMagnifyingGlass}
                     onClick={() => {
                         setDisplaySearch(!displaySearch)
@@ -43,23 +59,26 @@ export function Notes() {
 
             <div className='notes-layout'>
                 <div className='left'>
-                    <DatePicker 
+                    <DatePicker
                         className='input'
-                        selected={startDate} 
-                        onChange={(date) => setStartDate(date)} 
+                        selected={startDate}
+                        onChange={(date) => {
+                            setStartDate(date);
+                            getDate(date);
+                        }}
                     />
                 </div>
 
-                <textarea 
-                    className='textArea' 
-                    rows={15} 
+                <textarea
+                    className='textArea'
+                    rows={15}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Dear Diary..."
                     spellCheck={false}
-                    value={content} 
+                    value={content}
                 />
             </div>
-            <button 
+            <button
                 className='save button'
                 variant="outline-primary"
                 onClick={() => {
@@ -67,7 +86,7 @@ export function Notes() {
                     console.log(content, startDate);
                     setContent('')
                 }}
-                disabled={content.length === 0}> 
+                disabled={content.length === 0}>
                 {content.length === 0 ? 'Write note' : 'SAVE'}
             </button>
         </div>
