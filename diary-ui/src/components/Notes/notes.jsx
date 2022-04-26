@@ -26,17 +26,17 @@ export function Notes() {
     }
 
     function getDate(date) {
-        const YEAR = date.getFullYear();
-        const MONTH = date.getMonth() + 1;
-        const DATE = date.getDate();
-
-        fetchData(`${YEAR}-${MONTH}-${DATE}`);
+        fetchData(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
     }
 
     function fetchData(date) {
         axios.get(`https://localhost:44315/get/${date}`)
             .then((val) => {
-                console.log(val.data);
+                if (val.data.length === 0) {
+                    setContent('');
+                } else {
+                    setContent(val.data[0].content);
+                }
             });
     }
 
