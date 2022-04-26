@@ -75,11 +75,10 @@ namespace API.Helpers.Services
             return newContent;
         }
 
-        public IEnumerable<DiaryEntry> GetEntryByDate(DateTime date)
+        public IQueryable<DiaryEntry> GetEntryByDate(DateTime date)
         {
-            return  _context.Entries
-                    .Where(x => x.SubmittedDateTime.Date == date.Date)
-                    .ToList();
+            return _context.Entries
+                    .Where(x => x.SubmittedDateTime.Date == date.Date);
         }
 
         public DiaryEntry DeleteEntryByDate(DateTime date)
