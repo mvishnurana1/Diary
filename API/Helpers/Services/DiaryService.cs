@@ -34,24 +34,14 @@ namespace API.Helpers.Services
 
                 if (entry != null)
                 {
-                    var x = DeleteEntry(entry);
-                    
-                    if (x == true)
+                    var deleted = DeleteEntry(entry);
+
+                    if (deleted)
                     {
-                        var diaryEntry = new DiaryEntry()
-                        {
-                            EntryID = Guid.NewGuid(),
-                            SubmittedDateTime = newEntry.SubmittedDateTime,
-                            Content = newEntry.Content
-                        };
-
-                        _context.Entries.Add(diaryEntry);
+                        _context.Entries.Add(newEntry);
                     }
-                } else
-                {
-                    _context.Entries.Add(newEntry);
                 }
-
+                
                 await _context.SaveChangesAsync();
             } catch(Exception)
             {
