@@ -11,8 +11,7 @@ namespace API.Helpers.Interfaces
     {
         Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry);
         IQueryable<DiaryEntry> GetEntryByDate(DateTime date);
-        DiaryEntry DeleteEntryByDate(DateTime date);
-        DiaryEntry DeleteEntryByID(DateTime date);
+        bool DeleteEntry(DiaryEntry entry);
         IEnumerable<DiaryEntry> SearchEntriesByContent(string content);
         Task<DiaryEntry> UpdateEntry(DateTime date, DiaryEntry newContent);
     }
