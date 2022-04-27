@@ -30,23 +30,32 @@ namespace API.Helpers.Services
             {
                 var date = newEntry.SubmittedDateTime;
 
-                var entry = GetEntryByDate(date).FirstOrDefault();
+                var entry = GetEntryByDate(date).SingleOrDefault();
 
                 if (entry != null)
                 {
-                    entry.Content = newEntry.Content;
-                    entry.SubmittedDateTime = newEntry.SubmittedDateTime;
+                    var x = DeleteEntry(entry);
                     
-                    _context.Entries.Add(entry);
+                    if (x == true)
+                    {
+                        var diaryEntry = new DiaryEntry()
+                        {
+                            EntryID = Guid.NewGuid(),
+                            SubmittedDateTime = newEntry.SubmittedDateTime,
+                            Content = newEntry.Content
+                        };
+
+                        _context.Entries.Add(diaryEntry);
+                    }
                 } else
                 {
                     _context.Entries.Add(newEntry);
                 }
 
                 await _context.SaveChangesAsync();
-            } catch(Exception ex)
+            } catch(Exception)
             {
-                _logger.LogInformation($"Executed at {ex}");
+                throw;
             }
 
             return newEntry;
@@ -81,9 +90,17 @@ namespace API.Helpers.Services
                     .Where(x => x.SubmittedDateTime.Date == date.Date);
         }
 
-        public DiaryEntry DeleteEntryByDate(DateTime date)
+        public bool DeleteEntry(DiaryEntry entry)
         {
-            return new DiaryEntry() { };
+            try
+            {
+                _context.Entries.Remove(entry);
+         
+                return true;
+            } catch(Exception)
+            {
+                return false;
+            }
         }
 
         public IEnumerable<DiaryEntry> SearchEntriesByContent(string content)
