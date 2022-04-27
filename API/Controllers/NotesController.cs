@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/post")]
-        public ActionResult<DiaryEntry> PostEntry([FromBody] PostDiaryEntry entry)
+        public ActionResult<DiaryEntry> PostEntry(PostDiaryEntry entry)
         {
             _logger.LogInformation($"Executed at {entry.SubmittedDateTime}");
 
