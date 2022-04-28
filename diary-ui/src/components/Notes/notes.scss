@@ -17,6 +17,20 @@
         margin-top: -2rem;
     }
 
+    .error {
+        display: none;
+    }
+
+    .error-container {
+        align-content: center;
+        align-items: center;
+        border: 2px solid rgb(235, 88, 88);;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        padding: 2rem;
+    }
+
     .highlight {
         color: rgb(235, 88, 88);
         margin-left: 1rem;
