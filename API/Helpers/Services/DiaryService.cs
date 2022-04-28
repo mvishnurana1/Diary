@@ -42,6 +42,8 @@ namespace API.Helpers.Services
                     }
                 }
                 
+                _context.Entries.Add(newEntry);
+
                 await _context.SaveChangesAsync();
             } catch(Exception)
             {
