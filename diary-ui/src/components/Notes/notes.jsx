@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faFaceSadCry } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -16,6 +16,7 @@ export function Notes() {
     const [displaySearch, setDisplaySearch] = useState(false);
     const [loading, setLoading] = useState(false);
     const [searchedContent,  setSearchedContent] = useState('');
+    const [error,  setError] = useState(false);
 
     function displaySearchBox() {
         if (displaySearch) {
@@ -44,7 +45,7 @@ export function Notes() {
                 }
             })
             .catch(() => {
-                setContent('Something went wrong...');
+                setError(true);
             })
             .finally(() => {
                 setLoading(false);
@@ -60,7 +61,21 @@ export function Notes() {
         axios.post(`${BASE_URL}post`, newNote)
             .then(() => {
                 setContent(newNote.Content);
+            })
+            .catch(() => {
+                setError(true);
+            })
+            .finally(() => {
+                setLoading(false);
             });
+    }
+
+    function displayError() {
+        if (error) {
+            setTimeout(() => {
+                setError(false)
+            }, 5000)
+        }
     }
 
     return (
@@ -93,29 +108,51 @@ export function Notes() {
                     />
                 </div>
 
-            {loading 
-                ? <ClipLoader color='red' size={150} />
-                : <textarea
-                    className='textArea'
-                    rows={15}
-                    onChange={(e) => {
-                        setContent(e.target.value);
-                    }}
-                    placeholder="Dear Diary..."
-                    spellCheck={false}
-                    value={content}
-                />}
+                {displayError()}
+                
+                {
+                    error 
+                        ?   <div className='error-container'>
+                                <div>
+                                    <FontAwesomeIcon icon={faFaceSadCry} size="4x" />
+                                </div>
+                                <h3>Something went wrong. Try again later!</h3>
+                            </div> 
+                        : ""
+                }
+
+                {
+                    loading
+                        ? <ClipLoader color='red' size={150} />
+                        : <textarea
+                            className={error ? 'textArea error': 'textArea'}
+                            rows={15}
+                            onChange={(e) => {
+                                setContent(e.target.value);
+                            }}
+                            placeholder="Dear Diary..."
+                            spellCheck={false}
+                            value={content}
+                        />
+                }
             </div>
-            <button
-                className='save button'
-                variant="outline-primary"
-                onClick={() => {
-                    postNewNotes();
-                    setContent('')
-                }}
-                disabled={content.length === 0}>
-                {content.length === 0 ? 'Write note' : 'SAVE'}
-            </button>
+
+            {
+                !error 
+                    ? 
+                    <button
+                        className='save button'
+                        variant="outline-primary"
+                        onClick={() => {
+                            postNewNotes();
+                            setLoading(true);
+                            setContent('')
+                        }}
+                        disabled={content.length === 0}>
+                        {content.length === 0 ? 'Write note' : 'SAVE'}
+                    </button>
+                    : ""
+            }
         </div>
     )
 }
