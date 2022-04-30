@@ -99,6 +99,7 @@ namespace API.Helpers.Services
         {
             return _context.Entries
                             .Where(x => x.Content.Contains(content))
+                            .OrderBy(x => x.SubmittedDateTime)
                             .ToList();
         }
         
