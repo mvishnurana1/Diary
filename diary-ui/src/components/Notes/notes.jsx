@@ -1,11 +1,12 @@
-import axios from 'axios';
 import { faMagnifyingGlass, faFaceSadCry } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from 'axios';
 import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { dateFormat } from '../../helper/date-fn';
+import { EntryCard } from '../EntryCard/entry-card';
 import './notes.scss';
 
 export function Notes() {
@@ -15,7 +16,8 @@ export function Notes() {
     const [startDate, setStartDate] = useState(new Date());
     const [displaySearch, setDisplaySearch] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [searchedContent,  setSearchedContent] = useState('');
+    const [searchedContent,  setSearchedContent] = useState('dear');
+    const [searchedResult, setSearchedResult] = useState([]);
     const [error,  setError] = useState(false);
 
     function displaySearchBox() {
@@ -70,6 +72,30 @@ export function Notes() {
             });
     }
 
+    function getSearchedEntryByContent() {
+        setDisplaySearch(!displaySearch);
+
+        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
+            return;
+        }
+
+        axios.get(`${BASE_URL}searchbycontent/${searchedContent}`)
+            .then((val) => {
+                if (val.data.length === 0) {
+                    setSearchedResult([]);
+                } else {
+                    setSearchedResult(val.data);
+                }
+            })
+            .catch(() => {
+                setError(true);
+            })
+            .finally(() => {
+                setLoading(false);
+                setSearchedContent(null);
+            });
+    }
+
     function displayError() {
         if (error) {
             setTimeout(() => {
@@ -78,54 +104,65 @@ export function Notes() {
         }
     }
 
+    function displayCard() {
+        if (searchedResult?.length > 0) {
+            return <EntryCard entries={searchedResult} />
+        }
+    }
+
     return (
         <div className='notes-landing-page'>
+            {displayError()}
             <div className='button-container'>
                 <button className='logout button'>Log out</button>
             </div>
             <div className='search-box-container'>
                 {displaySearchBox()}
                 <FontAwesomeIcon
-                    className={displaySearch ? 'highlight': ''}
+                    className={
+                        displaySearch ? 'highlight': ''
+                    }
                     icon={faMagnifyingGlass}
                     onClick={() => {
-                        setDisplaySearch(!displaySearch)
+                        getSearchedEntryByContent(content);
                     }}
                     size="lg"
                 />
             </div>
 
             <div className='notes-layout'>
-                <div className='left'>
-                    <DatePicker
-                        className='input'
-                        selected={startDate}
-                        onChange={(date) => {
-                            setStartDate(date);
-                            getDate(date);
-                            setLoading(true);
-                        }}
-                    />
-                </div>
-
-                {displayError()}
+                {
+                    !loading 
+                        ? <div className='left'>
+                              <DatePicker
+                                className={searchedResult?.length > 0 || error ? 'no-display': 'input'}
+                                selected={startDate}
+                                onChange={(date) => {
+                                    setStartDate(date);
+                                    getDate(date);
+                                    setLoading(true);
+                                }}
+                            />
+                        </div>
+                        : null 
+                }
                 
                 {
                     error 
                         ?   <div className='error-container'>
-                                <div>
-                                    <FontAwesomeIcon icon={faFaceSadCry} size="4x" />
-                                </div>
-                                <h3>Something went wrong. Try again later!</h3>
+                                <FontAwesomeIcon icon={faFaceSadCry} size="3x" />
+                                <h6>Something went wrong. Please try again later!</h6>
                             </div> 
-                        : ""
+                        : null
                 }
 
                 {
                     loading
                         ? <ClipLoader color='red' size={150} />
                         : <textarea
-                            className={error ? 'textArea error': 'textArea'}
+                            className={
+                                searchedResult?.length > 0 || error ? 'no-display': 'textArea' 
+                            }
                             rows={15}
                             onChange={(e) => {
                                 setContent(e.target.value);
@@ -137,22 +174,19 @@ export function Notes() {
                 }
             </div>
 
-            {
-                !error 
-                    ? 
-                    <button
-                        className='save button'
-                        variant="outline-primary"
-                        onClick={() => {
-                            postNewNotes();
-                            setLoading(true);
-                            setContent('')
-                        }}
-                        disabled={content.length === 0}>
-                        {content.length === 0 ? 'Write note' : 'SAVE'}
-                    </button>
-                    : ""
-            }
+            <button
+                className={searchedResult?.length > 0 || error ? 'no-display' : 'save button'}
+                variant="outline-primary"
+                onClick={() => {
+                    postNewNotes();
+                    setLoading(true);
+                    setContent('')
+                }}
+                disabled={content.length === 0}>
+                {content.length === 0 ? 'Write note' : 'SAVE'}
+            </button>
+
+            {displayCard()}
         </div>
     )
 }
