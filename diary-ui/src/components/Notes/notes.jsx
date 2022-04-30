@@ -106,7 +106,9 @@ export function Notes() {
 
     function displayCard() {
         if (searchedResult?.length > 0) {
-            return <EntryCard entries={searchedResult} />
+            return <div className="entry-card-container">
+                    <EntryCard entries={searchedResult} />
+                </div>
         }
     }
 
