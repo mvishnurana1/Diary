@@ -8,12 +8,14 @@ export function EntryCard(props) {
     const { 
         entries, 
         setContent, 
+        setSearchedContent,
         setSearchedResult,
         setStartDate 
     } = props;
 
     function handleClick(entry) {
         setContent(entry.content);
+        setSearchedContent('');
         setStartDate(new Date(entry.submittedDateTime));
         setSearchedResult([]);
     }
