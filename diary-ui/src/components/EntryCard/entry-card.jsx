@@ -5,28 +5,42 @@ import { dateFormat } from '../../helper/date-fn';
 import "./entry-card.scss";
 
 export function EntryCard(props) {
-    const { entries } = props;
+    const { 
+        entries, 
+        setContent, 
+        setSearchedResult,
+        setStartDate 
+    } = props;
+
+    function handleClick(entry) {
+        setContent(entry.content);
+        setStartDate(new Date(entry.submittedDateTime));
+        setSearchedResult([]);
+    }
 
     {return  entries.map((entry) => {
-        return (<div className="entry-card-layout" key={entry.entryID}>
-                    <div className="entry-card">
-                        <div className="entry-content">
-                            {entry.content}
+        return (
+            <div className="entry-card-layout" key={entry.entryID}>
+                <div className="entry-card">
+                    <div className="entry-content">
+                        {entry.content}
+                    </div>
+                    <div className="date-time-log">
+                        <div>
+                            <span className="strong">posted on: </span>
+                            <span className="time">{dateFormat(entry.submittedDateTime)}</span>
                         </div>
-                        <div className="date-time-log">
-                            <div>
-                                <span className="strong">posted on: </span>
-                                <span className="time">{dateFormat(entry.submittedDateTime)}</span>
-                            </div>
-                            <div>
+                        <div>
                             <FontAwesomeIcon
-                                className='highlight'
+                                className='highlight left'
                                 icon={faPencil}
+                                onClick={() => handleClick(entry)}
                                 size="lg"
                             />
-                            </div>
                         </div>
                     </div>
-                </div>)
+                </div>
+            </div>
+        )
     })}
 }
