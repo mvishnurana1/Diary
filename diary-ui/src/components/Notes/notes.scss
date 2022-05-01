@@ -18,6 +18,8 @@
     }
 
     .entry-card-container {
+        display: flex;
+        justify-content: space-between;
         width: 80%;
         margin: 0 10%;
     }
@@ -36,7 +38,7 @@
         padding: 2rem;
     }
 
-    .highlight {
+    .red {
         color: rgb(235, 88, 88);
         margin-left: 1rem;
 

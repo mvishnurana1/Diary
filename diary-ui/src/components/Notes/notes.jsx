@@ -1,4 +1,4 @@
-import { faMagnifyingGlass, faFaceSadCry } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faFaceSadCry, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -16,7 +16,7 @@ export function Notes() {
     const [startDate, setStartDate] = useState(new Date());
     const [displaySearch, setDisplaySearch] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [searchedContent,  setSearchedContent] = useState(null);
+    const [searchedContent,  setSearchedContent] = useState('');
     const [searchedResult, setSearchedResult] = useState([]);
     const [error,  setError] = useState(false);
 
@@ -43,34 +43,38 @@ export function Notes() {
     }
 
     function postNewNotes() {
-        setLoading(true);
+        if (content === null || content.match(/^ *$/) !== null) {
+            return;
+        } else {
+            setLoading(true);
 
-        const newNote = {
-            'submittedDateTime': startDate.toISOString(),
-            'Content': content
-        };
-
-        axios.post(`${BASE_URL}post`, newNote)
-            .then(() => {
-                setContent(newNote.Content);
-            })
-            .catch(() => {
-                setError(true);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            const newNote = {
+                'submittedDateTime': startDate.toISOString(),
+                'Content': content
+            };
+    
+            axios.post(`${BASE_URL}post`, newNote)
+                .then(() => {
+                    setContent(newNote.Content);
+                })
+                .catch(() => {
+                    setError(true);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
     }
 
     function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
-        setLoading(true);
 
         if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
             return;
-        }
+        } else {
+            setLoading(true);
 
-        axios.get(`${BASE_URL}searchbycontent/${searchedContent}`)
+            axios.get(`${BASE_URL}searchbycontent/${searchedContent}`)
             .then((val) => {
                 if (val.data.length === 0) {
                     setSearchedResult([]);
@@ -83,8 +87,8 @@ export function Notes() {
             })
             .finally(() => {
                 setLoading(false);
-                setSearchedContent('');
             });
+        }
     }
 
     function displayError() {
@@ -98,7 +102,25 @@ export function Notes() {
     function displayCard() {
         if (searchedResult?.length > 0) {
             return <div className="entry-card-container">
-                    <EntryCard entries={searchedResult} />
+                    <div>
+                        <EntryCard 
+                            entries={searchedResult} 
+                            setContent={setContent} 
+                            setStartDate={setStartDate}
+                            setSearchedResult={setSearchedResult} 
+                        />
+                    </div>
+                    <div className="center">
+                        <FontAwesomeIcon
+                            className='red'
+                            icon={faXmark}
+                            onClick={() => {
+                                setSearchedResult([]);
+                                setSearchedContent('');
+                            }}
+                            size="lg"
+                        />
+                    </div>
                 </div>
         }
     }
@@ -113,11 +135,12 @@ export function Notes() {
                 <input
                     className='search'
                     placeholder='find submitted entries...'
+                    value={searchedContent}
                     onChange={(e) => setSearchedContent(e.target.value)}
                 />
 
                 <FontAwesomeIcon
-                    className='highlight'
+                    className='red'
                     icon={faMagnifyingGlass}
                     onClick={() => {
                         getSearchedEntryByContent(content);
@@ -126,61 +149,66 @@ export function Notes() {
                 />
             </div>
 
-            <div className='notes-layout'>
-                {
-                    !loading 
-                        ? <div className='left'>
-                              <DatePicker
-                                className={searchedResult?.length > 0 || error ? 'no-display': 'input'}
-                                selected={startDate}
-                                onChange={(date) => {
-                                    setStartDate(date);
-                                    getDate(date);
-                                    setLoading(true);
+            <div className={searchedResult?.length > 0 ? 'no-display' : ''}>
+                <div className='notes-layout'>
+                    {
+                        !loading 
+                            ? <div className='left'>
+                                <DatePicker
+                                    className='input'
+                                    selected={startDate}
+                                    onChange={(date) => {
+                                        getDate(date);
+                                        setStartDate(date);
+                                        setLoading(true);
+                                    }}
+                                />
+                            </div>
+                            : null 
+                    }
+                    
+                    {
+                        error 
+                            ?   <div className='error-container'>
+                                    <FontAwesomeIcon 
+                                        icon={faFaceSadCry} 
+                                        size="3x" 
+                                    />
+                                    <h6>Something went wrong. Please try again later!</h6>
+                                </div> 
+                            : null
+                    }
+
+                    {
+                        loading
+                            ? <ClipLoader color='red' size={150} />
+                            : <textarea
+                                className={
+                                    error ? 'no-display': 'textArea' 
+                                }
+                                rows={15}
+                                placeholder="Dear Diary..."
+                                onChange={(e) => {
+                                    setContent(e.target.value);
                                 }}
+                                spellCheck={false}
+                                value={content}
                             />
-                        </div>
-                        : null 
-                }
-                
-                {
-                    error 
-                        ?   <div className='error-container'>
-                                <FontAwesomeIcon icon={faFaceSadCry} size="3x" />
-                                <h6>Something went wrong. Please try again later!</h6>
-                            </div> 
-                        : null
-                }
+                    }
+                </div>
 
-                {
-                    loading
-                        ? <ClipLoader color='red' size={150} />
-                        : <textarea
-                            className={
-                                searchedResult?.length > 0 || error ? 'no-display': 'textArea' 
-                            }
-                            rows={15}
-                            onChange={(e) => {
-                                setContent(e.target.value);
-                            }}
-                            placeholder="Dear Diary..."
-                            spellCheck={false}
-                            value={content}
-                        />
-                }
+                <button
+                    className={error || loading ? 'no-display' : 'save button'}
+                    variant="outline-primary"
+                    onClick={() => {
+                        postNewNotes();
+                        setLoading(true);
+                        setContent('')
+                    }}
+                    disabled={content.length === 0}>
+                    {content.length === 0 ? 'Write note' : 'SAVE'}
+                </button>
             </div>
-
-            <button
-                className={searchedResult?.length > 0 || error || loading ? 'no-display' : 'save button'}
-                variant="outline-primary"
-                onClick={() => {
-                    postNewNotes();
-                    setLoading(true);
-                    setContent('')
-                }}
-                disabled={content.length === 0}>
-                {content.length === 0 ? 'Write note' : 'SAVE'}
-            </button>
 
             {displayCard()}
         </div>
