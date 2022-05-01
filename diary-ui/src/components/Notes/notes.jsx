@@ -16,21 +16,9 @@ export function Notes() {
     const [startDate, setStartDate] = useState(new Date());
     const [displaySearch, setDisplaySearch] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [searchedContent,  setSearchedContent] = useState('dear');
+    const [searchedContent,  setSearchedContent] = useState(null);
     const [searchedResult, setSearchedResult] = useState([]);
     const [error,  setError] = useState(false);
-
-    function displaySearchBox() {
-        if (displaySearch) {
-            return (
-                <input
-                    className='search'
-                    placeholder='find submitted entries...'
-                    onChange={(e) => setSearchedContent(e.target.value)}
-                />
-            )
-        }
-    }
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
@@ -55,6 +43,8 @@ export function Notes() {
     }
 
     function postNewNotes() {
+        setLoading(true);
+
         const newNote = {
             'submittedDateTime': startDate.toISOString(),
             'Content': content
@@ -74,6 +64,7 @@ export function Notes() {
 
     function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
+        setLoading(true);
 
         if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
             return;
@@ -92,7 +83,7 @@ export function Notes() {
             })
             .finally(() => {
                 setLoading(false);
-                setSearchedContent(null);
+                setSearchedContent('');
             });
     }
 
@@ -119,11 +110,14 @@ export function Notes() {
                 <button className='logout button'>Log out</button>
             </div>
             <div className='search-box-container'>
-                {displaySearchBox()}
+                <input
+                    className='search'
+                    placeholder='find submitted entries...'
+                    onChange={(e) => setSearchedContent(e.target.value)}
+                />
+
                 <FontAwesomeIcon
-                    className={
-                        displaySearch ? 'highlight': ''
-                    }
+                    className='highlight'
                     icon={faMagnifyingGlass}
                     onClick={() => {
                         getSearchedEntryByContent(content);
@@ -177,7 +171,7 @@ export function Notes() {
             </div>
 
             <button
-                className={searchedResult?.length > 0 || error ? 'no-display' : 'save button'}
+                className={searchedResult?.length > 0 || error || loading ? 'no-display' : 'save button'}
                 variant="outline-primary"
                 onClick={() => {
                     postNewNotes();
