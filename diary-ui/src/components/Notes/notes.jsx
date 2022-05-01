@@ -106,6 +106,7 @@ export function Notes() {
                         <EntryCard 
                             entries={searchedResult} 
                             setContent={setContent} 
+                            setSearchedContent={setSearchedContent}
                             setStartDate={setStartDate}
                             setSearchedResult={setSearchedResult} 
                         />
@@ -149,13 +150,13 @@ export function Notes() {
                 />
             </div>
 
-            <div className={searchedResult?.length > 0 ? 'no-display' : ''}>
-                <div className='notes-layout'>
+            <div>
+                <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
                     {
                         !loading 
                             ? <div className='left'>
                                 <DatePicker
-                                    className='input'
+                                    className={error ? 'no-display': 'input' }
                                     selected={startDate}
                                     onChange={(date) => {
                                         getDate(date);
@@ -166,18 +167,7 @@ export function Notes() {
                             </div>
                             : null 
                     }
-                    
-                    {
-                        error 
-                            ?   <div className='error-container'>
-                                    <FontAwesomeIcon 
-                                        icon={faFaceSadCry} 
-                                        size="3x" 
-                                    />
-                                    <h6>Something went wrong. Please try again later!</h6>
-                                </div> 
-                            : null
-                    }
+                
 
                     {
                         loading
@@ -197,8 +187,22 @@ export function Notes() {
                     }
                 </div>
 
+                {
+                    error 
+                        ?   <div className='error-container'>
+                                <FontAwesomeIcon 
+                                    icon={faFaceSadCry} 
+                                    size="3x" 
+                                />
+                                <h6>Something went wrong. Please try again later!</h6>
+                            </div> 
+                        : null
+                }
+
                 <button
-                    className={error || loading ? 'no-display' : 'save button'}
+                    className={
+                        searchedResult.length > 1 || error || loading ? 'no-display' : 'save button'
+                    }
                     variant="outline-primary"
                     onClick={() => {
                         postNewNotes();
