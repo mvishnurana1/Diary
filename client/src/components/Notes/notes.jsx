@@ -201,7 +201,7 @@ export function Notes() {
 
                 <button
                     className={
-                        searchedResult.length > 1 || error || loading ? 'no-display' : 'save button'
+                        searchedResult.length > 0 || error || loading ? 'no-display' : 'save button'
                     }
                     variant="outline-primary"
                     onClick={() => {
