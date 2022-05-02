@@ -150,69 +150,67 @@ export function Notes() {
                 />
             </div>
 
-            <div>
-                <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
-                    {
-                        !loading 
-                            ? <div className='left'>
-                                <DatePicker
-                                    className={error ? 'no-display': 'input' }
-                                    selected={startDate}
-                                    onChange={(date) => {
-                                        getDate(date);
-                                        setStartDate(date);
-                                        setLoading(true);
-                                    }}
-                                />
-                            </div>
-                            : null 
-                    }
-                
-
-                    {
-                        loading
-                            ? <ClipLoader color='red' size={150} />
-                            : <textarea
-                                className={
-                                    error ? 'no-display': 'textArea' 
-                                }
-                                rows={15}
-                                placeholder="Dear Diary..."
-                                onChange={(e) => {
-                                    setContent(e.target.value);
+            <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
+                {
+                    !loading 
+                        ? <div className='left'>
+                            <DatePicker
+                                className={error ? 'no-display': 'input' }
+                                selected={startDate}
+                                onChange={(date) => {
+                                    getDate(date);
+                                    setStartDate(new Date(date));
+                                    setLoading(true);
                                 }}
-                                spellCheck={false}
-                                value={content}
                             />
-                    }
-                </div>
+                        </div>
+                        : null 
+                }
+            
 
                 {
-                    error 
-                        ?   <div className='error-container'>
-                                <FontAwesomeIcon 
-                                    icon={faFaceSadCry} 
-                                    size="3x" 
-                                />
-                                <h6>Something went wrong. Please try again later!</h6>
-                            </div> 
-                        : null
+                    loading
+                        ? <ClipLoader color='red' size={150} />
+                        : <textarea
+                            className={
+                                error ? 'no-display': 'textArea' 
+                            }
+                            rows={15}
+                            placeholder="Dear Diary..."
+                            onChange={(e) => {
+                                setContent(e.target.value);
+                            }}
+                            spellCheck={false}
+                            value={content}
+                        />
                 }
-
-                <button
-                    className={
-                        searchedResult.length > 0 || error || loading ? 'no-display' : 'save button'
-                    }
-                    variant="outline-primary"
-                    onClick={() => {
-                        postNewNotes();
-                        setLoading(true);
-                        setContent('')
-                    }}
-                    disabled={content.length === 0}>
-                    {content.length === 0 ? 'Write note' : 'SAVE'}
-                </button>
             </div>
+
+            {
+                error
+                    ?   <div className='error-container'>
+                            <FontAwesomeIcon 
+                                icon={faFaceSadCry} 
+                                size="3x" 
+                            />
+                            <h6>Something went wrong. Please try again later!</h6>
+                        </div>
+                    : null
+            }
+
+            <button
+                className={
+                    searchedResult.length > 0 || error || loading ? 'no-display' : 'save button'
+                }
+                variant="outline-primary"
+                onClick={() => {
+                    postNewNotes();
+                    setLoading(true);
+                    setContent('')
+                }}
+                disabled={content.length === 0}>
+                {content.length === 0 ? 'Write note' : 'SAVE'}
+            </button>
 
             {displayCard()}
         </div>
