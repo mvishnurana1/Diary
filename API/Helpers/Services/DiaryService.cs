@@ -1,7 +1,5 @@
-﻿using API.Helpers.Entities;
-using API.Helpers.Interfaces;
+﻿using API.Helpers.Interfaces;
 using API.model;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,7 +28,7 @@ namespace API.Helpers.Services
             {
                 var date = newEntry.SubmittedDateTime;
 
-                var entry = GetEntryByDate(date).SingleOrDefault();
+                var entry = GetEntryByDate(date);
 
                 if (entry != null)
                 {
@@ -53,33 +51,20 @@ namespace API.Helpers.Services
             return newEntry;
         }
 
-        public async Task<DiaryEntry> UpdateEntry(DateTime date, DiaryEntry newContent)
+        public DiaryEntry GetEntryByDate(DateTime date)
         {
-            var x = GetEntryByDate(date).FirstOrDefault();
-                
-            if (x == null) {
-                return null;
+            var entry = _context.Entries
+                    .Where(x => x.SubmittedDateTime.Date == date.Date)
+                    .FirstOrDefault();
+            
+            if (entry != null)
+            {
+                entry.SubmittedDateTime = entry.SubmittedDateTime.Date.ToLocalTime();
+
+                return entry;
             }
 
-            try
-            {
-                x.Content = newContent.Content;
-                x.SubmittedDateTime = newContent.SubmittedDateTime;
-                _context.Update(x);
-
-                await _context.SaveChangesAsync();
-            } catch(Exception ex)
-            {
-                _logger.LogInformation($"Executed at {ex}");
-            }
-
-            return newContent;
-        }
-
-        public IQueryable<DiaryEntry> GetEntryByDate(DateTime date)
-        {
-            return _context.Entries
-                    .Where(x => x.SubmittedDateTime.Date == date.Date);
+            return entry;
         }
 
         public bool DeleteEntry(DiaryEntry entry)

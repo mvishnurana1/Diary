@@ -68,24 +68,5 @@ namespace API.Controllers
 
             return StatusCode(201, x.Result);
         }
-
-        [HttpPut("/update/{date}")]
-        public ActionResult<DiaryEntry> UpdateDiaryEntry(DateTime date, [FromBody]PostDiaryEntry newEntry)
-        {
-            if (newEntry?.Content == null)
-            {
-                return BadRequest();
-            }
-
-            var updatedEntry = new DiaryEntry()
-            {
-                SubmittedDateTime = newEntry.SubmittedDateTime,
-                Content = newEntry.Content,
-            };
-
-            var x = _diaryService.UpdateEntry(date, updatedEntry);
-            
-            return StatusCode(204, x.Result);
-        }
     }
 }
