@@ -49,7 +49,7 @@ export function Notes() {
             setLoading(true);
 
             const newNote = {
-                'submittedDateTime': startDate.toISOString(),
+                'submittedDateTime': startDate,
                 'Content': content
             };
     
