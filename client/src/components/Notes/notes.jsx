@@ -31,7 +31,7 @@ export function Notes() {
                 if (val.data.length === 0) {
                     setContent('');
                 } else {
-                    setContent(val.data[0].content);
+                    setContent(val.data.content);
                 }
             })
             .catch(() => {
@@ -170,7 +170,7 @@ export function Notes() {
 
                 {
                     loading
-                        ? <ClipLoader color='red' size={150} />
+                        ? <div className="centre"> <ClipLoader color='red' size={150} /> </div>
                         : <textarea
                             className={
                                 error ? 'no-display': 'textArea' 
