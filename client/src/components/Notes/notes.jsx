@@ -25,11 +25,15 @@ export function Notes() {
     const [searchedResult, setSearchedResult] = useState([]);
     const [error,  setError] = useState(false);
 
-    const { logout } = useAuth0();
+    const { logout, user } = useAuth0();
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
         fetchDataByDate(formattedDate);
+    }
+
+    function localStorage() {
+        window.localStorage.setItem("user-verified", user?.email_verified);
     }
 
     function fetchDataByDate(date) {
@@ -136,10 +140,14 @@ export function Notes() {
     return (
         <div className='notes-landing-page'>
             {displayError()}
+            {localStorage()}
             <div className='button-container'>
                 <button 
                     className='logout button'
-                    onClick={() => logout({ returnTo: window.location.origin })}
+                    onClick={() => {
+                        window.localStorage.removeItem("user-verified");
+                        logout({ returnTo: window.location.origin });
+                    }}
                 >Log out</button>
             </div>
             <div className='search-box-container'>
