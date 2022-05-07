@@ -57,13 +57,6 @@ namespace API.Helpers.Services
                     .Where(x => x.SubmittedDateTime.Date == date.Date)
                     .FirstOrDefault();
             
-            if (entry != null)
-            {
-                entry.SubmittedDateTime = entry.SubmittedDateTime.Date.ToLocalTime();
-
-                return entry;
-            }
-
             return entry;
         }
 
