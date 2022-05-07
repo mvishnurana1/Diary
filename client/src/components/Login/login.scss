@@ -1,0 +1,50 @@
+.login-page-container {
+    .button {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 2rem 2rem;
+        outline: none;
+        padding: .5rem 1rem;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .header {
+        color: rgb(235, 88, 88);;
+        font-size: 6vw;
+    }
+
+    .red {
+        border: 1px solid rgb(235, 88, 88);
+        color: rgb(235, 88, 88);
+
+        &:hover {
+            background-color: rgb(238, 137, 238); 
+        }
+    }
+
+    .main-content {
+        align-items: center;
+        background-color: rgb(240,242,245);
+        display: flex;
+        justify-content: space-evenly;
+        margin: 0;
+        padding: 15rem 0 15rem 0;
+        width: 100%;
+    }
+
+    .text {
+        font-family: SFProDisplay-Regular, Helvetica, Arial, sans-serif;
+        font-size: 4vw;
+        font-weight: normal;
+        line-height: 45px;
+        width: 500px;
+    }
+
+    @media (max-width: 865px) {
+        .main-content{
+            flex-direction: column;
+            padding: 5rem 1rem;
+        }
+    }
+}
