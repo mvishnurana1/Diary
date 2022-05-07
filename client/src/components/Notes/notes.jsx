@@ -1,4 +1,9 @@
-import { faMagnifyingGlass, faFaceSadCry, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useAuth0 } from '@auth0/auth0-react';
+import { 
+    faFaceSadCry, 
+    faMagnifyingGlass, 
+    faXmark 
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -19,6 +24,8 @@ export function Notes() {
     const [searchedContent,  setSearchedContent] = useState('');
     const [searchedResult, setSearchedResult] = useState([]);
     const [error,  setError] = useState(false);
+
+    const { logout } = useAuth0();
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
@@ -130,7 +137,10 @@ export function Notes() {
         <div className='notes-landing-page'>
             {displayError()}
             <div className='button-container'>
-                <button className='logout button'>Log out</button>
+                <button 
+                    className='logout button'
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                >Log out</button>
             </div>
             <div className='search-box-container'>
                 <input
