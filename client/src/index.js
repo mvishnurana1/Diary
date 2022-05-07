@@ -1,22 +1,21 @@
+import { Auth0Provider } from "@auth0/auth0-react";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Auth0Provider } from "@auth0/auth0-react";
+import App from './App';
 import reportWebVitals from './reportWebVitals';
 import secrets from './secrets/secrets.json';
-import App from './App';
 import './index.css';
 
 ReactDOM.render(
-  <Auth0Provider
-    domain={secrets.domain}
-    clientId={secrets.clientID}
-    redirectUri='/loggedin'
-  >
-    <React.StrictMode>
+  <React.StrictMode>
+    <Auth0Provider
+      clientId={secrets.clientID}
+      domain={secrets.domain}
+      redirectUri={window.location.origin}
+    >
       <App />
-    </React.StrictMode>
-  </Auth0Provider>,
+    </Auth0Provider>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
