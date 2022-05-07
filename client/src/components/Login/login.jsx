@@ -9,7 +9,7 @@ export function Login() {
     <div className="main-content">
       <div className="content">
         <h1 className="header">Diary</h1>
-        <h2 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h2>
+        <h3 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
       </div>
       <div>
         <button className="button red" onClick={() => loginWithRedirect()}>Log In / Sign up</button>

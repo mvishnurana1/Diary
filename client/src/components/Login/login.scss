@@ -11,7 +11,6 @@
 
     .header {
         color: rgb(235, 88, 88);;
-        font-size: 6vw;
     }
 
     .red {
@@ -35,15 +34,14 @@
 
     .text {
         font-family: SFProDisplay-Regular, Helvetica, Arial, sans-serif;
-        font-size: 4vw;
         font-weight: normal;
         line-height: 45px;
-        width: 500px;
+        max-width: 500px;
     }
 
     @media (max-width: 865px) {
         .main-content{
-            flex-direction: column;
+            display: inline-block;
             padding: 5rem 1rem;
         }
     }
