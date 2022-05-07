@@ -6,7 +6,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
-import React, { useState } from 'react';
+import 
+    React, { 
+        useEffect, 
+        useState 
+    } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -18,14 +22,23 @@ export function Notes() {
     const BASE_URL = 'https://localhost:44315/';
 
     const [content, setContent] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
     const [displaySearch, setDisplaySearch] = useState(false);
+    const [error,  setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [searchedContent,  setSearchedContent] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState([]);
-    const [error,  setError] = useState(false);
+    const [token, setToken] = useState();
 
-    const { logout, user } = useAuth0();
+    const { getAccessTokenSilently, logout, user } = useAuth0();
+
+    useEffect(() => {
+        (async () => {
+            const accessToken = await getAccessTokenSilently();
+            setToken(accessToken);
+            window.localStorage.setItem("accessToken", accessToken);
+        })();
+    });
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
@@ -145,7 +158,9 @@ export function Notes() {
                 <button 
                     className='logout button'
                     onClick={() => {
+                        window.localStorage.removeItem("accessToken");
                         window.localStorage.removeItem("user-verified");
+
                         logout({ returnTo: window.location.origin });
                     }}
                 >Log out</button>
