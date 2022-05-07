@@ -1,12 +1,12 @@
 .login-page-container {
     .button {
+        border: none;
+        border-radius: 0.5rem;
         font-size: 1rem;
         font-weight: 600;
         margin: 2rem 2rem;
         outline: none;
         padding: .5rem 1rem;
-        border: none;
-        border-radius: 0.5rem;
     }
 
     .header {
@@ -18,7 +18,9 @@
         color: rgb(235, 88, 88);
 
         &:hover {
-            background-color: rgb(238, 137, 238); 
+            background-color: rgb(235, 88, 88);
+            border: 1px solid rgb(66, 55, 55);
+            color: rgb(66, 55, 55);
         }
     }
 
