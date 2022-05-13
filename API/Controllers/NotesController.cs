@@ -30,6 +30,8 @@ namespace API.Controllers
         [HttpGet("/get/{date}")]
         public ActionResult<IEnumerable<DiaryEntry>> GetEntryByDate(DateTime date)
         {
+            _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {date}");
+
             var x = _diaryService.GetEntryByDate(date);
 
             return Ok(x);
@@ -38,6 +40,8 @@ namespace API.Controllers
         [HttpGet("/searchbycontent/{content}")]
         public ActionResult<IEnumerable<DiaryEntry>> SearchByContent(string content)
         {
+            _logger.LogInformation($"SearchByContent Controller Executed with argument - {content}");
+
             if (String.IsNullOrEmpty(content))
             {
                 return BadRequest();
@@ -50,7 +54,7 @@ namespace API.Controllers
         [HttpPost("/post")]
         public ActionResult<DiaryEntry> PostEntry(PostDiaryEntry entry)
         {
-            _logger.LogInformation($"Executed at {entry.SubmittedDateTime}");
+            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime}");
 
             if (String.IsNullOrEmpty(entry.Content))
             {
