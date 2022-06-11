@@ -9,7 +9,6 @@ namespace API.Helpers.Interfaces
     {
         Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry);
         DiaryEntry GetEntryByDate(DateTime date);
-        bool DeleteEntry(DiaryEntry entry);
         IEnumerable<DiaryEntry> SearchEntriesByContent(string content);
     }
 }

@@ -16,7 +16,17 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "ancmHostingModel": "InProcess",
+      "console": "integratedTerminal",
       "nativeDebugging": true
+    },
+    "DiaryApp": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "ancmHostingModel": "InProcess"
     },
     "Profile 1": {
       "commandName": "IISExpress",
@@ -25,12 +35,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "Profile 2": {
-      "commandName": "Executable"
-    },
-    "Profile 3": {
-      "commandName": "Project"
     }
   }
 }

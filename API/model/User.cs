@@ -8,7 +8,13 @@ namespace API.model
     {
         [Key]
         public Guid UserID { get; set; } = new Guid();
+
+        [Required]
         public string UserName { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+        
         public ICollection<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
     }
 }

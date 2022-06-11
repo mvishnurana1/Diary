@@ -24,53 +24,30 @@ namespace API.Helpers.Services
 
         public async Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry)
         {
-            try
+            var date = newEntry.SubmittedDateTime;
+            var entry = GetEntryByDate(date);
+
+            if (entry != null)
             {
-                var date = newEntry.SubmittedDateTime;
-
-                var entry = GetEntryByDate(date);
-
-                if (entry != null)
-                {
-                    var deleted = DeleteEntry(entry);
-
-                    if (deleted)
-                    {
-                        _context.Entries.Add(newEntry);
-                    }
-                }
-                
-                _context.Entries.Add(newEntry);
-
-                await _context.SaveChangesAsync();
-            } catch(Exception)
-            {
-                throw;
+                DeleteEntry(entry);
             }
+                
+            _context.Entries.Add(newEntry);
+            await _context.SaveChangesAsync();
 
             return newEntry;
         }
 
         public DiaryEntry GetEntryByDate(DateTime date)
         {
-            var entry = _context.Entries
+            return _context.Entries
                     .Where(x => x.SubmittedDateTime.Date == date.Date)
                     .FirstOrDefault();
-            
-            return entry;
         }
 
-        public bool DeleteEntry(DiaryEntry entry)
+        private void DeleteEntry(DiaryEntry entry)
         {
-            try
-            {
-                _context.Entries.Remove(entry);
-         
-                return true;
-            } catch(Exception)
-            {
-                return false;
-            }
+            _context.Entries.Remove(entry);
         }
 
         public IEnumerable<DiaryEntry> SearchEntriesByContent(string content)
@@ -79,16 +56,6 @@ namespace API.Helpers.Services
                             .Where(x => x.Content.Contains(content))
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList();
-        }
-        
-        public DiaryEntry DeleteEntryByID(Guid id)
-        {
-            return new DiaryEntry() { };
-        }
-
-        public DiaryEntry DeleteEntryByID(DateTime date)
-        {
-            throw new NotImplementedException();
         }
     }
 }

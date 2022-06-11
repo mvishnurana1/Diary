@@ -7,7 +7,10 @@ namespace API.model
     {
         [Key]
         public Guid EntryID { get; set; } = new Guid();
+
+        [Required]
         public DateTime SubmittedDateTime { get; set; }
+
         public string Content { get; set; }
     }
 }

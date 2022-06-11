@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using API.model;
-using API.Helpers.Services;
 using System.Collections.Generic;
 using API.Helpers.Interfaces;
-using System.Threading.Tasks;
 using API.Helpers.Entities;
-using System.Linq;
 
 namespace API.Controllers
 {
@@ -65,7 +62,7 @@ namespace API.Controllers
             {
                 EntryID = Guid.NewGuid(),
                 SubmittedDateTime = entry.SubmittedDateTime,
-                Content = entry.Content
+                Content = entry.Content.Trim()
             };
 
             var x = _diaryService.AddNewEntries(diaryEntry);

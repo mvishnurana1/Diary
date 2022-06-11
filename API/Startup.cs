@@ -66,7 +66,7 @@ namespace API
 
             app.UseAuthorization();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
