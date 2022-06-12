@@ -11,7 +11,7 @@ function App() {
   return (
     <div>
       {
-        isAuthenticated || window.localStorage.getItem("user-verified")
+        window.localStorage.getItem("user-verified")
           ? <Notes />
           : <Login />
       }

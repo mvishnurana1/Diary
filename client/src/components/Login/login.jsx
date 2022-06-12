@@ -11,8 +11,25 @@ export function Login() {
         <h1 className="header">Diary</h1>
         <h3 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
       </div>
+      <div className="form-container">
+        <input 
+          className="input" 
+          placeholder="email"
+          type="email"
+          required 
+        />
+        
+        <input 
+          className="input" 
+          placeholder="password"
+          type="password"
+          required 
+        />
+
       <div>
-        <button className="button red" onClick={() => loginWithRedirect()}>Log In / Sign up</button>
+        <button className="button red" onClick={() => loginWithRedirect()}>Log In</button>
+        <button className="button purple" onClick={() => loginWithRedirect()}>Sign up</button>
+      </div>
       </div>
     </div>
   </div>)
