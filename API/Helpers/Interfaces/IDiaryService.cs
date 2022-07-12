@@ -8,7 +8,7 @@ namespace API.Helpers.Interfaces
     public interface IDiaryService
     {
         Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry);
-        DiaryEntry GetEntryByDate(DateTime date);
-        IEnumerable<DiaryEntry> SearchEntriesByContent(string content);
+        Task<DiaryEntry> GetEntryByDate(DateTime date);
+        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content);
     }
 }

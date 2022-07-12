@@ -1,10 +1,10 @@
-﻿using API.Helpers.Interfaces;
-using API.model;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using API.Helpers.Interfaces;
+using API.model;
 
 namespace API.Helpers.Services
 {
@@ -25,11 +25,11 @@ namespace API.Helpers.Services
         public async Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry)
         {
             var date = newEntry.SubmittedDateTime;
-            var entry = GetEntryByDate(date);
+            var entry = await GetEntryByDate(date);
 
             if (entry != null)
             {
-                DeleteEntry(entry);
+                await DeleteEntry(entry);
             }
                 
             _context.Entries.Add(newEntry);
@@ -38,24 +38,24 @@ namespace API.Helpers.Services
             return newEntry;
         }
 
-        public DiaryEntry GetEntryByDate(DateTime date)
+        public async Task<DiaryEntry> GetEntryByDate(DateTime date)
         {
-            return _context.Entries
+            return await Task.Run(() => _context.Entries
                     .Where(x => x.SubmittedDateTime.Date == date.Date)
-                    .FirstOrDefault();
+                    .FirstOrDefault()); 
         }
 
-        private void DeleteEntry(DiaryEntry entry)
+        private async Task DeleteEntry(DiaryEntry entry)
         {
-            _context.Entries.Remove(entry);
+            await Task.Run(() => _context.Entries.Remove(entry));
         }
 
-        public IEnumerable<DiaryEntry> SearchEntriesByContent(string content)
+        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)
         {
-            return _context.Entries
+            return await Task.Run(() => _context.Entries
                             .Where(x => x.Content.Contains(content))
                             .OrderBy(x => x.SubmittedDateTime)
-                            .ToList();
+                            .ToList());
         }
     }
 }
