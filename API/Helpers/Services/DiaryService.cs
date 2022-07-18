@@ -24,6 +24,8 @@ namespace API.Helpers.Services
 
         public async Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry)
         {
+            _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
+
             var date = newEntry.SubmittedDateTime;
             var entry = await GetEntryByDate(date);
 
@@ -31,7 +33,7 @@ namespace API.Helpers.Services
             {
                 await DeleteEntry(entry);
             }
-                
+
             _context.Entries.Add(newEntry);
             await _context.SaveChangesAsync();
 
@@ -40,22 +42,28 @@ namespace API.Helpers.Services
 
         public async Task<DiaryEntry> GetEntryByDate(DateTime date)
         {
+            _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {date}");
+
             return await Task.Run(() => _context.Entries
                     .Where(x => x.SubmittedDateTime.Date == date.Date)
-                    .FirstOrDefault()); 
-        }
-
-        private async Task DeleteEntry(DiaryEntry entry)
-        {
-            await Task.Run(() => _context.Entries.Remove(entry));
+                    .FirstOrDefault());
         }
 
         public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)
         {
+            _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {content}");
+
             return await Task.Run(() => _context.Entries
                             .Where(x => x.Content.Contains(content))
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList());
+        }
+
+        private async Task DeleteEntry(DiaryEntry entry)
+        {
+            _logger.LogInformation($"DeleteEntry() Service method Executed with argument - {entry}");
+
+            await Task.Run(() => _context.Entries.Remove(entry));
         }
     }
 }
