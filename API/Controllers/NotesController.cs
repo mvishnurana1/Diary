@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using API.model;
-using System.Collections.Generic;
 using API.Helpers.Interfaces;
 using API.Helpers.Entities;
+using API.model;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class NotesController : ControllerBase
     {
         private readonly ILogger<NotesController> _logger;
@@ -24,18 +25,25 @@ namespace API.Controllers
             _diaryService = diaryService;
         }
 
-        [HttpGet("/get/{date}")]
-        public ActionResult<IEnumerable<DiaryEntry>> GetEntryByDate(DateTime date)
+        //[Authorize]
+        [HttpGet("/get")]
+        public async Task<ActionResult<DiaryEntry>> GetEntryByDate([FromQuery] DateTime date)
         {
             _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {date}");
 
-            var x = _diaryService.GetEntryByDate(date);
+            var entry = await _diaryService.GetEntryByDate(date);
 
-            return Ok(x);
+            if (entry == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(entry);
         }
 
-        [HttpGet("/searchbycontent/{content}")]
-        public ActionResult<IEnumerable<DiaryEntry>> SearchByContent(string content)
+        //[Authorize]
+        [HttpGet("/searchbycontent")]
+        public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] string content)
         {
             _logger.LogInformation($"SearchByContent Controller Executed with argument - {content}");
 
@@ -44,12 +52,14 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var x = _diaryService.SearchEntriesByContent(content);
+            var x = await _diaryService.SearchEntriesByContent(content);
+
             return Ok(x);
         }
 
+        //[Authorize]
         [HttpPost("/post")]
-        public ActionResult<DiaryEntry> PostEntry(PostDiaryEntry entry)
+        public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntry entry)
         {
             _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime}");
 
@@ -65,9 +75,14 @@ namespace API.Controllers
                 Content = entry.Content.Trim()
             };
 
-            var x = _diaryService.AddNewEntries(diaryEntry);
+            var newEntry = await _diaryService.AddNewEntries(diaryEntry);
 
-            return StatusCode(201, x.Result);
+            if (newEntry == null)
+            {
+                return Conflict();
+            }
+
+            return Created("201", newEntry);
         }
     }
 }
