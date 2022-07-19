@@ -12,9 +12,9 @@ namespace API.model
         [Required]
         public string UserName { get; set; }
 
-        [Required]
-        public string Email { get; set; }
-        
+        //[Required]
+        //public string Email { get; set; }
+
         public ICollection<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
     }
 }

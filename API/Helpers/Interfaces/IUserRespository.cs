@@ -1,13 +1,14 @@
 ﻿using API.model;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace API.Helpers.Interfaces
 {
-    interface IUserRespository
+    public interface IUserRespository
     {
-        User GetUserByID(Guid id);
-        IEnumerable<User> GetAllUsers();
-        IEnumerable<User> FindUserByName(string userName);
+        Task<User> GetUserByID(Guid userId);
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> FindUserByName(string userName);
     }
 }
