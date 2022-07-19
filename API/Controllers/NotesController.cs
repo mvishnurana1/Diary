@@ -52,9 +52,9 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var x = await _diaryService.SearchEntriesByContent(content);
+            var searchResults = await _diaryService.SearchEntriesByContent(content);
 
-            return Ok(x);
+            return Ok(searchResults);
         }
 
         //[Authorize]
