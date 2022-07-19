@@ -81,6 +81,7 @@ namespace API
         private void AddServices(IServiceCollection services)
         {
             services.AddTransient<IDiaryService, DiaryService>();
-        } 
+            services.AddTransient<IUserRespository, UserService>();
+        }
     }
 }
