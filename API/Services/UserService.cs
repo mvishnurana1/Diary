@@ -45,7 +45,7 @@ namespace API.Helpers.Services
             _logger.LogInformation($"GetUserByID() Service method Executed with argument - {userId}");
 
             return await Task.Run(() => _context.User
-                    .Where(x => x.UserID == userId)
+                    .Where(x => x.ID == userId)
                     .ToList()
                     .FirstOrDefault());
         }

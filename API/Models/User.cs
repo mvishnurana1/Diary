@@ -7,7 +7,7 @@ namespace API.model
     public class User
     {
         [Key]
-        public Guid UserID { get; set; } = new Guid();
+        public Guid ID { get; set; } = new Guid();
 
         [Required]
         public string UserName { get; set; }
