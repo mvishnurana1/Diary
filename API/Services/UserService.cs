@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using API.model;
 using API.Helpers.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Helpers.Services
 {
@@ -45,7 +44,7 @@ namespace API.Helpers.Services
             _logger.LogInformation($"GetUserByID() Service method Executed with argument - {userId}");
 
             return await Task.Run(() => _context.User
-                    .Where(x => x.ID == userId)
+                    .Where(x => x.UserID == userId)
                     .ToList()
                     .FirstOrDefault());
         }

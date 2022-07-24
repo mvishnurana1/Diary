@@ -58,7 +58,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/post")]
-        public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntry entry)
+        public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntryDto entry)
         {
             _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime}");
 
@@ -67,11 +67,11 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var diaryEntry = new DiaryEntry()
+            var diaryEntry = new PostDiaryEntryDto()
             {
-                EntryID = Guid.NewGuid(),
                 SubmittedDateTime = entry.SubmittedDateTime,
-                Content = entry.Content.Trim()
+                Content = entry.Content.Trim(),
+                UserID = entry.UserID
             };
 
             var newEntry = await _diaryService.AddNewEntries(diaryEntry);

@@ -13,29 +13,47 @@ namespace API.Helpers.Services
     {
         private readonly DataContext _context;
         private readonly ILogger<DiaryService> _logger;
+        private readonly IUserRespository _userRespository;
 
         public DiaryService(
             DataContext dataContext,
-            ILogger<DiaryService> logger
+            ILogger<DiaryService> logger,
+            IUserRespository userRespository
         )
         {
             _context = dataContext;
             _logger = logger;
+            _userRespository = userRespository;
         }
 
-        public async Task<DiaryEntry> AddNewEntries(DiaryEntry newEntry)
+        public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
         {
             _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
 
-            var date = newEntry.SubmittedDateTime;
-            var entry = await GetEntryByDate(date);
+            var entry = await GetEntryByDate(newEntry.SubmittedDateTime.Date);
 
-            if (entry != null)
+            if (entry.DiaryEntry != null)
             {
                 await DeleteEntry(entry.DiaryEntry);
             }
 
-            _context.Entries.Add(newEntry);
+            var userID = newEntry.UserID;
+
+            var user = await _userRespository.GetUserByID(userID);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not Found!");
+            }
+
+            var newerEntry = new DiaryEntry()
+            {
+                UserID = userID,
+                Content = newEntry.Content,
+                SubmittedDateTime = newEntry.SubmittedDateTime.Date
+            };
+
+            _context.Entries.Add(newerEntry);
             await _context.SaveChangesAsync();
 
             return newEntry;

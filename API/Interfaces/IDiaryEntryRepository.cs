@@ -7,7 +7,7 @@ namespace API.Helpers.Interfaces
 {
     interface IDiaryEntryRepository
     {
-        DiaryEntry AddNewEntries(PostDiaryEntry newEntry);
+        DiaryEntry AddNewEntries(PostDiaryEntryDto newEntry);
         DiaryEntry GetEntryByDate(DateTime date);
         DiaryEntry UpdateEntry(DateTime date);
         DiaryEntry DeleteEntry(DateTime date);
