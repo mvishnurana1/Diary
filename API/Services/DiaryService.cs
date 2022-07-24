@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using API.Helpers.Interfaces;
 using API.model;
+using API.Helpers.Entities;
 
 namespace API.Helpers.Services
 {
@@ -31,7 +32,7 @@ namespace API.Helpers.Services
 
             if (entry != null)
             {
-                await DeleteEntry(entry);
+                await DeleteEntry(entry.DiaryEntry);
             }
 
             _context.Entries.Add(newEntry);
@@ -40,13 +41,31 @@ namespace API.Helpers.Services
             return newEntry;
         }
 
-        public async Task<DiaryEntry> GetEntryByDate(DateTime date)
+        public async Task<DiaryEntryResponseDto> GetEntryByDate(DateTime date)
         {
             _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {date}");
 
-            return await Task.Run(() => _context.Entries
-                    .Where(x => x.SubmittedDateTime.Date == date.Date)
+            var entry = await Task.Run(() => _context.Entries
+                              .Where(e => e.SubmittedDateTime.Date == date.Date)
+                              .FirstOrDefault());
+
+            if (entry == null)
+            {
+                return new DiaryEntryResponseDto();
+            }
+
+            var userID = entry.UserID;
+
+            var user = await Task.Run(() => _context.User
+                    .Where(x => x.UserID == userID)
                     .FirstOrDefault());
+
+            return new DiaryEntryResponseDto()
+            {
+                Email = user.Email,
+                UserName = user.UserName,
+                DiaryEntry = entry
+            };
         }
 
         public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)

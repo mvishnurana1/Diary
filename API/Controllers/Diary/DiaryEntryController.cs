@@ -6,18 +6,20 @@ using Microsoft.Extensions.Logging;
 using API.Helpers.Interfaces;
 using API.Helpers.Entities;
 using API.model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class NotesController : ControllerBase
+    public class DiaryEntryController : ControllerBase
     {
-        private readonly ILogger<NotesController> _logger;
+        private readonly ILogger<DiaryEntryController> _logger;
         private readonly IDiaryService _diaryService;
 
-        public NotesController(
-            ILogger<NotesController> logger,
+        public DiaryEntryController(
+            ILogger<DiaryEntryController> logger,
             IDiaryService diaryService
         )
         {
@@ -25,7 +27,6 @@ namespace API.Controllers
             _diaryService = diaryService;
         }
 
-        //[Authorize]
         [HttpGet("/get")]
         public async Task<ActionResult<DiaryEntry>> GetEntryByDate([FromQuery] DateTime date)
         {
@@ -41,7 +42,6 @@ namespace API.Controllers
             return Ok(entry);
         }
 
-        //[Authorize]
         [HttpGet("/searchbycontent")]
         public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] string content)
         {
@@ -57,7 +57,6 @@ namespace API.Controllers
             return Ok(searchResults);
         }
 
-        //[Authorize]
         [HttpPost("/post")]
         public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntry entry)
         {

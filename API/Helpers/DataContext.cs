@@ -14,8 +14,7 @@ namespace API.Helpers
         }
 
         public DataContext()
-        {
-        }
+        {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

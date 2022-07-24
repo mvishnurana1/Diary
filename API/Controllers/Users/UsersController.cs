@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using API.Helpers.Interfaces;
 using API.model;
 
 namespace API.Controllers.Users
 {
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
