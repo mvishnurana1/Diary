@@ -32,13 +32,13 @@ export function Notes() {
 
     const { getAccessTokenSilently, logout, user } = useAuth0();
 
-    useEffect(() => {
-        (async () => {
-            const accessToken = await getAccessTokenSilently();
-            setToken(accessToken);
-            window.localStorage.setItem("accessToken", accessToken);
-        })();
-    });
+    // useEffect(() => {
+    //     (async () => {
+    //         const accessToken = await getAccessTokenSilently();
+    //         setToken(accessToken);
+    //         window.localStorage.setItem("accessToken", accessToken);
+    //     })();
+    // });
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
@@ -50,12 +50,12 @@ export function Notes() {
     }
 
     function fetchDataByDate(date) {
-        axios.get(`${BASE_URL}get/${date}`)
+        axios.get(`${BASE_URL}get/?date=${date}`)
             .then((val) => {
                 if (val.data.length === 0) {
                     setContent('');
                 } else {
-                    setContent(val.data.content);
+                    setContent(val.data.diaryEntry.content);
                 }
             })
             .catch(() => {
@@ -161,7 +161,7 @@ export function Notes() {
                         window.localStorage.removeItem("accessToken");
                         window.localStorage.removeItem("user-verified");
 
-                        logout({ returnTo: window.location.origin });
+                        // logout({ returnTo: window.location.origin });
                     }}
                 >Log out</button>
             </div>
@@ -244,7 +244,6 @@ export function Notes() {
                 disabled={content.length === 0}>
                 {content.length === 0 ? 'Write note' : 'SAVE'}
             </button>
-
             {displayCard()}
         </div>
     )
