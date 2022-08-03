@@ -98,7 +98,7 @@ export function Notes() {
         } else {
             setLoading(true);
 
-            axios.get(`${BASE_URL}searchbycontent/${searchedContent}`)
+            axios.get(`${BASE_URL}searchbycontent/?content=${searchedContent}`)
             .then((val) => {
                 if (val.data.length === 0) {
                     setSearchedResult([]);
