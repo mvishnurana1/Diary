@@ -34,11 +34,6 @@ namespace API.Controllers
 
             var entry = await _diaryService.GetEntryByDate(date);
 
-            if (entry == null)
-            {
-                return NotFound();
-            }
-
             return Ok(entry);
         }
 
