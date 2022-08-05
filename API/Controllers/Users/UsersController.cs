@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using API.Helpers.Interfaces;
 using API.model;
+using AutoMapper;
+using API.DTOs.Users;
 
 namespace API.Controllers.Users
 {
@@ -16,14 +18,17 @@ namespace API.Controllers.Users
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IUserRespository _userRespository;
+        private readonly IMapper _mapper;
 
         public UsersController(
             ILogger<UsersController> logger,
-            IUserRespository userRespository
+            IUserRespository userRespository,
+            IMapper mapper
         )
         {
             _logger = logger;
             _userRespository = userRespository;
+            _mapper = mapper;
         }
 
         [HttpGet("/getuserbyusername")]
@@ -47,8 +52,10 @@ namespace API.Controllers.Users
             _logger.LogInformation($"GetUserByUserName Controller method Executed with argument");
 
             var user = await _userRespository.GetAllUsers();
-           
-            return Ok(user);
+
+            var allUsers = _mapper.Map<IEnumerable<User>, IEnumerable<GetAllUsersResponsedDto>>(user);
+
+            return Ok(allUsers);
         }
 
         [HttpGet("/getuserbyid")]

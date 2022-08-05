@@ -3,13 +3,16 @@ using API.Helpers;
 using API.Helpers.Interfaces;
 using API.Helpers.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace API
 {
@@ -27,26 +30,16 @@ namespace API
         {
             string domain = $"https://{Configuration["Auth0:Domain"]}/";
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.Authority = domain;
-                    options.Audience = Configuration["Auth0:Audience"];
-                    // If the access token does not have a `sub` claim, `User.Identity.Name` will be `null`. Map it to a different claim by setting the NameClaimType below.
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        NameClaimType = ClaimTypes.Email,
-                    };
-                });
+            AddAuthentication(services);
 
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            //services.AddControllers().AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
 
             services.AddDbContext<DataContext>();
 
             AddServices(services);
+            services.AddControllers();
 
             services.AddSwaggerGen(c =>
             {
@@ -80,8 +73,25 @@ namespace API
         
         private void AddServices(IServiceCollection services)
         {
+            // Add Automapper
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            // Register services
             services.AddTransient<IDiaryService, DiaryService>();
             services.AddTransient<IUserRespository, UserService>();
+        }
+
+        private void AddAuthentication(IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev-qq2tsu06.au.auth0.com/";
+                options.Audience = "https://mydiary/api";
+            });
         }
     }
 }
