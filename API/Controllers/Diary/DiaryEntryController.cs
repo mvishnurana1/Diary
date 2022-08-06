@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using API.Helpers.Interfaces;
 using API.Helpers.Entities;
 using API.model;
-using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -62,14 +61,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var diaryEntry = new PostDiaryEntryDto()
-            {
-                SubmittedDateTime = entry.SubmittedDateTime,
-                Content = entry.Content.Trim(),
-                UserID = entry.UserID
-            };
-
-            var newEntry = await _diaryService.AddNewEntries(diaryEntry);
+            var newEntry = await _diaryService.AddNewEntries(entry);
 
             if (newEntry == null)
             {

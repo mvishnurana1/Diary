@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using API.Helpers.Interfaces;
 using API.model;
 using API.Helpers.Entities;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Helpers.Services
 {
@@ -14,44 +16,38 @@ namespace API.Helpers.Services
         private readonly DataContext _context;
         private readonly ILogger<DiaryService> _logger;
         private readonly IUserRespository _userRespository;
+        private readonly IMapper _mapper;
 
         public DiaryService(
             DataContext dataContext,
             ILogger<DiaryService> logger,
-            IUserRespository userRespository
+            IUserRespository userRespository,
+            IMapper mapper
         )
         {
             _context = dataContext;
             _logger = logger;
             _userRespository = userRespository;
+            _mapper = mapper;
         }
 
         public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
         {
             _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
 
-            var entry = await GetEntryByDate(newEntry.SubmittedDateTime.Date);
-
-            if (entry.DiaryEntry != null)
+            if (newEntry.UserID == Guid.Empty)
             {
-                await DeleteEntry(entry.DiaryEntry);
+                throw new ArgumentException("No Such User Found!");
             }
 
-            var userID = newEntry.UserID;
+            var userDetails = await GetEntryForUserByDateTime(newEntry.UserID, newEntry.SubmittedDateTime.Date);
 
-            var user = await _userRespository.GetUserByID(userID);
-
-            if (user == null)
+            if (userDetails.Entries.Count > 0)
             {
-                throw new ArgumentException("User not Found!");
+                await DeleteEntry(userDetails.Entries.FirstOrDefault());
             }
-
-            var newerEntry = new DiaryEntry()
-            {
-                UserID = userID,
-                Content = newEntry.Content,
-                SubmittedDateTime = newEntry.SubmittedDateTime.Date
-            };
+        
+            var newerEntry = _mapper.Map<PostDiaryEntryDto, DiaryEntry>(newEntry);
 
             _context.Entries.Add(newerEntry);
             await _context.SaveChangesAsync();
@@ -94,6 +90,18 @@ namespace API.Helpers.Services
                             .Where(x => x.Content.Contains(content))
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList());
+        }
+
+        private async Task<User> GetEntryForUserByDateTime(Guid UserID, DateTime SubmittedDate)
+        {
+            return await Task.Run(() => _context.User
+                .Include(i => i.Entries.Where(e => e.SubmittedDateTime.Date == SubmittedDate))
+                .FirstOrDefault(u => u.UserID == UserID));
+        }
+
+        private async Task<DiaryEntry> GetDiaryEntryByID(Guid EntryID)
+        {
+            return await Task.Run(() => _context.Entries.FirstOrDefaultAsync(e => e.EntryID == EntryID));
         }
 
         private async Task DeleteEntry(DiaryEntry entry)
