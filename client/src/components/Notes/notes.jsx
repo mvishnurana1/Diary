@@ -32,13 +32,13 @@ export function Notes() {
 
     const { getAccessTokenSilently, logout, user } = useAuth0();
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const accessToken = await getAccessTokenSilently();
-    //         setToken(accessToken);
-    //         window.localStorage.setItem("accessToken", accessToken);
-    //     })();
-    // });
+    useEffect(() => {
+        (async () => {
+            const accessToken = await getAccessTokenSilently();
+            setToken(accessToken);
+            window.localStorage.setItem("accessToken", token);
+        })();
+    });
 
     function getDate(date) {
         const formattedDate = dateFormat(date);

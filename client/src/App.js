@@ -12,6 +12,14 @@ import './App.css';
 function App() {
   const { loginWithPopup, isAuthenticated } = useAuth0();
 
+  const {
+    isLoading,
+    error,
+    user,
+    loginWithRedirect,
+    logout,
+  } = useAuth0();
+
   return (
       <BrowserRouter>
       <Header />
