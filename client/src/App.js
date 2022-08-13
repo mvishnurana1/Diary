@@ -1,21 +1,25 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Notes } from './components/Notes/notes';
 import { Login } from './components/Login/login.jsx';
+import { Preferences } from './components/Preferences/Preferences';
+  import { Statistics } from './components/Statistics/Statistics';
+import { NoPage }  from './components/common/NoPage/NoPage';
 import './App.css';
 
 function App() {
   const { loginWithPopup, isAuthenticated } = useAuth0();
 
   return (
-    <div>
-      {
-        window.localStorage.getItem("user-verified")
-          ? <Notes />
-          : <Login />
-      }
-    </div>
+    <BrowserRouter>
+      <Routes>
+          <Route path="" element={<Login />} />
+          <Route path="new" element={<Notes />} />
+          <Route path="preferences" element={<Preferences />} />
+          <Route path="stats" element={<Statistics />} />
+          <Route path="*" element={<NoPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
