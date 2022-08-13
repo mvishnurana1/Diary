@@ -52,7 +52,7 @@ export function Notes() {
     function fetchDataByDate(date) {
         axios.get(`${BASE_URL}get/?date=${date}`)
             .then((val) => {
-                if (val.data.length === 0) {
+                if (val.data.diaryEntry === null) {
                     setContent('');
                 } else {
                     setContent(val.data.diaryEntry.content);
