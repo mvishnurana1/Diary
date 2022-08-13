@@ -154,17 +154,6 @@ export function Notes() {
         <div className='notes-landing-page'>
             {displayError()}
             {localStorage()}
-            <div className='button-container'>
-                <button 
-                    className='logout button'
-                    onClick={() => {
-                        window.localStorage.removeItem("accessToken");
-                        window.localStorage.removeItem("user-verified");
-
-                        // logout({ returnTo: window.location.origin });
-                    }}
-                >Log out</button>
-            </div>
             <div className='search-box-container'>
                 <input
                     className='search'

@@ -1,0 +1,51 @@
+.header-container {
+    display: flex;
+    margin: 1rem 2rem;
+
+    .active {
+        color: rgb(235, 88, 88);
+    }
+
+    .button {
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        outline: none;
+        padding: .5rem 1rem;
+    }
+
+    .logout {
+        background-color: rgb(235, 88, 88);
+        
+        &:hover {
+            background-color: rgb(238, 137, 238); 
+        }
+    }
+
+    .logout-btn-container {
+        display: flex;
+    }
+
+    .nav-item {
+        color: rgb(238, 137, 238); 
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .navlinks-group {
+        display: flex;
+        justify-content: space-evenly;
+        flex: 3 1 auto;
+    }
+
+    .selected {
+        color: rgb(235, 88, 88);
+    }
+}
+
+@media (max-width: 350px) {
+    .layout {
+        margin: 1rem;
+    }
+}
