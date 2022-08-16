@@ -21,13 +21,14 @@
       "nativeDebugging": true
     },
     "DiaryApp": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5000",
+      "dotnetRunMessages": "true",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "ancmHostingModel": "InProcess"
+      }
     },
     "Profile 1": {
       "commandName": "IISExpress",
