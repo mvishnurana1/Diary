@@ -1,0 +1,14 @@
+.no-page {
+    padding: 0 3rem;
+    
+    .icon-container {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+    }
+
+    .header {
+        color: #eb5858;
+    }
+}
