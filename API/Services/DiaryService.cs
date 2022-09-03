@@ -15,19 +15,16 @@ namespace API.Helpers.Services
     {
         private readonly DataContext _context;
         private readonly ILogger<DiaryService> _logger;
-        private readonly IUserRespository _userRespository;
         private readonly IMapper _mapper;
 
         public DiaryService(
             DataContext dataContext,
             ILogger<DiaryService> logger,
-            IUserRespository userRespository,
             IMapper mapper
         )
         {
             _context = dataContext;
             _logger = logger;
-            _userRespository = userRespository;
             _mapper = mapper;
         }
 
