@@ -94,6 +94,8 @@ namespace API.Helpers.Services
 
         private async Task<User> GetEntryForUserByDateTime(Guid UserID, DateTime SubmittedDate)
         {
+            _logger.LogInformation($"GetEntryForUserByDateTime() Service method Executed with argument - {UserID} & {SubmittedDate}");
+
             return await Task.Run(() => _context.User
                 .Include(i => i.Entries.Where(e => e.SubmittedDateTime.Date == SubmittedDate))
                 .FirstOrDefault(u => u.UserID == UserID));

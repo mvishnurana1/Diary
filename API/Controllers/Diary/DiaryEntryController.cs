@@ -29,17 +29,24 @@ namespace API.Controllers
         [HttpGet("/get")]
         public async Task<ActionResult<DiaryEntry>> GetEntryByDate([FromQuery] DateTime date)
         {
-            _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {date}");
+            _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {date} on {DateTime.Now}");
+
+            if (date > DateTime.Now)
+            {
+                _logger.LogError($"GetEntryByDate responded with {BadRequest().StatusCode} because of future date");
+                return BadRequest();
+            }
 
             var entry = await _diaryService.GetEntryByDate(date);
 
+            _logger.LogInformation($"GetEntryByDate responded with Http-{Ok().StatusCode} response - {entry?.DiaryEntry?.EntryID}");
             return Ok(entry);
         }
 
         [HttpGet("/searchbycontent")]
         public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] string content)
         {
-            _logger.LogInformation($"SearchByContent Controller Executed with argument - {content}");
+            _logger.LogInformation($"SearchByContent Controller Executed with argument - {content} on {DateTime.Now}");
 
             if (String.IsNullOrEmpty(content))
             {
@@ -48,16 +55,18 @@ namespace API.Controllers
 
             var searchResults = await _diaryService.SearchEntriesByContent(content);
 
+            _logger.LogInformation($"SearchByContent responded with Http-{Ok().StatusCode} response - {searchResults}");
             return Ok(searchResults);
         }
 
         [HttpPost("/post")]
         public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntryDto entry)
         {
-            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime}");
+            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime} on {DateTime.Now}");
 
             if (String.IsNullOrEmpty(entry.Content))
             {
+                _logger.LogError($"PostEntry Controller responded with argument Http-{BadRequest().StatusCode} because Empty content passed");
                 return BadRequest();
             }
 
@@ -65,9 +74,11 @@ namespace API.Controllers
 
             if (newEntry == null)
             {
+                _logger.LogError($"PostEntry Controller responded with argument Http-{Conflict().StatusCode} because no Entry found");
                 return Conflict();
             }
 
+            _logger.LogInformation($"PostEntry responded with Http-{Ok().StatusCode} response - {newEntry}");
             return Created("201", newEntry);
         }
     }
