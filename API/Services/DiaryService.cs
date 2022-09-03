@@ -44,7 +44,8 @@ namespace API.Helpers.Services
 
             if (userDetails.Entries.Count > 0)
             {
-                await DeleteEntry(userDetails.Entries.FirstOrDefault());
+                var entry = await UpdateEntry(userDetails.Entries.FirstOrDefault(), newEntry);
+                return entry;
             }
         
             var newerEntry = _mapper.Map<PostDiaryEntryDto, DiaryEntry>(newEntry);
@@ -92,6 +93,27 @@ namespace API.Helpers.Services
                             .ToList());
         }
 
+        private async Task<PostDiaryEntryDto> UpdateEntry(DiaryEntry entry, PostDiaryEntryDto newEntry)
+        {
+            var dbDiaryEntry = await _context.Entries.FindAsync(entry.EntryID);
+
+            if (dbDiaryEntry.EntryID == Guid.Empty)
+            {
+                return null;
+            }
+
+            dbDiaryEntry.Content = newEntry.Content;
+
+            await _context.SaveChangesAsync();
+
+            return new PostDiaryEntryDto()
+            {
+                UserID = dbDiaryEntry.UserID,
+                Content = dbDiaryEntry.Content,
+                SubmittedDateTime = dbDiaryEntry.SubmittedDateTime
+            };
+        }
+
         private async Task<User> GetEntryForUserByDateTime(Guid UserID, DateTime SubmittedDate)
         {
             _logger.LogInformation($"GetEntryForUserByDateTime() Service method Executed with argument - {UserID} & {SubmittedDate}");
@@ -99,18 +121,6 @@ namespace API.Helpers.Services
             return await Task.Run(() => _context.User
                 .Include(i => i.Entries.Where(e => e.SubmittedDateTime.Date == SubmittedDate))
                 .FirstOrDefault(u => u.UserID == UserID));
-        }
-
-        private async Task<DiaryEntry> GetDiaryEntryByID(Guid EntryID)
-        {
-            return await Task.Run(() => _context.Entries.FirstOrDefaultAsync(e => e.EntryID == EntryID));
-        }
-
-        private async Task DeleteEntry(DiaryEntry entry)
-        {
-            _logger.LogInformation($"DeleteEntry() Service method Executed with argument - {entry}");
-
-            await Task.Run(() => _context.Entries.Remove(entry));
         }
     }
 }
