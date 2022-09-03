@@ -184,6 +184,7 @@ export function Notes() {
                                     setStartDate(new Date(date));
                                     setLoading(true);
                                 }}
+                                maxDate={new Date()}
                             />
                         </div>
                         : null 
