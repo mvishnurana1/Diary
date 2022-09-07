@@ -7,7 +7,7 @@ import { Preferences } from './components/Preferences/Preferences';
 import { Statistics } from './components/Statistics/Statistics';
 import { NoPage }  from './components/common/NoPage/NoPage';
 import { Header } from './components/common/Header/Header.jsx';
-import './App.css';
+import './App.scss';
 
 function App() {
   const { loginWithPopup, isAuthenticated } = useAuth0();
