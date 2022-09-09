@@ -1,0 +1,9 @@
+const mockResponse  = {
+    data: {
+        results: [
+            {
+                
+            }
+        ]
+    }
+}
