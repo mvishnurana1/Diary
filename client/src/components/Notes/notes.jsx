@@ -19,7 +19,8 @@ import { EntryCard } from '../EntryCard/entry-card';
 import './notes.scss';
 
 export function Notes() {
-    const BASE_URL = 'https://localhost:44315/';
+    // const BASE_URL = 'https://localhost:44315/';
+    const BASE_URL = 'https://localhost:5001/';
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -72,9 +73,12 @@ export function Notes() {
         } else {
             setLoading(true);
 
+            const loggedInUserID = '692cd588-aa17-4b3a-a2fa-bb5d14d166cf';
+
             const newNote = {
                 'submittedDateTime': startDate,
-                'Content': content
+                'Content': content,
+                'UserID': loggedInUserID
             };
     
             axios.post(`${BASE_URL}post`, newNote)
@@ -178,6 +182,7 @@ export function Notes() {
                         ? <div className='left'>
                             <DatePicker
                                 className={error ? 'no-display': 'input' }
+                                title="date-picker"
                                 selected={startDate}
                                 onChange={(date) => {
                                     getDate(date);
@@ -193,7 +198,13 @@ export function Notes() {
 
                 {
                     loading
-                        ? <div className="centre"> <ClipLoader color='red' size={150} /> </div>
+                        ? <div className="centre"> 
+                            <ClipLoader 
+                                color='red' 
+                                data-testid="clip-loader"
+                                size={150} 
+                            /> 
+                          </div>
                         : <textarea
                             className={
                                 error ? 'no-display': 'textArea' 
@@ -211,7 +222,9 @@ export function Notes() {
 
             {
                 error
-                    ?   <div className='error-container'>
+                    ?   <div 
+                            className='error-container'
+                            data-testid="error-emoji">
                             <FontAwesomeIcon 
                                 icon={faFaceSadCry} 
                                 size="3x" 

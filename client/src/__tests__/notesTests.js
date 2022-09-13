@@ -3,7 +3,11 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
-import { screen, render, getByTestId, fireEvent, createEvent, waitFor } from "@testing-library/react";
+import { 
+    screen, 
+    render, 
+    fireEvent, 
+    waitFor } from "@testing-library/react";
 import { Notes } from '../components/Notes/notes';
 
 beforeEach(() => {
