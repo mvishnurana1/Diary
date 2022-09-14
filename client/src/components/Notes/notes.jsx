@@ -84,6 +84,7 @@ export function Notes() {
         } else {
             setLoading(true);
 
+            // WIP: Simulating logged-in user's ID (database)
             const loggedInUserID = '692cd588-aa17-4b3a-a2fa-bb5d14d166cf';
 
             const newNote = {
