@@ -29,23 +29,38 @@ export function Notes() {
     const [searchedContent,  setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState([]);
-    const [token, setToken] = useState();
 
-    const { getAccessTokenSilently, logout, user } = useAuth0();
+    const { 
+        getAccessTokenSilently, 
+        user,
+        isAuthenticated,
+        loginWithRedirect
+     } = useAuth0();
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const accessToken = await getAccessTokenSilently();
-    //         setToken(accessToken);
-    //         window.localStorage.setItem("accessToken", accessToken);
-    //     })();
-    // });
+    useEffect(() => {
+        (async () => {
+            try {
+                const accessToken = await getAccessTokenSilently();
+                if (isAuthenticated) {
+                    console.log(accessToken);
+                }
+                window.localStorage.setItem("accessToken", accessToken);
+            }
+            catch(err) {
+                if ((err.error === 'login_required' || err.error === 'consent_required') && !isAuthenticated) {
+                    loginWithRedirect();
+                }
+                throw err;
+            }
+        })();
+    });
 
     function getDate(date) {
         const formattedDate = dateFormat(date);
         fetchDataByDate(formattedDate);
     }
 
+    // evaluate if this is needed? 
     function localStorage() {
         window.localStorage.setItem("user-verified", user?.email_verified);
     }

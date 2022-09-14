@@ -1,12 +1,14 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
 import './Header.scss';
 
 export function Header() {
+    const { logout, isAuthenticated } = useAuth0();
     const location = useLocation();
 
     return (
-        <div className="header-container layout">
+        (isAuthenticated && <div className="header-container layout">
             <div className="navlinks-group">
                 <NavLink 
                     className={
@@ -37,10 +39,12 @@ export function Header() {
                     onClick={() => {
                         window.localStorage.removeItem("accessToken");
                         window.localStorage.removeItem("user-verified");
+                        logout({
+                            returnTo: window.location.origin,
+                        })
                     }}
                     >Log out</button>
             </div>
-        </div>
+        </div>)
     )
 }
- 
