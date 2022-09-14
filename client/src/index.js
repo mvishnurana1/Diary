@@ -4,14 +4,26 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import secrets from './secrets/secrets.json';
+import history from './history';
 import './index.scss';
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const onRedirectCallback = (appState) => {
+
+  history.push(
+    appState && appState.returnTo ? appState.returnTo : window.location.pathname
+  );
+};
+
+root.render(
   <React.StrictMode>
     <Auth0Provider
       clientId={secrets.clientID}
       domain={secrets.domain}
-      redirectUri={window.location.origin}
+      redirectUri={secrets.redirectUri}
+      audience={secrets.audience}
+      onRedirectCallback={onRedirectCallback}
     >
       <App />
     </Auth0Provider>
