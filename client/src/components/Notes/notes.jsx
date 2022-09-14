@@ -41,16 +41,12 @@ export function Notes() {
         (async () => {
             try {
                 const accessToken = await getAccessTokenSilently();
-                if (isAuthenticated) {
-                    console.log(accessToken);
-                }
                 window.localStorage.setItem("accessToken", accessToken);
             }
             catch(err) {
-                if ((err.error === 'login_required' || err.error === 'consent_required') && !isAuthenticated) {
+                if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
                     loginWithRedirect();
                 }
-                throw err;
             }
         })();
     });
