@@ -32,11 +32,10 @@ export function Notes() {
 
     const { 
         getAccessTokenSilently, 
-        user,
         isAuthenticated,
         loginWithRedirect
      } = useAuth0();
-
+     
     useEffect(() => {
         (async () => {
             try {
@@ -58,11 +57,6 @@ export function Notes() {
     function getDate(date) {
         const formattedDate = dateFormat(date);
         fetchDataByDate(formattedDate);
-    }
-
-    // evaluate if this is needed? 
-    function localStorage() {
-        window.localStorage.setItem("user-verified", user?.email_verified);
     }
 
     function fetchDataByDate(date) {
@@ -172,7 +166,6 @@ export function Notes() {
     return (
         <div className='notes-landing-page'>
             {displayError()}
-            {localStorage()}
             <div className='search-box-container'>
                 <input
                     className='search'

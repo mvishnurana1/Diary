@@ -1,4 +1,3 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { BrowserRouter, Route } from "react-router-dom";
 import { Routes } from 'react-router';
 import { Notes } from './components/Notes/notes';
@@ -10,7 +9,6 @@ import { Header } from './components/common/Header/Header.jsx';
 import './App.scss';
 
 function App() {
-  const { loginWithPopup, isAuthenticated } = useAuth0();
 
   return (
       <BrowserRouter>
