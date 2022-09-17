@@ -1,3 +1,5 @@
+@import "../../global.scss";
+
 .notes-landing-page {
     margin: 1rem 0.25rem;
 
@@ -31,10 +33,10 @@
     .error-container {
         align-content: center;
         align-items: center;
-        border: 2px solid rgb(235, 88, 88);
+        border: 2px solid $tomato;
         border-radius: 1rem;
         box-shadow: 1rem .25rem 1rem 0.5rem 
-            rgb(187, 186, 186);
+            $grey;
         display: flex;
         flex-direction: column;
         margin: 0 5%;
@@ -43,11 +45,11 @@
     }
 
     .red {
-        color: rgb(235, 88, 88);
+        color: $tomato;
         margin-left: 1rem;
 
         &:hover {
-            background-color: rgb(238, 137, 238); 
+            background-color: $pink; 
         }
     }
 
@@ -61,7 +63,7 @@
     .input {
         border-radius: 1rem;
         box-shadow: 1rem .25rem 1rem 0.5rem 
-            rgb(187, 186, 186);
+            $grey;
         padding: 0 0.25rem;
     }
 
@@ -78,10 +80,10 @@
     }
 
     .logout {
-        background-color: rgb(235, 88, 88);
+        background-color: $tomato;
 
         &:hover {
-            background-color: rgb(238, 137, 238); 
+            background-color: $pink; 
         }
     }
 
@@ -95,17 +97,17 @@
     }
 
     .save {
-        background-color: rgb(235, 88, 88);
+        background-color: $tomato;
 
         &:hover {
-            background-color: rgb(238, 137, 238);
+            background-color: $pink;
         }
     }
 
     .textArea {
         border-radius: 1rem;
         box-shadow: 1rem 1rem 1rem 1rem
-            rgb(187, 186, 186);
+            $grey;
         font-size: medium;
         font-weight: 500;
         width: 80%;
