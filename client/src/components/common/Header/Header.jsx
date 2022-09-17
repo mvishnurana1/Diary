@@ -29,7 +29,7 @@ export function Header() {
                         <img 
                             alt=""
                             className="user-profile-picture"
-                            src={user.picture} 
+                            src={user && user.picture} 
                             title={user.nickname}
                         />
                         {user.nickname}
