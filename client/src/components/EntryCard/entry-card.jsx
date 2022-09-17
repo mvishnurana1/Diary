@@ -20,7 +20,7 @@ export function EntryCard(props) {
         setSearchedResult([]);
     }
 
-    {return  entries.map((entry) => {
+    return  entries.map((entry) => {
         return (
             <div className="entry-card-layout" key={entry.entryID}>
                 <div className="entry-card">
@@ -44,5 +44,5 @@ export function EntryCard(props) {
                 </div>
             </div>
         )
-    })}
+    })
 }

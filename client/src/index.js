@@ -19,11 +19,12 @@ const onRedirectCallback = (appState) => {
 root.render(
   <React.StrictMode>
     <Auth0Provider
+      audience={secrets.audience}
       clientId={secrets.clientID}
       domain={secrets.domain}
-      redirectUri={secrets.redirectUri}
-      audience={secrets.audience}
       onRedirectCallback={onRedirectCallback}
+      redirectUri={secrets.redirectUri}
+      useRefreshTokens
     >
       <App />
     </Auth0Provider>

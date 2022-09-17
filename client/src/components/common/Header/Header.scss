@@ -17,6 +17,8 @@
 
     .logout {
         background-color: rgb(235, 88, 88);
+        border: none;
+        outline: none;
         
         &:hover {
             background-color: rgb(238, 137, 238); 
@@ -25,6 +27,13 @@
 
     .logout-btn-container {
         display: flex;
+    }
+
+    .user-profile-picture {
+        border-radius: 50%;
+        height: 30px;
+        margin: 0 5px;
+        width: 30px;
     }
 
     .nav-item {
@@ -37,6 +46,12 @@
         display: flex;
         justify-content: space-evenly;
         flex: 3 1 auto;
+    }
+
+    .no-button {
+        background: #fff;
+        border: none;
+        outline: none;
     }
 
     .selected {
