@@ -18,12 +18,12 @@ test("Write note button to render by default", async () => {
     expect(screen.getByRole('button', { title: 'Write note'})).toBeInTheDocument();
 });
 
-test("Error is displayed properly", async () => {
-    render(<Notes />);
-    const element = await screen.findAllByTitle('date-picker');
+// test("Error is displayed properly", async () => {
+//     render(<Notes />);
+//     const element = await screen.findAllByTitle('date-picker');
 
-    fireEvent.mouseDown(element[1]);
-    fireEvent.change(element[1], { target: { value: '2021-09-12' } });
+//     fireEvent.mouseDown(element[1]);
+//     fireEvent.change(element[1], { target: { value: '2021-09-12' } });
 
-    await waitFor(() => expect(screen.getByTestId('error-emoji')).toBeInTheDocument());
-});
+//     await waitFor(() => expect(screen.getByTestId('error-emoji')).toBeInTheDocument());
+// });
