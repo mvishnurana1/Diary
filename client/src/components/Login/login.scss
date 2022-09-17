@@ -1,3 +1,5 @@
+@import "../../global.scss";
+
 .login-page-container {
     .button {
         border: none;
@@ -14,9 +16,9 @@
         flex-direction: column;
 
         .input {
-            border: 1px solid rgb(235, 88, 88);
+            border: 1px solid $tomato;
             border-radius: 0.5rem;
-            color: rgb(235, 88, 88);;
+            color: $tomato;
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             font-size: large;
             height: 3rem;
@@ -26,34 +28,34 @@
     }
 
     .header {
-        color: rgb(235, 88, 88);;
+        color: $tomato;;
     }
 
     .red {
-        border: 1px solid rgb(235, 88, 88);
-        color: rgb(235, 88, 88);
+        border: 1px solid $tomato;
+        color: $tomato;
 
         &:hover {
-            background-color: rgb(235, 88, 88);
-            border: 1px solid rgb(66, 55, 55);
-            color: rgb(66, 55, 55);
+            background-color: $tomato;
+            border: 1px solid $grey-dark;
+            color: $grey-dark;
         }
     }
 
     .purple {
-        border: 1px solid rgb(38, 97, 222);
-        color: rgb(38, 97, 222);
+        border: 1px solid $blue;
+        color: $blue;
 
         &:hover {
-            background-color: rgb(38, 97, 222);
-            border: 1px solid rgb(38, 97, 222);
-            color: rgb(66, 55, 55);
+            background-color: $blue;
+            border: 1px solid $blue;
+            color: $grey-dark;
         }
     }
 
     .main-content {
         align-items: center;
-        background-color: rgb(240,242,245);
+        background-color: $white;
         display: flex;
         height: 600px;
         justify-content: space-evenly;

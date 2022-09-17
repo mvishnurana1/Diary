@@ -1,8 +1,10 @@
+@import "../../global.scss";
+
 .entry-card-layout {
     display: flex;
 
     .entry-card {
-        border: 1px solid rgb(235, 88, 88);
+        border: 1px solid $tomato;
         padding: 0.5rem 1.25rem;
         border-radius: 1rem;
         margin: 0.25rem;
@@ -22,7 +24,7 @@
     }
 
     .highlight {
-        color: rgb(235, 88, 88);
+        color: $tomato;
     }
 
     .left {

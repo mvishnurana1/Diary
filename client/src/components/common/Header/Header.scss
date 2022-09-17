@@ -1,9 +1,11 @@
+@import "../../../global.scss";
+
 .header-container {
     display: flex;
     margin: 1rem 2rem;
 
     .active {
-        color: rgb(235, 88, 88);
+        color: $tomato;
     }
 
     .button {
@@ -16,12 +18,12 @@
     }
 
     .logout {
-        background-color: rgb(235, 88, 88);
+        background-color: $tomato;
         border: none;
         outline: none;
         
         &:hover {
-            background-color: rgb(238, 137, 238); 
+            background-color: $pink;
         }
     }
 
@@ -37,7 +39,7 @@
     }
 
     .nav-item {
-        color: rgb(238, 137, 238); 
+        color: $pink;
         font-weight: 700;
         text-decoration: none;
     }
@@ -49,13 +51,13 @@
     }
 
     .no-button {
-        background: #fff;
+        background: $white-dark;
         border: none;
         outline: none;
     }
 
     .selected {
-        color: rgb(235, 88, 88);
+        color: $tomato;
     }
 }
 
