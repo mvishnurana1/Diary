@@ -6,11 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
-import 
-    React, { 
-        useEffect, 
-        useState 
-    } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -18,9 +14,9 @@ import { dateFormat } from '../../helper/date-fn';
 import { EntryCard } from '../EntryCard/entry-card';
 import './notes.scss';
 
-export function Notes() {
-    // const BASE_URL = 'https://localhost:44315/';
-    const BASE_URL = 'https://localhost:5001/';
+export function Notes(): JSX.Element {
+    const BASE_URL = 'https://localhost:44315/';
+    // const BASE_URL = 'https://localhost:5001/';
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -42,7 +38,7 @@ export function Notes() {
                 const accessToken = await getAccessTokenSilently();
                 window.localStorage.setItem("accessToken", accessToken);
             }
-            catch(err) {
+            catch(err: any) {
                 if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
                     loginWithRedirect();
                 }
@@ -50,12 +46,12 @@ export function Notes() {
         })();
     });
 
-    function getDate(date) {
+    function getDate(date: Date): void {
         const formattedDate = dateFormat(date);
         fetchDataByDate(formattedDate);
     }
 
-    function fetchDataByDate(date) {
+    function fetchDataByDate(date: string) {
         axios.get(`${BASE_URL}get/?date=${date}`)
             .then((val) => {
                 if (val.data.diaryEntry === null) {
@@ -100,7 +96,7 @@ export function Notes() {
         }
     }
 
-    function getSearchedEntryByContent() {
+    function getSearchedEntryByContent(): void {
         setDisplaySearch(!displaySearch);
 
         if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
@@ -162,7 +158,9 @@ export function Notes() {
 
     return (
         <div className='notes-landing-page'>
-            {displayError()}
+            <>
+                {displayError()}
+            </>
             <div className='search-box-container'>
                 <input
                     className='search'
@@ -175,7 +173,7 @@ export function Notes() {
                     className='red'
                     icon={faMagnifyingGlass}
                     onClick={() => {
-                        getSearchedEntryByContent(content);
+                        getSearchedEntryByContent();
                     }}
                     size="lg"
                 />
@@ -189,7 +187,7 @@ export function Notes() {
                                 className={error ? 'no-display': 'input' }
                                 title="date-picker"
                                 selected={startDate}
-                                onChange={(date) => {
+                                onChange={(date: Date) => {
                                     getDate(date);
                                     setStartDate(new Date(date));
                                     setLoading(true);
@@ -209,7 +207,7 @@ export function Notes() {
                                 data-testid="clip-loader"
                                 size={150} 
                             /> 
-                          </div>
+                            </div>
                         : <textarea
                             className={
                                 error ? 'no-display': 'textArea' 
@@ -243,7 +241,6 @@ export function Notes() {
                 className={
                     searchedResult.length > 0 || error || loading ? 'no-display' : 'save button'
                 }
-                variant="outline-primary"
                 onClick={() => {
                     postNewNotes();
                     setLoading(true);

@@ -1,16 +1,17 @@
 import { Auth0Provider } from "@auth0/auth0-react";
-import React from 'react';
+import { Provider } from 'react-redux';
+import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import secrets from './secrets/secrets.json';
+import store from './store';
 import history from './history';
 import './index.scss';
 
-const root = ReactDOMClient.createRoot(document.getElementById("root"));
+const root = ReactDOMClient.createRoot(document.getElementById("root") as Element);
 
-const onRedirectCallback = (appState) => {
-
+const onRedirectCallback = (appState: any) => {
   history.push(
     appState && appState.returnTo ? appState.returnTo : window.location.pathname
   );
@@ -18,18 +19,20 @@ const onRedirectCallback = (appState) => {
 
 root.render(
   <React.StrictMode>
-    <Auth0Provider
-      audience={secrets.audience}
-      clientId={secrets.clientID}
-      domain={secrets.domain}
-      onRedirectCallback={onRedirectCallback}
-      redirectUri={secrets.redirectUri}
-      useRefreshTokens
-    >
-      <App />
-    </Auth0Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <Provider store={store}>
+      <Auth0Provider
+        audience={secrets.audience}
+        clientId={secrets.clientID}
+        domain={secrets.domain}
+        onRedirectCallback={onRedirectCallback}
+        redirectUri={secrets.redirectUri}
+        useRefreshTokens
+      >
+        
+          <App />
+      </Auth0Provider>
+    </Provider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
