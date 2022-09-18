@@ -1,6 +1,6 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import { Provider } from 'react-redux';
-import React from 'react';
+import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -11,7 +11,7 @@ import './index.scss';
 
 const root = ReactDOMClient.createRoot(document.getElementById("root") as Element);
 
-const onRedirectCallback = (appState) => {
+const onRedirectCallback = (appState: any) => {
   history.push(
     appState && appState.returnTo ? appState.returnTo : window.location.pathname
   );
