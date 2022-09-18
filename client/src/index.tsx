@@ -1,11 +1,9 @@
 import { Auth0Provider } from "@auth0/auth0-react";
-import { Provider } from 'react-redux';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import secrets from './secrets/secrets.json';
-import store from './store';
 import history from './history';
 import './index.scss';
 
@@ -19,7 +17,6 @@ const onRedirectCallback = (appState: any) => {
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
       <Auth0Provider
         audience={secrets.audience}
         clientId={secrets.clientID}
@@ -31,7 +28,6 @@ root.render(
         
           <App />
       </Auth0Provider>
-    </Provider>
   </React.StrictMode>
 );
 
