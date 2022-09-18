@@ -1,6 +1,4 @@
-import React from 'react';
-
-export function Statistics() {
+export function Statistics(): JSX.Element {
     return (
         <div>
             <h1>Statistics</h1>

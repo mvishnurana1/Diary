@@ -1,6 +1,4 @@
-import React from "react";
-
-export function Preferences()  {
+export function Preferences(): JSX.Element  {
     return(
         <div>
             <h1>Preferences:</h1>
