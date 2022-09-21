@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { EntryCard } from '../EntryCard/entry-card';
 import { dateFormat } from '../../helper/date-fn';
+import { DiaryEntry } from '../../models/DiaryEntry';
 import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
 import './notes.scss';
 
@@ -25,7 +26,7 @@ export function Notes(): JSX.Element {
     const [loading, setLoading] = useState(false);
     const [searchedContent,  setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
-    const [searchedResult, setSearchedResult] = useState([]);
+    const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
 
     const { 
         getAccessTokenSilently, 
@@ -108,13 +109,9 @@ export function Notes(): JSX.Element {
         } else {
             setLoading(true);
 
-            axios.get(`${BASE_URL}searchbycontent/?content=${searchedContent}`)
+            axios.get<DiaryEntry[]>(`${BASE_URL}searchbycontent/?content=${searchedContent}`)
             .then((val) => {
-                if (val.data.length === 0) {
-                    setSearchedResult([]);
-                } else {
                     setSearchedResult(val.data);
-                }
             })
             .catch(() => {
                 setError(true);
