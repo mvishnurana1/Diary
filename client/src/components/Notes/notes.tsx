@@ -1,11 +1,7 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { 
-    faFaceSadCry, 
-    faMagnifyingGlass, 
-    faXmark 
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,6 +10,7 @@ import { EntryCard } from '../EntryCard/entry-card';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
+import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
 import './notes.scss';
 
 export function Notes(): JSX.Element {
@@ -73,7 +70,7 @@ export function Notes(): JSX.Element {
             });
     }
 
-    function postNewNotes() {
+    async function postNewNotes() {
         if (content === null || content.match(/^ *$/) !== null) {
             return;
         } else {
@@ -82,22 +79,21 @@ export function Notes(): JSX.Element {
             // WIP: Simulating logged-in user's ID (database)
             const loggedInUserID = '692cd588-aa17-4b3a-a2fa-bb5d14d166cf';
 
-            const newNote = {
-                'submittedDateTime': startDate,
-                'Content': content,
-                'UserID': loggedInUserID
+            const newNote: postNewDiaryEntryModel = {
+                submittedDateTime: startDate,
+                content: content,
+                userID: loggedInUserID
             };
     
-            axios.post(`${BASE_URL}post`, newNote)
-                .then(() => {
-                    setContent(newNote.Content);
-                })
-                .catch(() => {
-                    setError(true);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+            try {
+                const { data } = await axios.post<DiaryEntry>(`${BASE_URL}post`, newNote);
+                
+                setContent(data.content);
+            } catch (err) {
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
         }
     }
 
