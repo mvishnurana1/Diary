@@ -1,26 +1,13 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { NavLink, useLocation, Link } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown'
 import './Header.scss';
 
 export function Header(): JSX.Element {
     const { logout, isAuthenticated, user } = useAuth0();
-    const location = useLocation();
 
-    return (
-    <>
+    return (<>
         {isAuthenticated && 
             <div className="header-container layout">
-                <div className="navlinks-group">
-                    <NavLink 
-                        className={
-                            location.pathname === '/new' ? 'selected nav-item' : 'nav-item'
-                        }
-                        to="new">
-                        New
-                    </NavLink>
-                </div>
-
                 <div className="logout-btn-container">
                     <Dropdown>
                         <Dropdown.Toggle
@@ -37,19 +24,6 @@ export function Header(): JSX.Element {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item 
-                                as={Link} 
-                                to="/preferences"
-                            >
-                                Preferences
-                            </Dropdown.Item>
-                            
-                            <Dropdown.Item 
-                                as={Link} 
-                                to="/stats"
-                            >
-                                Statistics
-                            </Dropdown.Item>
                             <Dropdown.Item 
                                 onClick={() => {
                                     window.localStorage.removeItem("accessToken");
