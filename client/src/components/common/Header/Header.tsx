@@ -28,6 +28,7 @@ export function Header(): JSX.Element {
                                 onClick={() => {
                                     window.localStorage.removeItem("accessToken");
                                     window.localStorage.removeItem("user-verified");
+                                    localStorage.removeItem('accessToken');
                                     logout({
                                         returnTo: window.location.origin,
                                     })
