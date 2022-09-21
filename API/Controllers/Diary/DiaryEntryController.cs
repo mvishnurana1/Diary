@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using API.Helpers.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using API.Helpers.Services;
 using API.Helpers.Entities;
 using API.model;
 
@@ -27,19 +28,20 @@ namespace API.Controllers
         }
 
         [HttpGet("/get")]
-        public async Task<ActionResult<DiaryEntry>> GetEntryByDate([FromQuery] DateTime date)
+        public async Task<ActionResult<string>> GetEntryByDate([FromQuery] GetDiaryEntryByDateRequestDto request)
         {
-            _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {date} on {DateTime.Now}");
+            _logger.LogInformation($"GetEntryByDate Controller Executed with argument - {request.Date} on {DateTime.Now}");
 
-            if (date > DateTime.Now)
+            if (request.Date > DateTime.Now)
             {
                 _logger.LogError($"GetEntryByDate responded with {BadRequest().StatusCode} because of future date");
                 return BadRequest();
             }
 
-            var entry = await _diaryService.GetEntryByDate(date);
+            var entry = await _diaryService.GetEntryByDate(request);
 
-            _logger.LogInformation($"GetEntryByDate responded with Http-{Ok().StatusCode} response - {entry?.DiaryEntry?.EntryID}");
+            _logger.LogInformation($"GetEntryByDate responded with Http-{Ok().StatusCode} response - {entry}");
+            
             return Ok(entry);
         }
 
@@ -74,8 +76,8 @@ namespace API.Controllers
 
             if (newEntry == null)
             {
-                _logger.LogError($"PostEntry Controller responded with argument Http-{Conflict().StatusCode} because no Entry found");
-                return Conflict();
+                _logger.LogError($"PostEntry Controller responded with argument Http-{NotFound().StatusCode} because no Entry found");
+                return NotFound();
             }
 
             _logger.LogInformation($"PostEntry responded with Http-{Ok().StatusCode} response - {newEntry}");

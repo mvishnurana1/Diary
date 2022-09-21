@@ -11,6 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Helpers.Services
 {
+    public interface IDiaryService
+    {
+        Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry);
+        Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request);
+        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content);
+    }
+
     public class DiaryService : IDiaryService
     {
         private readonly DataContext _context;
@@ -31,6 +38,8 @@ namespace API.Helpers.Services
         public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
         {
             _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
+
+            // Figure out who's logged-in via AuthService
 
             if (newEntry.UserID == Guid.Empty)
             {
@@ -53,31 +62,22 @@ namespace API.Helpers.Services
             return newEntry;
         }
 
-        public async Task<DiaryEntryResponseDto> GetEntryByDate(DateTime date)
+        public async Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request)
         {
-            _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {date}");
+            //Todo: Figure out the logged in user via AuthService DI:
+
+            _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {request.Date}");
 
             var entry = await Task.Run(() => _context.Entries
-                              .Where(e => e.SubmittedDateTime.Date == date.Date)
+                              .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
                               .FirstOrDefault());
 
-            if (entry == null)
+            if (request.UserID == entry?.UserID)
             {
-                return new DiaryEntryResponseDto();
+                return entry.Content;
             }
 
-            var userID = entry.UserID;
-
-            var user = await Task.Run(() => _context.User
-                    .Where(x => x.UserID == userID)
-                    .FirstOrDefault());
-
-            return new DiaryEntryResponseDto()
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                DiaryEntry = entry
-            };
+            return "";
         }
 
         public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)
