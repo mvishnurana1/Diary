@@ -10,8 +10,9 @@ import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
-import { dateFormat } from '../../helper/date-fn';
 import { EntryCard } from '../EntryCard/entry-card';
+import { dateFormat } from '../../helper/date-fn';
+import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
 import './notes.scss';
 
 export function Notes(): JSX.Element {
@@ -46,19 +47,22 @@ export function Notes(): JSX.Element {
         })();
     });
 
-    function getDate(date: Date): void {
+    function FormApiCall(date: Date): void {
         const formattedDate = dateFormat(date);
-        fetchDataByDate(formattedDate);
+        
+        const obj : FetchEntriesByDateModel = {
+            formattedDate: formattedDate,
+            loggedInUserID: '0da0fce4-a693-4bb3-b1bb-69f1db0263a7'
+        }
+
+        fetchDiaryEntryContentByDate(obj);
     }
 
-    function fetchDataByDate(date: string) {
-        axios.get(`${BASE_URL}get/?date=${date}`)
-            .then((val) => {
-                if (val.data.diaryEntry === null) {
-                    setContent('');
-                } else {
-                    setContent(val.data.diaryEntry.content);
-                }
+    function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
+        axios.get<string>
+            (`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`)
+            .then((DiaryEntryContent) => {
+                setContent(DiaryEntryContent.data);
             })
             .catch(() => {
                 setError(true);
@@ -188,7 +192,7 @@ export function Notes(): JSX.Element {
                                 title="date-picker"
                                 selected={startDate}
                                 onChange={(date: Date) => {
-                                    getDate(date);
+                                    FormApiCall(date);
                                     setStartDate(new Date(date));
                                     setLoading(true);
                                 }}
@@ -246,8 +250,8 @@ export function Notes(): JSX.Element {
                     setLoading(true);
                     setContent('')
                 }}
-                disabled={content.length === 0}>
-                {content.length === 0 ? 'Write note' : 'SAVE'}
+                disabled={content?.length === 0}>
+                {content?.length === 0 ? 'Write note' : 'SAVE'}
             </button>
             {displayCard()}
         </div>
