@@ -1,17 +1,16 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import { 
-    faFaceSadCry, 
-    faMagnifyingGlass, 
-    faXmark 
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from 'axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
-import { dateFormat } from '../../helper/date-fn';
 import { EntryCard } from '../EntryCard/entry-card';
+import { dateFormat } from '../../helper/date-fn';
+import { DiaryEntry } from '../../models/DiaryEntry';
+import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
+import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
 import './notes.scss';
 
 export function Notes(): JSX.Element {
@@ -24,7 +23,7 @@ export function Notes(): JSX.Element {
     const [loading, setLoading] = useState(false);
     const [searchedContent,  setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
-    const [searchedResult, setSearchedResult] = useState([]);
+    const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
 
     const { 
         getAccessTokenSilently, 
@@ -46,19 +45,22 @@ export function Notes(): JSX.Element {
         })();
     });
 
-    function getDate(date: Date): void {
+    function FormApiCall(date: Date): void {
         const formattedDate = dateFormat(date);
-        fetchDataByDate(formattedDate);
+        
+        const obj : FetchEntriesByDateModel = {
+            formattedDate: formattedDate,
+            loggedInUserID: '0da0fce4-a693-4bb3-b1bb-69f1db0263a7'
+        }
+
+        fetchDiaryEntryContentByDate(obj);
     }
 
-    function fetchDataByDate(date: string) {
-        axios.get(`${BASE_URL}get/?date=${date}`)
-            .then((val) => {
-                if (val.data.diaryEntry === null) {
-                    setContent('');
-                } else {
-                    setContent(val.data.diaryEntry.content);
-                }
+    function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
+        axios.get<string>
+            (`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`)
+            .then((DiaryEntryContent) => {
+                setContent(DiaryEntryContent.data);
             })
             .catch(() => {
                 setError(true);
@@ -68,7 +70,7 @@ export function Notes(): JSX.Element {
             });
     }
 
-    function postNewNotes() {
+    async function postNewNotes() {
         if (content === null || content.match(/^ *$/) !== null) {
             return;
         } else {
@@ -77,26 +79,25 @@ export function Notes(): JSX.Element {
             // WIP: Simulating logged-in user's ID (database)
             const loggedInUserID = '692cd588-aa17-4b3a-a2fa-bb5d14d166cf';
 
-            const newNote = {
-                'submittedDateTime': startDate,
-                'Content': content,
-                'UserID': loggedInUserID
+            const newNote: postNewDiaryEntryModel = {
+                submittedDateTime: startDate,
+                content: content,
+                userID: loggedInUserID
             };
     
-            axios.post(`${BASE_URL}post`, newNote)
-                .then(() => {
-                    setContent(newNote.Content);
-                })
-                .catch(() => {
-                    setError(true);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
+            try {
+                const { data } = await axios.post<DiaryEntry>(`${BASE_URL}post`, newNote);
+                
+                setContent(data.content);
+            } catch (err) {
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
         }
     }
 
-    function getSearchedEntryByContent(): void {
+    async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
 
         if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
@@ -104,20 +105,17 @@ export function Notes(): JSX.Element {
         } else {
             setLoading(true);
 
-            axios.get(`${BASE_URL}searchbycontent/?content=${searchedContent}`)
-            .then((val) => {
-                if (val.data.length === 0) {
-                    setSearchedResult([]);
-                } else {
-                    setSearchedResult(val.data);
-                }
-            })
-            .catch(() => {
+            try {
+                const { data } = await axios.get<DiaryEntry[]>(`${BASE_URL}searchbycontent/?content=${searchedContent}`);
+
+                setSearchedResult(data);
+
+                return data;
+            } catch (err) {
                 setError(true);
-            })
-            .finally(() => {
+            } finally {
                 setLoading(false);
-            });
+            }
         }
     }
 
@@ -188,7 +186,7 @@ export function Notes(): JSX.Element {
                                 title="date-picker"
                                 selected={startDate}
                                 onChange={(date: Date) => {
-                                    getDate(date);
+                                    FormApiCall(date);
                                     setStartDate(new Date(date));
                                     setLoading(true);
                                 }}
@@ -246,8 +244,8 @@ export function Notes(): JSX.Element {
                     setLoading(true);
                     setContent('')
                 }}
-                disabled={content.length === 0}>
-                {content.length === 0 ? 'Write note' : 'SAVE'}
+                disabled={content?.length === 0}>
+                {content?.length === 0 ? 'Write note' : 'SAVE'}
             </button>
             {displayCard()}
         </div>
