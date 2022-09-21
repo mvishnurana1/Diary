@@ -101,7 +101,7 @@ export function Notes(): JSX.Element {
         }
     }
 
-    function getSearchedEntryByContent(): void {
+    async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
 
         if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
@@ -109,16 +109,17 @@ export function Notes(): JSX.Element {
         } else {
             setLoading(true);
 
-            axios.get<DiaryEntry[]>(`${BASE_URL}searchbycontent/?content=${searchedContent}`)
-            .then((val) => {
-                    setSearchedResult(val.data);
-            })
-            .catch(() => {
+            try {
+                const { data } = await axios.get<DiaryEntry[]>(`${BASE_URL}searchbycontent/?content=${searchedContent}`);
+
+                setSearchedResult(data);
+
+                return data;
+            } catch (err) {
                 setError(true);
-            })
-            .finally(() => {
+            } finally {
                 setLoading(false);
-            });
+            }
         }
     }
 
