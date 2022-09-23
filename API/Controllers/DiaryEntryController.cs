@@ -61,6 +61,7 @@ namespace API.Controllers
         }
 
         [HttpPost("/post")]
+        // Consider making this FromQuery
         public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntryDto entry)
         {
             _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime} on {DateTime.Now}");

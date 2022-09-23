@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authorization;
-using API.Helpers.Interfaces;
 using API.model;
 using AutoMapper;
 using API.DTOs.Users;
+using API.Helpers.Services;
 
 namespace API.Controllers.Users
 {
@@ -17,12 +16,12 @@ namespace API.Controllers.Users
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
-        private readonly IUserRespository _userRespository;
+        private readonly IUserService _userRespository;
         private readonly IMapper _mapper;
 
         public UsersController(
             ILogger<UsersController> logger,
-            IUserRespository userRespository,
+            IUserService userRespository,
             IMapper mapper
         )
         {

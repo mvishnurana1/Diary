@@ -1,5 +1,4 @@
 using API.Helpers;
-using API.Helpers.Interfaces;
 using API.Helpers.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -85,7 +84,7 @@ namespace API
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             services.AddTransient<IDiaryService, DiaryService>();
-            services.AddTransient<IUserRespository, UserService>();
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }
