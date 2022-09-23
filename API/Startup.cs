@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using API.Helpers;
 using API.Helpers.Interfaces;
 using API.Helpers.Services;
@@ -6,13 +5,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using API.Auth;
 
 namespace API
 {
@@ -28,19 +26,23 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string domain = $"https://{Configuration["Auth0:Domain"]}/";
+            var domain = $"https://{Configuration["Auth0:Domain"]}/";
+            var audience = $"{Configuration["Auth0:Audience"]}"; 
 
-            AddAuthentication(services);
-
-            //services.AddControllers().AddNewtonsoftJson(options =>
-            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //);
-
-            services.AddDbContext<DataContext>();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = domain;
+                options.Audience = audience;
+            });
 
             AddServices(services);
-            services.AddControllers();
 
+            services.AddDbContext<DataContext>();
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -58,13 +60,16 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+ 
+            app.UseAuthentication();
             app.UseRouting();
+            app.UseAuthorization();
+
             app.UseCors(policy =>
             {
                 policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
             });
-            app.UseAuthorization();
-            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -77,21 +82,10 @@ namespace API
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             // Register services
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
             services.AddTransient<IDiaryService, DiaryService>();
             services.AddTransient<IUserRespository, UserService>();
-        }
-
-        private void AddAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = "https://dev-qq2tsu06.au.auth0.com/";
-                options.Audience = "https://mydiary/api";
-            });
         }
     }
 }
