@@ -1,13 +1,12 @@
 ﻿using System;
+using AutoMapper;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using API.Helpers.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using API.model;
 using API.Helpers.Entities;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Helpers.Services
 {

@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using API.model;
-using API.Helpers.Interfaces;
 
 namespace API.Helpers.Services
 {
-    public class UserService : IUserRespository
+    public interface IUserService
+    {
+        Task<User> GetUserByID(Guid userId);
+        Task<IEnumerable<User>> GetAllUsers();
+        Task<User> FindUserByName(string userName);
+    }
+
+    public class UserService : IUserService
     {
         private readonly DataContext _context;
         private readonly ILogger<UserService> _logger;
