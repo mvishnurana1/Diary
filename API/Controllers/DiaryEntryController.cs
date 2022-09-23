@@ -10,7 +10,7 @@ using API.model;
 
 namespace API.Controllers
 {
-        [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class DiaryEntryController : ControllerBase
     {
