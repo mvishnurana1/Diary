@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,8 +14,8 @@ import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
 import './notes.scss';
 
 export function Notes(): JSX.Element {
-    const BASE_URL = 'https://localhost:44315/';
-    // const BASE_URL = 'https://localhost:5001/';
+    // const BASE_URL = 'https://localhost:44315/';
+    const BASE_URL = 'https://localhost:5001/';
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -28,7 +28,8 @@ export function Notes(): JSX.Element {
     const { 
         getAccessTokenSilently, 
         isAuthenticated,
-        loginWithRedirect
+        loginWithRedirect,
+        user
      } = useAuth0();
      
     useEffect(() => {
@@ -36,6 +37,7 @@ export function Notes(): JSX.Element {
             try {
                 const accessToken = await getAccessTokenSilently();
                 window.localStorage.setItem("accessToken", accessToken);
+                window.localStorage.setItem('photo', user?.picture!);
             }
             catch(err: any) {
                 if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
@@ -56,18 +58,45 @@ export function Notes(): JSX.Element {
         fetchDiaryEntryContentByDate(obj);
     }
 
-    function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
-        axios.get<string>
-            (`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`)
-            .then((DiaryEntryContent) => {
-                setContent(DiaryEntryContent.data);
-            })
-            .catch(() => {
-                setError(true);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+    async function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
+        const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+            return;
+        }
+
+
+        console.log('accessToken: ', localStorage.getItem('accessToken'));
+        const config: AxiosRequestConfig = {
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            },
+        };
+
+        // axios.get<string>
+        //     (`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, config)
+        //     .then((DiaryEntryContent) => {
+        //         setContent(DiaryEntryContent.data);
+        //     })
+        //     .catch(() => {
+        //         setError(true);
+        //     })
+        //     .finally(() => {
+        //         setLoading(false);
+        //     });
+
+        try {
+            const result = await axios.get<string>(`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, config);
+            console.log('fetched results: ', result);
+            setContent(result.data);
+
+            return result.data;
+        } catch (error) {
+            setError(true);
+        } finally {
+            setLoading(false);
+        }
     }
 
     async function postNewNotes() {
