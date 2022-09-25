@@ -45,7 +45,8 @@ namespace API.Helpers.Services
                 throw new ArgumentException("No Such User Found!");
             }
 
-            var userDetails = await GetEntryForUserByDateTime(newEntry.UserID, newEntry.SubmittedDateTime.Date);
+            var parsedDate = DateTime.Parse(newEntry.SubmittedDateTime);
+            var userDetails = await GetEntryForUserByDateTime(newEntry.UserID, parsedDate.Date);
 
             if (userDetails.Entries.Count > 0)
             {
@@ -106,7 +107,7 @@ namespace API.Helpers.Services
             {
                 UserID = dbDiaryEntry.UserID,
                 Content = dbDiaryEntry.Content,
-                SubmittedDateTime = dbDiaryEntry.SubmittedDateTime
+                SubmittedDateTime = dbDiaryEntry.SubmittedDateTime.Date.ToString()
             };
         }
 

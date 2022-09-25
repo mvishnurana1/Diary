@@ -1,5 +1,5 @@
 export interface postNewDiaryEntryModel {
-    content: string,
-    submittedDateTime: Date,
-    userID: string
+    Content: string,
+    SubmittedDateTime: string,
+    UserID: string
 }

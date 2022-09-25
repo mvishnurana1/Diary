@@ -61,12 +61,20 @@ namespace API.Controllers
         }
 
         [HttpPost("/post")]
-        // Consider making this FromQuery
-        public async Task<ActionResult<DiaryEntry>> PostEntry(PostDiaryEntryDto entry)
+        public async Task<ActionResult<DiaryEntry>> PostEntry([FromBody] PostDiaryEntryDto entry)
         {
-            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry.Content} & {entry.SubmittedDateTime} on {DateTime.Now}");
+            if (entry == null)
+            {
+                _logger.LogInformation($"PostEntry Controller Executed with argument - entry value - {entry}");
 
-            if (String.IsNullOrEmpty(entry.Content))
+                return BadRequest();
+            }
+
+            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry?.Content} & {entry?.SubmittedDateTime} on {DateTime.Now}");
+
+            var parsedDate = DateTime.Parse(entry.SubmittedDateTime);
+
+            if (String.IsNullOrEmpty(entry.Content) || parsedDate > DateTime.Now)
             {
                 _logger.LogError($"PostEntry Controller responded with argument Http-{BadRequest().StatusCode} because Empty content passed");
                 return BadRequest();
