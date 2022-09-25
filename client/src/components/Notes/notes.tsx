@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -100,21 +99,19 @@ export function Notes(): JSX.Element {
                 SubmittedDateTime: formattedDate
             }
 
-            const x = JSON.stringify(postEntry);
-
             try {
-                const result = await axios.post<DiaryEntry>(`${BASE_URL}post/`,  {
-                    UserID: loggedInUserID,
-                    Content: content,
-                    SubmittedDateTime: formattedDate
-                }, {
-                        headers: {
+                const response = await fetch(`${BASE_URL}post/`, {
+                    method: 'POST',
+                    body: JSON.stringify(postEntry),
+                    headers: {
                         'Authorization': `bearer ${token}`,
                         'Content-Type': 'application/json'
-                    },
+                    }
                 });
 
-                setContent(result.data.content);
+                const result = await response.json() as Promise<DiaryEntry>; 
+                const diaryEntry = await result;
+                setContent(diaryEntry.content);
             } catch (err) {
                 setError(true);
             } finally {
