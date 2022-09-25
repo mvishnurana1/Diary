@@ -1,21 +1,22 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { EntryCard } from '../EntryCard/entry-card';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
+import { GetToken } from '../../helper/getToken';
 import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
+import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
 export function Notes(): JSX.Element {
-    // const BASE_URL = 'https://localhost:44315/';
-    const BASE_URL = 'https://localhost:5001/';
+    const BASE_URL = 'https://localhost:44315/';
+    // const BASE_URL = 'https://localhost:5001/';
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -59,39 +60,22 @@ export function Notes(): JSX.Element {
     }
 
     async function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            return;
-        }
-
-
-        console.log('accessToken: ', localStorage.getItem('accessToken'));
-        const config: AxiosRequestConfig = {
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            },
-        };
-
-        // axios.get<string>
-        //     (`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, config)
-        //     .then((DiaryEntryContent) => {
-        //         setContent(DiaryEntryContent.data);
-        //     })
-        //     .catch(() => {
-        //         setError(true);
-        //     })
-        //     .finally(() => {
-        //         setLoading(false);
-        //     });
+        
+        const token = GetToken();
 
         try {
-            const result = await axios.get<string>(`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, config);
-            console.log('fetched results: ', result);
-            setContent(result.data);
+            const headers: HeadersInit = {};
 
-            return result.data;
+            if (token) {
+                headers.Authorization = `bearer ${token}`;
+            }
+
+            const response = await fetch(`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, { headers });
+            const content = await response.text();
+
+            setContent(content);
+
+            return content;
         } catch (error) {
             setError(true);
         } finally {
@@ -104,20 +88,33 @@ export function Notes(): JSX.Element {
             return;
         } else {
             setLoading(true);
+            const token = GetToken();
+            const formattedDate =  dateFormat(startDate);
 
             // WIP: Simulating logged-in user's ID (database)
-            const loggedInUserID = '692cd588-aa17-4b3a-a2fa-bb5d14d166cf';
+            const loggedInUserID = '0da0fce4-a693-4bb3-b1bb-69f1db0263a7';
 
-            const newNote: postNewDiaryEntryModel = {
-                submittedDateTime: startDate,
-                content: content,
-                userID: loggedInUserID
-            };
-    
+            const postEntry: postNewDiaryEntryModel = {
+                UserID: loggedInUserID,
+                Content: content,
+                SubmittedDateTime: formattedDate
+            }
+
+            const x = JSON.stringify(postEntry);
+
             try {
-                const { data } = await axios.post<DiaryEntry>(`${BASE_URL}post`, newNote);
-                
-                setContent(data.content);
+                const result = await axios.post<DiaryEntry>(`${BASE_URL}post/`,  {
+                    UserID: loggedInUserID,
+                    Content: content,
+                    SubmittedDateTime: formattedDate
+                }, {
+                        headers: {
+                        'Authorization': `bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                setContent(result.data.content);
             } catch (err) {
                 setError(true);
             } finally {
@@ -128,18 +125,28 @@ export function Notes(): JSX.Element {
 
     async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
+        const token = GetToken();
 
-        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
+        if (searchedContent === null || searchedContent.match(/^ *$/) !== null || token === null) {
             return;
         } else {
             setLoading(true);
 
+            const headers: HeadersInit = {};
+
+            if (token) {
+                headers.Authorization = `bearer ${token}`;
+            }
+
             try {
-                const { data } = await axios.get<DiaryEntry[]>(`${BASE_URL}searchbycontent/?content=${searchedContent}`);
+                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}`, { headers });
 
-                setSearchedResult(data);
+                const x = await response.json() as Promise<DiaryEntry[]>;
+                const searchResult = await x;
 
-                return data;
+                setSearchedResult(searchResult);
+
+                return searchResult;
             } catch (err) {
                 setError(true);
             } finally {
