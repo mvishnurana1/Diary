@@ -6,6 +6,6 @@ namespace API.Helpers.Entities
     {
         public Guid UserID { get; set; }
         public string Content { get; set; }
-        public DateTime SubmittedDateTime { get; set; }
+        public string SubmittedDateTime { get; set; }
     }
 }
