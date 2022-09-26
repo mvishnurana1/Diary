@@ -54,7 +54,7 @@ namespace API.Controllers.Users
 
             var user = await _userRespository.GetAllUsers();
 
-            var allUsers = _mapper.Map<IEnumerable<User>, IEnumerable<GetAllUsersResponsedDto>>(user);
+            var allUsers = _mapper.Map<IEnumerable<User>, IEnumerable<UserResponseDto>>(user);
 
             _logger.LogInformation($"GetAllUserse responded with Http-{Ok().StatusCode} response - {user}");
             return Ok(allUsers);
