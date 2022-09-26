@@ -2,7 +2,7 @@
 
 namespace API.DTOs.Users
 {
-    public class GetAllUsersResponsedDto
+    public class UserResponseDto
     {
         public Guid UserID { get; set; }
         public string UserName { get; set; }
