@@ -66,7 +66,9 @@ namespace API
 
             app.UseCors(policy =>
             {
-                policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                policy.AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .WithOrigins("http://localhost:3000");
             });
 
             app.UseEndpoints(endpoints =>
@@ -80,11 +82,11 @@ namespace API
             // Add Automapper
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            // Register services
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
-            services.AddTransient<IDiaryService, DiaryService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IDiaryService, DiaryService>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }
