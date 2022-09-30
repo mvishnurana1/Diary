@@ -10,12 +10,19 @@ import { DiaryEntry } from '../../models/DiaryEntry';
 import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
 import { GetToken } from '../../helper/getToken';
 import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
+import { LoggedInUser } from '../../models/LoggedInUser';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
 export function Notes(): JSX.Element {
     const BASE_URL = 'https://localhost:44315/';
     // const BASE_URL = 'https://localhost:5001/';
+
+    const defaultUser: LoggedInUser = {
+        email: '',
+        userID: '',
+        userName: ''
+    }
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -24,19 +31,27 @@ export function Notes(): JSX.Element {
     const [searchedContent,  setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
+    const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
 
-    const { 
+    const {
         getAccessTokenSilently, 
         isAuthenticated,
         loginWithRedirect,
-        user
-     } = useAuth0();
+        user,
+        getIdTokenClaims
+    } = useAuth0();
      
     useEffect(() => {
         (async () => {
             try {
+                setLoading(true);
                 const accessToken = await getAccessTokenSilently();
+                const idToken = await getIdTokenClaims();
+                console.log(idToken?.__raw);
+
                 window.localStorage.setItem("accessToken", accessToken);
+                window.localStorage.setItem("email", idToken?.email!);
+                window.localStorage.setItem('idToken', idToken?.__raw!);
                 window.localStorage.setItem('photo', user?.picture!);
             }
             catch(err: any) {
@@ -44,18 +59,41 @@ export function Notes(): JSX.Element {
                     loginWithRedirect();
                 }
             }
+            finally {
+                setLoading(false);
+            }
         })();
     });
 
-    function FormApiCall(date: Date): void {
+    useEffect(() => {
+        (async () => {
+            const accessToken = window.localStorage.getItem("accessToken");
+            const headers: HeadersInit = {};
+
+            if (accessToken) {
+                headers.Authorization = `bearer ${accessToken}`;
+            }
+
+            const ID_TOKEN = window.localStorage.getItem("idToken");
+            
+            if (accessToken && ID_TOKEN) {
+                const response = await fetch(`${BASE_URL}user?token=${ID_TOKEN}`, { headers });
+                const responseUser = await await response.json() as Promise<LoggedInUser>;
+                const loggedInPerson = await responseUser;
+                setLoggedInUser(loggedInPerson);
+            }
+        })();
+    }, []);
+
+    function fetchEntriesByDate(date: Date): void {
         const formattedDate = dateFormat(date);
-        
-        const obj : FetchEntriesByDateModel = {
+
+        const entryByDateRequest : FetchEntriesByDateModel = {
             formattedDate: formattedDate,
-            loggedInUserID: '0da0fce4-a693-4bb3-b1bb-69f1db0263a7'
+            loggedInUserID: loggedInUser?.userID
         }
 
-        fetchDiaryEntryContentByDate(obj);
+        fetchDiaryEntryContentByDate(entryByDateRequest);
     }
 
     async function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
@@ -90,11 +128,8 @@ export function Notes(): JSX.Element {
             const token = GetToken();
             const formattedDate =  dateFormat(startDate);
 
-            // WIP: Simulating logged-in user's ID (database)
-            const loggedInUserID = '0da0fce4-a693-4bb3-b1bb-69f1db0263a7';
-
             const postEntry: postNewDiaryEntryModel = {
-                UserID: loggedInUserID,
+                UserID: loggedInUser?.userID,
                 Content: content,
                 SubmittedDateTime: formattedDate
             }
@@ -136,7 +171,7 @@ export function Notes(): JSX.Element {
             }
 
             try {
-                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}`, { headers });
+                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}&&userID=${loggedInUser?.userID}`, { headers });
 
                 const x = await response.json() as Promise<DiaryEntry[]>;
                 const searchResult = await x;
@@ -219,7 +254,7 @@ export function Notes(): JSX.Element {
                                 title="date-picker"
                                 selected={startDate}
                                 onChange={(date: Date) => {
-                                    FormApiCall(date);
+                                    fetchEntriesByDate(date);
                                     setStartDate(new Date(date));
                                     setLoading(true);
                                 }}

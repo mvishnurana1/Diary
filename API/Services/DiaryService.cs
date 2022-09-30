@@ -14,7 +14,7 @@ namespace API.Helpers.Services
     {
         Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry);
         Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request);
-        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content);
+        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request);
     }
 
     public class DiaryService : IDiaryService
@@ -38,15 +38,13 @@ namespace API.Helpers.Services
         {
             _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
 
-            // Figure out who's logged-in via AuthService
-
             if (newEntry.UserID == Guid.Empty)
             {
                 throw new ArgumentException("No Such User Found!");
             }
 
             var parsedDate = DateTime.Parse(newEntry.SubmittedDateTime);
-            var userDetails = await GetEntryForUserByDateTime(newEntry.UserID, parsedDate.Date);
+            var userDetails = await GetResponsibleUserDetails(newEntry.UserID, parsedDate.Date);
 
             if (userDetails.Entries.Count > 0)
             {
@@ -64,12 +62,11 @@ namespace API.Helpers.Services
 
         public async Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request)
         {
-            //Todo: Figure out the logged in user via AuthService DI:
-
             _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {request.Date}");
 
             var entry = await Task.Run(() => _context.Entries
                               .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
+                              .Where(e => e.UserID == request.UserID)
                               .FirstOrDefault());
 
             if (request.UserID == entry?.UserID)
@@ -80,12 +77,13 @@ namespace API.Helpers.Services
             return "";
         }
 
-        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)
+        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request)
         {
-            _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {content}");
+            _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {request.Content}");
 
             return await Task.Run(() => _context.Entries
-                            .Where(x => x.Content.Contains(content))
+                            .Where(x => x.Content.Contains(request.Content))
+                            .Where(x => x.UserID == request.UserID)
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList());
         }
@@ -111,9 +109,9 @@ namespace API.Helpers.Services
             };
         }
 
-        private async Task<User> GetEntryForUserByDateTime(Guid UserID, DateTime SubmittedDate)
+        private async Task<User> GetResponsibleUserDetails(Guid UserID, DateTime SubmittedDate)
         {
-            _logger.LogInformation($"GetEntryForUserByDateTime() Service method Executed with argument - {UserID} & {SubmittedDate}");
+            _logger.LogInformation($"GetResponsibleUserDetails() Service method Executed with argument - {UserID} & {SubmittedDate}");
 
             return await Task.Run(() => _context.User
                 .Include(i => i.Entries.Where(e => e.SubmittedDateTime.Date == SubmittedDate))

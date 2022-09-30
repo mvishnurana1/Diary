@@ -33,8 +33,11 @@ export function Header(): JSX.Element {
                         <Dropdown.Menu>
                             <Dropdown.Item 
                                 onClick={() => {
-                                    localStorage.removeItem('accessToken');
-                                    localStorage.removeItem('photo');
+                                    window.localStorage.removeItem('accessToken');
+                                    window.localStorage.removeItem('email');
+                                    window.localStorage.removeItem('idToken');
+                                    window.localStorage.removeItem('photo');
+
                                     logout({
                                         returnTo: window.location.origin,
                                     })
