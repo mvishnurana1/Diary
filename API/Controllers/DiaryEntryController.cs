@@ -45,16 +45,16 @@ namespace API.Controllers
         }
 
         [HttpGet("/searchbycontent")]
-        public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] string content)
+        public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] SearchViaContentRequestDto request)
         {
-            _logger.LogInformation($"SearchByContent Controller Executed with argument - {content} on {DateTime.Now}");
+            _logger.LogInformation($"SearchByContent Controller Executed with argument - {request.Content} & {request.UserID} on {DateTime.Now}");
 
-            if (String.IsNullOrEmpty(content))
+            if (String.IsNullOrEmpty(request.Content) || String.IsNullOrEmpty(request.UserID.ToString()))
             {
                 return BadRequest();
             }
 
-            var searchResults = await _diaryService.SearchEntriesByContent(content);
+            var searchResults = await _diaryService.SearchEntriesByContent(request);
 
             _logger.LogInformation($"SearchByContent responded with Http-{Ok().StatusCode} response - {searchResults}");
             return Ok(searchResults);

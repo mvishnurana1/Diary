@@ -171,7 +171,7 @@ export function Notes(): JSX.Element {
             }
 
             try {
-                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}`, { headers });
+                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}&&userID=${loggedInUser?.userID}`, { headers });
 
                 const x = await response.json() as Promise<DiaryEntry[]>;
                 const searchResult = await x;

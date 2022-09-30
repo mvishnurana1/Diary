@@ -14,7 +14,7 @@ namespace API.Helpers.Services
     {
         Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry);
         Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request);
-        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content);
+        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request);
     }
 
     public class DiaryService : IDiaryService
@@ -77,12 +77,13 @@ namespace API.Helpers.Services
             return "";
         }
 
-        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(string content)
+        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request)
         {
-            _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {content}");
+            _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {request.Content}");
 
             return await Task.Run(() => _context.Entries
-                            .Where(x => x.Content.Contains(content))
+                            .Where(x => x.Content.Contains(request.Content))
+                            .Where(x => x.UserID == request.UserID)
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList());
         }
