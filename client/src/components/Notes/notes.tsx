@@ -1,37 +1,33 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import ClipLoader from "react-spinners/ClipLoader";
 import { EntryCard } from '../EntryCard/entry-card';
 import { dateFormat } from '../../helper/date-fn';
-import { DiaryEntry } from '../../models/DiaryEntry';
 import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
-import { GetToken } from '../../helper/getToken';
-import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
-import "react-datepicker/dist/react-datepicker.css";
+import { DiaryEntryContext } from '../../providers/notes/NotesContext';
 import './notes.scss';
 
 export function Notes(): JSX.Element {
-    const BASE_URL = 'https://localhost:44315/';
-    // const BASE_URL = 'https://localhost:5001/';
+    const [content, setContent] = useContext(DiaryEntryContext);
+    const [displaySearch, setDisplaySearch] = useContext(DiaryEntryContext);
+    const [error,  setError] = useContext(DiaryEntryContext);
+    const [loading, setLoading] = useContext(DiaryEntryContext);
+    const [searchedContent,  setSearchedContent] = useContext(DiaryEntryContext);
+    const [startDate, setStartDate] = useContext(DiaryEntryContext);
+    const [searchedResult, setSearchedResult] = useContext(DiaryEntryContext);
+    const { getSearchedEntryByContent, fetchDiaryEntryContentByDate, postNewNotes } = useContext(DiaryEntryContext);
 
-    const [content, setContent] = useState('');
-    const [displaySearch, setDisplaySearch] = useState(false);
-    const [error,  setError] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [searchedContent,  setSearchedContent] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
-    const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
-
-    const { 
+    const {
         getAccessTokenSilently, 
         isAuthenticated,
         loginWithRedirect,
         user
-     } = useAuth0();
-     
+    } = useAuth0();
+
     useEffect(() => {
         (async () => {
             try {
@@ -56,100 +52,6 @@ export function Notes(): JSX.Element {
         }
 
         fetchDiaryEntryContentByDate(obj);
-    }
-
-    async function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
-        
-        const token = GetToken();
-
-        try {
-            const headers: HeadersInit = {};
-
-            if (token) {
-                headers.Authorization = `bearer ${token}`;
-            }
-
-            const response = await fetch(`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, { headers });
-            const content = await response.text();
-
-            setContent(content);
-
-            return content;
-        } catch (error) {
-            setError(true);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function postNewNotes() {
-        if (content === null || content.match(/^ *$/) !== null) {
-            return;
-        } else {
-            setLoading(true);
-            const token = GetToken();
-            const formattedDate =  dateFormat(startDate);
-
-            // WIP: Simulating logged-in user's ID (database)
-            const loggedInUserID = '0da0fce4-a693-4bb3-b1bb-69f1db0263a7';
-
-            const postEntry: postNewDiaryEntryModel = {
-                UserID: loggedInUserID,
-                Content: content,
-                SubmittedDateTime: formattedDate
-            }
-
-            try {
-                const response = await fetch(`${BASE_URL}post/`, {
-                    method: 'POST',
-                    body: JSON.stringify(postEntry),
-                    headers: {
-                        'Authorization': `bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const result = await response.json() as Promise<DiaryEntry>; 
-                const diaryEntry = await result;
-                setContent(diaryEntry.content);
-            } catch (err) {
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        }
-    }
-
-    async function getSearchedEntryByContent() {
-        setDisplaySearch(!displaySearch);
-        const token = GetToken();
-
-        if (searchedContent === null || searchedContent.match(/^ *$/) !== null || token === null) {
-            return;
-        } else {
-            setLoading(true);
-
-            const headers: HeadersInit = {};
-
-            if (token) {
-                headers.Authorization = `bearer ${token}`;
-            }
-
-            try {
-                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}`, { headers });
-
-                const x = await response.json() as Promise<DiaryEntry[]>;
-                const searchResult = await x;
-
-                setSearchedResult(searchResult);
-
-                return searchResult;
-            } catch (err) {
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        }
     }
 
     function displayError() {

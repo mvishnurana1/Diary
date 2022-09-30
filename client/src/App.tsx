@@ -4,6 +4,7 @@ import { Notes } from './components/Notes/notes';
 import { Login } from './components/Login/login';
 import { NoPage }  from './components/common/NoPage/NoPage';
 import { Header } from './components/common/Header/Header';
+import { NotesProvider } from "./providers/notes/NotesProvider";
 import './App.scss';
 
 function App(): JSX.Element {
@@ -12,7 +13,10 @@ function App(): JSX.Element {
         <Header />
         <Routes>
             <Route path="" element={<Login />} />
-            <Route path="new" element={<Notes />} />
+              <Route 
+                element={<Notes />}
+                path="new" 
+              />
             <Route path="*" element={<NoPage />} />
         </Routes>
       </Router>

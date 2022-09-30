@@ -1,12 +1,10 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { Provider } from "react-redux";
 import App from './App';
 import history from './history';
 import reportWebVitals from './reportWebVitals';
 import secrets from './secrets/secrets.json';
-import store from "./store";
 import './index.scss';
 
 const root = ReactDOMClient.createRoot(document.getElementById("root") as Element);
@@ -19,7 +17,6 @@ const onRedirectCallback = (appState: any) => {
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
       <Auth0Provider
         audience={secrets.audience}
         clientId={secrets.clientID}
@@ -28,10 +25,8 @@ root.render(
         redirectUri={secrets.redirectUri}
         useRefreshTokens
       >
-        
           <App />
       </Auth0Provider>
-    </Provider>
   </React.StrictMode>
 );
 
