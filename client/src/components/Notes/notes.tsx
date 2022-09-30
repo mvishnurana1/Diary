@@ -128,11 +128,8 @@ export function Notes(): JSX.Element {
             const token = GetToken();
             const formattedDate =  dateFormat(startDate);
 
-            // WIP: Simulating logged-in user's ID (database)
-            const loggedInUserID = '0da0fce4-a693-4bb3-b1bb-69f1db0263a7';
-
             const postEntry: postNewDiaryEntryModel = {
-                UserID: loggedInUserID,
+                UserID: loggedInUser?.userID,
                 Content: content,
                 SubmittedDateTime: formattedDate
             }

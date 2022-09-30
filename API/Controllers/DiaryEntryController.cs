@@ -70,7 +70,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry?.Content} & {entry?.SubmittedDateTime} on {DateTime.Now}");
+            _logger.LogInformation($"PostEntry Controller Executed with argument - {entry?.Content}, {entry.UserID} & {entry?.SubmittedDateTime} on {DateTime.Now}");
 
             var parsedDate = DateTime.Parse(entry.SubmittedDateTime);
 
