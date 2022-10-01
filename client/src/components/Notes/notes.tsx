@@ -7,21 +7,19 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { EntryCard } from '../EntryCard/entry-card';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
-import { FetchEntriesByDateModel } from '../../models/FetchEntriesByDateModel';
-import { GetToken } from '../../helper/getToken';
-import { postNewDiaryEntryModel } from '../../models/PostNewDiaryEntryModel';
 import { LoggedInUser } from '../../models/LoggedInUser';
+import { fetchUser } from '../../utils/api/fetchUser';
+import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
+import { postNewNotes } from '../../utils/api/postNewNotes';
+import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
 export function Notes(): JSX.Element {
-    const BASE_URL = 'https://localhost:44315/';
-    // const BASE_URL = 'https://localhost:5001/';
-
     const defaultUser: LoggedInUser = {
-        email: '',
-        userID: '',
-        userName: ''
+        email: undefined!,
+        userID: undefined!,
+        userName: undefined!
     }
 
     const [content, setContent] = useState('');
@@ -34,21 +32,19 @@ export function Notes(): JSX.Element {
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
 
     const {
-        getAccessTokenSilently, 
+        getAccessTokenSilently,
         isAuthenticated,
         loginWithRedirect,
         user,
         getIdTokenClaims
     } = useAuth0();
-     
+
     useEffect(() => {
         (async () => {
             try {
                 setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
-                console.log(idToken?.__raw);
-
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("email", idToken?.email!);
                 window.localStorage.setItem('idToken', idToken?.__raw!);
@@ -67,51 +63,27 @@ export function Notes(): JSX.Element {
 
     useEffect(() => {
         (async () => {
-            const accessToken = window.localStorage.getItem("accessToken");
-            const headers: HeadersInit = {};
+            try {
+                setLoading(true);
 
-            if (accessToken) {
-                headers.Authorization = `bearer ${accessToken}`;
-            }
-
-            const ID_TOKEN = window.localStorage.getItem("idToken");
-            
-            if (accessToken && ID_TOKEN) {
-                const response = await fetch(`${BASE_URL}user?token=${ID_TOKEN}`, { headers });
-                const responseUser = await await response.json() as Promise<LoggedInUser>;
-                const loggedInPerson = await responseUser;
-                setLoggedInUser(loggedInPerson);
+                const user = fetchUser();
+                setLoggedInUser(await user);
+            } catch (err) {
+                setError(true);
+            } finally {
+                setLoading(false);
             }
         })();
     }, []);
 
-    function fetchEntriesByDate(date: Date): void {
-        const formattedDate = dateFormat(date);
-
-        const entryByDateRequest : FetchEntriesByDateModel = {
-            formattedDate: formattedDate,
-            loggedInUserID: loggedInUser?.userID
-        }
-
-        fetchDiaryEntryContentByDate(entryByDateRequest);
-    }
-
-    async function fetchDiaryEntryContentByDate(request: FetchEntriesByDateModel) {
-        
-        const token = GetToken();
-
+    async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            const headers: HeadersInit = {};
-
-            if (token) {
-                headers.Authorization = `bearer ${token}`;
-            }
-
-            const response = await fetch(`${BASE_URL}get/?date=${request.formattedDate}&&userID=${request.loggedInUserID}`, { headers });
-            const content = await response.text();
+            setLoading(true);
+            const content = await fetchEntryByDate(
+                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser?.userID }
+            );
 
             setContent(content);
-
             return content;
         } catch (error) {
             setError(true);
@@ -120,32 +92,20 @@ export function Notes(): JSX.Element {
         }
     }
 
-    async function postNewNotes() {
+    async function postNote() {
         if (content === null || content.match(/^ *$/) !== null) {
             return;
         } else {
-            setLoading(true);
-            const token = GetToken();
-            const formattedDate =  dateFormat(startDate);
-
-            const postEntry: postNewDiaryEntryModel = {
-                UserID: loggedInUser?.userID,
-                Content: content,
-                SubmittedDateTime: formattedDate
-            }
-
-            try {
-                const response = await fetch(`${BASE_URL}post/`, {
-                    method: 'POST',
-                    body: JSON.stringify(postEntry),
-                    headers: {
-                        'Authorization': `bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
+            try 
+            {
+                setLoading(true);
+                const diaryEntry = await postNewNotes(
+                {
+                    UserID: loggedInUser?.userID,
+                    Content: content,
+                    SubmittedDateTime: dateFormat(startDate)
                 });
 
-                const result = await response.json() as Promise<DiaryEntry>; 
-                const diaryEntry = await result;
                 setContent(diaryEntry.content);
             } catch (err) {
                 setError(true);
@@ -157,28 +117,16 @@ export function Notes(): JSX.Element {
 
     async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
-        const token = GetToken();
-
-        if (searchedContent === null || searchedContent.match(/^ *$/) !== null || token === null) {
+        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
             return;
         } else {
-            setLoading(true);
-
-            const headers: HeadersInit = {};
-
-            if (token) {
-                headers.Authorization = `bearer ${token}`;
-            }
-
             try {
-                const response = await fetch(`${BASE_URL}searchbycontent/?content=${searchedContent}&&userID=${loggedInUser?.userID}`, { headers });
+                setLoading(true);
 
-                const x = await response.json() as Promise<DiaryEntry[]>;
-                const searchResult = await x;
+                const searchResult = await fetchSearchedEntryByContent
+                ({ userID: loggedInUser.userID, content: searchedContent });
 
                 setSearchedResult(searchResult);
-
-                return searchResult;
             } catch (err) {
                 setError(true);
             } finally {
@@ -199,12 +147,12 @@ export function Notes(): JSX.Element {
         if (searchedResult?.length > 0) {
             return <div className="entry-card-container">
                     <div>
-                        <EntryCard 
-                            entries={searchedResult} 
-                            setContent={setContent} 
+                        <EntryCard
+                            entries={searchedResult}
+                            setContent={setContent}
                             setSearchedContent={setSearchedContent}
                             setStartDate={setStartDate}
-                            setSearchedResult={setSearchedResult} 
+                            setSearchedResult={setSearchedResult}
                         />
                     </div>
                     <div className="center">
@@ -238,65 +186,50 @@ export function Notes(): JSX.Element {
                 <FontAwesomeIcon
                     className='red'
                     icon={faMagnifyingGlass}
-                    onClick={() => {
-                        getSearchedEntryByContent();
-                    }}
+                    onClick={() => getSearchedEntryByContent()}
                     size="lg"
                 />
             </div>
 
             <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
-                {
-                    !loading 
-                        ? <div className='left'>
-                            <DatePicker
-                                className={error ? 'no-display': 'input' }
-                                title="date-picker"
-                                selected={startDate}
-                                onChange={(date: Date) => {
-                                    fetchEntriesByDate(date);
-                                    setStartDate(new Date(date));
-                                    setLoading(true);
-                                }}
-                                maxDate={new Date()}
-                            />
-                        </div>
-                        : null 
+                {!loading? <div className='left'>
+                                <DatePicker
+                                    className={error ? 'no-display': 'input' }
+                                    title="date-picker"
+                                    selected={startDate}
+                                    onChange={(date: Date) => {
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                        setLoading(true);
+                                    }}
+                                    maxDate={new Date()}
+                                />
+                            </div> : null
                 }
-            
 
-                {
-                    loading
-                        ? <div className="centre"> 
-                            <ClipLoader 
-                                color='red' 
-                                data-testid="clip-loader"
-                                size={150} 
-                            /> 
+                {loading ? <div className="centre">
+                                <ClipLoader
+                                    color='red'
+                                    data-testid="clip-loader"
+                                    size={150}
+                                />
                             </div>
-                        : <textarea
-                            className={
-                                error ? 'no-display': 'textArea' 
-                            }
-                            rows={15}
-                            placeholder="Dear Diary..."
-                            onChange={(e) => {
-                                setContent(e.target.value);
-                            }}
-                            spellCheck={false}
-                            value={content}
-                        />
-                }
+                         : <textarea
+                                className={ error ? 'no-display': 'textArea' }
+                                rows={15}
+                                placeholder="Dear Diary..."
+                                onChange={(e) => setContent(e.target.value)}
+                                spellCheck={false}
+                                value={content}
+                            />}
             </div>
 
-            {
-                error
-                    ?   <div 
+            {error ?   <div
                             className='error-container'
                             data-testid="error-emoji">
-                            <FontAwesomeIcon 
-                                icon={faFaceSadCry} 
-                                size="3x" 
+                            <FontAwesomeIcon
+                                icon={faFaceSadCry}
+                                size="3x"
                             />
                             <h6>Something went wrong. Please try again later!</h6>
                         </div>
@@ -304,16 +237,14 @@ export function Notes(): JSX.Element {
             }
 
             <button
-                className={
-                    searchedResult.length > 0 || error || loading ? 'no-display' : 'save button'
-                }
+                className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
                 onClick={() => {
-                    postNewNotes();
+                    postNote();
                     setLoading(true);
                     setContent('')
                 }}
-                disabled={content?.length === 0}>
-                {content?.length === 0 ? 'Write note' : 'SAVE'}
+                disabled={ content?.length === 0 }>
+                { content?.length === 0 ? 'Write note' : 'SAVE' }
             </button>
             {displayCard()}
         </div>
