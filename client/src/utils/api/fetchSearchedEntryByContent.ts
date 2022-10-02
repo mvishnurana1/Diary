@@ -3,7 +3,7 @@ import { DiaryEntry } from "../../models/DiaryEntry";
 import { SearchViaContentRequestDto } from "../../models/SearchViaContentRequestDto";
 import { BASE_URL } from "../url";
 
-export async function fetchSearchedEntryByContent(postSearchRequestByContent: SearchViaContentRequestDto): Promise<DiaryEntry[]> {
+export async function fetchSearchedEntryByContent(request: SearchViaContentRequestDto): Promise<DiaryEntry[]> {
     const defaultEntry: DiaryEntry = {
         content: undefined!,
         entryID: undefined!,
@@ -18,7 +18,7 @@ export async function fetchSearchedEntryByContent(postSearchRequestByContent: Se
         headers.Authorization = `bearer ${token}`;
 
         const response = 
-        await fetch(`${BASE_URL}searchbycontent/?content=${postSearchRequestByContent.content}&&userID=${postSearchRequestByContent.userID}`, 
+        await fetch(`${BASE_URL}searchbycontent/?content=${request.content}&&userID=${request.userID}`, 
         { headers });
 
         const x = await response.json() as Promise<DiaryEntry[]>;
