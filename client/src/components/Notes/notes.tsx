@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import ClipLoader from "react-spinners/ClipLoader";
-import { EntryCard } from '../EntryCard/entry-card';
+import { EntryCard } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { LoggedInUser } from '../../models/LoggedInUser';
