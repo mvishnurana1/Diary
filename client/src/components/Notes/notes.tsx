@@ -79,6 +79,12 @@ export function Notes(): JSX.Element {
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
             setLoading(true);
+
+            if (loggedInUser.userID) {
+                const user = await fetchUser();
+                setLoggedInUser(user);
+            }
+
             const content = await fetchEntryByDate(
                 { formattedDate: dateFormat(date), loggedInUserID: loggedInUser?.userID }
             );
@@ -99,6 +105,12 @@ export function Notes(): JSX.Element {
             try 
             {
                 setLoading(true);
+
+                if (loggedInUser.userID) {
+                    const user = await fetchUser();
+                    setLoggedInUser(user);
+                }
+
                 const diaryEntry = await postNewNotes(
                 {
                     UserID: loggedInUser?.userID,
@@ -122,6 +134,11 @@ export function Notes(): JSX.Element {
         } else {
             try {
                 setLoading(true);
+
+                if (loggedInUser.userID) {
+                    const user = await fetchUser();
+                    setLoggedInUser(user);
+                }
 
                 const searchResult = await fetchSearchedEntryByContent
                 ({ userID: loggedInUser.userID, content: searchedContent });
@@ -192,7 +209,7 @@ export function Notes(): JSX.Element {
             </div>
 
             <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
-                {!loading? <div className='left'>
+                {!loading ? <div className='left'>
                                 <DatePicker
                                     className={error ? 'no-display': 'input' }
                                     title="date-picker"
