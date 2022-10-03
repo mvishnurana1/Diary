@@ -5,17 +5,28 @@ import './Header.scss';
 
 export function Header(): JSX.Element {
     const { logout, isAuthenticated, user } = useAuth0();
-    const [userImg, setUserImg] = useState(localStorage.getItem('photo'));
+    const [userImg, setUserImg] = useState<string>(localStorage.getItem('photo'));
     
     useEffect(() => {
         let profile = user?.picture;
-        localStorage.setItem('photo', profile!);
-        setUserImg(profile!);
+        const x = localStorage.setItem('photo', profile!);
+        setUserImg(x);
     });
 
     useEffect(() => {
-        let profile = user?.picture;
-        setUserImg(profile!);
+        if (userImg === undefined) {
+            let profile = user?.picture;
+            const x = localStorage.setItem('photo', profile!);
+            setUserImg(x);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userImg === undefined) {
+            let profile = user?.picture;
+            const x = localStorage.setItem('photo', profile!);
+            setUserImg(x);
+        }
     }, [userImg]);
 
     return (<>
