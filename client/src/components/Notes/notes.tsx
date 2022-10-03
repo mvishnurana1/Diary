@@ -79,14 +79,16 @@ export function Notes(): JSX.Element {
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
             setLoading(true);
+            let id = undefined;
 
-            if (loggedInUser.userID) {
+            if (loggedInUser.userID === undefined) {
                 const user = await fetchUser();
+                id = user.userID;
                 setLoggedInUser(user);
             }
 
             const content = await fetchEntryByDate(
-                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser?.userID }
+                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID ?? id }
             );
 
             setContent(content);
@@ -106,14 +108,17 @@ export function Notes(): JSX.Element {
             {
                 setLoading(true);
 
-                if (loggedInUser.userID) {
+                let id = undefined;
+
+                if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
+                    id = user.userID;
                     setLoggedInUser(user);
                 }
 
                 const diaryEntry = await postNewNotes(
                 {
-                    UserID: loggedInUser?.userID,
+                    UserID: loggedInUser.userID ?? id,
                     Content: content,
                     SubmittedDateTime: dateFormat(startDate)
                 });
@@ -135,13 +140,16 @@ export function Notes(): JSX.Element {
             try {
                 setLoading(true);
 
-                if (loggedInUser.userID) {
+                let id = undefined;
+
+                if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
+                    id = user.userID;
                     setLoggedInUser(user);
                 }
 
                 const searchResult = await fetchSearchedEntryByContent
-                ({ userID: loggedInUser.userID, content: searchedContent });
+                ({ userID: loggedInUser.userID ?? id, content: searchedContent });
 
                 setSearchedResult(searchResult);
             } catch (err) {

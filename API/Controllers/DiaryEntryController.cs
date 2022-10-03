@@ -49,7 +49,7 @@ namespace API.Controllers
         {
             _logger.LogInformation($"SearchByContent Controller Executed with argument - {request.Content} & {request.UserID} on {DateTime.Now}");
 
-            if (String.IsNullOrEmpty(request.Content) || String.IsNullOrEmpty(request.UserID.ToString()))
+            if (String.IsNullOrEmpty(request.Content) || request.UserID == Guid.Empty)
             {
                 return BadRequest();
             }
