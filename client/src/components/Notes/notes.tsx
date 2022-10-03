@@ -45,6 +45,9 @@ export function Notes(): JSX.Element {
                 setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
+                const user = await fetchUser();
+                setLoggedInUser(user);
+                
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("email", idToken?.email!);
                 window.localStorage.setItem('idToken', idToken?.__raw!);
@@ -66,8 +69,8 @@ export function Notes(): JSX.Element {
             try {
                 setLoading(true);
 
-                const user = fetchUser();
-                setLoggedInUser(await user);
+                const user = await fetchUser();
+                setLoggedInUser(user);
             } catch (err) {
                 setError(true);
             } finally {
