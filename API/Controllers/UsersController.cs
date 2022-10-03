@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using API.model;
-using AutoMapper;
 using API.DTOs.Users;
 using API.Helpers.Services;
 
 namespace API.Controllers.Users
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
