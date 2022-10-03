@@ -1,34 +1,39 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown'
+import { useEffect, useState } from 'react';
+import Dropdown from 'react-bootstrap/Dropdown';
 import './Header.scss';
 
 export function Header(): JSX.Element {
     const { logout, isAuthenticated, user } = useAuth0();
-    const img = localStorage.getItem('photo')!;
-
-    useEffect(() => {}, [])
+    const [userImg, setUserImg] = useState(localStorage.getItem('photo'));
+    
     useEffect(() => {
-    const img = localStorage.getItem('photo')!;
-    }, [user]);
+        let profile = user?.picture;
+        localStorage.setItem('photo', profile!);
+        setUserImg(profile!);
+    });
+
+    useEffect(() => {
+        let profile = user?.picture;
+        setUserImg(profile!);
+    }, [userImg]);
 
     return (<>
-        {isAuthenticated && 
+        {isAuthenticated && user &&
             <div className="header-container layout">
                 <div className="logout-btn-container">
                     <Dropdown>
                         <Dropdown.Toggle
-                            className='logout'
-                            id="dropdown-basic"
-                        >
-                            {user && user?.picture && <img 
-                                alt=""
-                                className="user-profile-picture"
-                                src={user?.picture! ?? img}
-                                title={user?.nickname}
-                            />}
-                            {user?.nickname}
-                        </Dropdown.Toggle>
+                                    className='logout'
+                                    id="dropdown-basic">
+                                    {user && user.picture && <img
+                                            alt=""
+                                            className="user-profile-picture"
+                                            src={userImg!}
+                                            title={user?.nickname}
+                                        />}
+                                    {user?.nickname}
+                                </Dropdown.Toggle>
 
                         <Dropdown.Menu>
                             <Dropdown.Item 
