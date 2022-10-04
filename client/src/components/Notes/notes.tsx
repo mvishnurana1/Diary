@@ -45,8 +45,6 @@ export function Notes(): JSX.Element {
                 setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
-                const user = await fetchUser();
-                setLoggedInUser(user);
                 
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("email", idToken?.email!);
