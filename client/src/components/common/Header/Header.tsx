@@ -5,29 +5,17 @@ import './Header.scss';
 
 export function Header(): JSX.Element {
     const { logout, isAuthenticated, user } = useAuth0();
-    const [userImg, setUserImg] = useState<string>(localStorage.getItem('photo'));
+    const [userImg, setUserImg] = useState(localStorage.getItem('photo'));
     
     useEffect(() => {
         let profile = user?.picture;
-        const x = localStorage.setItem('photo', profile!);
-        setUserImg(x);
+        localStorage.setItem('photo', profile!);
+        setUserImg(profile!);
     });
 
-    useEffect(() => {
-        if (userImg === undefined) {
-            let profile = user?.picture;
-            const x = localStorage.setItem('photo', profile!);
-            setUserImg(x);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (userImg === undefined) {
-            let profile = user?.picture;
-            const x = localStorage.setItem('photo', profile!);
-            setUserImg(x);
-        }
-    }, [userImg]);
+    function getDefaultSrc(event: React.SyntheticEvent<HTMLImageElement, Event>) {
+        event.currentTarget.src = '../../../assets/user.png';
+    }
 
     return (<>
         {isAuthenticated && user &&
@@ -40,7 +28,8 @@ export function Header(): JSX.Element {
                                     {user && user.picture && <img
                                             alt=""
                                             className="user-profile-picture"
-                                            src={userImg!}
+                                            onError={getDefaultSrc}
+                                            src={(user && user.picture) || localStorage.getItem('photo')!}
                                             title={user?.nickname}
                                         />}
                                     {user?.nickname}
