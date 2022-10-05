@@ -1,39 +1,27 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import './Header.scss';
 
 export function Header(): JSX.Element {
     const { logout, isAuthenticated, user } = useAuth0();
-    const [userImg, setUserImg] = useState(localStorage.getItem('photo'));
     
-    useEffect(() => {
-        let profile = user?.picture;
-        localStorage.setItem('photo', profile!);
-        setUserImg(profile!);
-    });
-
-    function getDefaultSrc(event: React.SyntheticEvent<HTMLImageElement, Event>) {
-        event.currentTarget.src = '../../../assets/user.png';
-    }
-
-    return (<>
+    return (
+    <>
         {isAuthenticated && user &&
             <div className="header-container layout">
                 <div className="logout-btn-container">
                     <Dropdown>
                         <Dropdown.Toggle
-                                    className='logout'
-                                    id="dropdown-basic">
-                                    {user && user.picture && <img
-                                            alt=""
-                                            className="user-profile-picture"
-                                            onError={getDefaultSrc}
-                                            src={(user && user.picture) || localStorage.getItem('photo')!}
-                                            title={user?.nickname}
-                                        />}
-                                    {user?.nickname}
-                                </Dropdown.Toggle>
+                            className='logout'
+                            id="dropdown-basic">
+                            <img
+                                alt=""
+                                className="user-profile-picture"
+                                src={require('../../../assets/user.png')}
+                                title={user?.nickname}
+                            />
+                            {user?.nickname}
+                        </Dropdown.Toggle>
 
                         <Dropdown.Menu>
                             <Dropdown.Item 
