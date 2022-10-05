@@ -12,7 +12,7 @@ interface searchResultsProp {
     setStartDate: (date: Date) => void
 };
 
-export function EntryCard(props: searchResultsProp): JSX.Element {
+export function SearchResults(props: searchResultsProp): JSX.Element {
     const {
         entries, 
         setContent, 

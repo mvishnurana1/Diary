@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import ClipLoader from "react-spinners/ClipLoader";
-import { EntryCard } from '../SearchResults/SearchResults';
+import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { LoggedInUser } from '../../models/LoggedInUser';
@@ -173,7 +173,7 @@ export function Notes(): JSX.Element {
         if (searchedResult?.length > 0) {
             return <div className="entry-card-container">
                     <div>
-                        <EntryCard
+                        <SearchResults
                             entries={searchedResult}
                             setContent={setContent}
                             setSearchedContent={setSearchedContent}
