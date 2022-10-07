@@ -16,7 +16,7 @@ export function Header(): JSX.Element {
                             id="dropdown-basic">
                             <img
                                 alt=""
-                                className="user-profile-picture"
+                                className="logo"
                                 src={require('../../../assets/user.png')}
                                 title={user?.nickname}
                             />
