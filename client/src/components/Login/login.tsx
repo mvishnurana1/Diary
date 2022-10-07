@@ -25,10 +25,10 @@ export function Login(): JSX.Element {
           required 
         /> */}
 
-      <div>
-        <button className="button red" onClick={() => loginWithRedirect()}>Log In / Sign up</button>
-        {/* <button className="button purple" onClick={() => loginWithRedirect()}>Sign up</button> */}
-      </div>
+        <div>
+          <button className="button red" onClick={() => loginWithRedirect()}>Log In / Sign up</button>
+          {/* <button className="button purple" onClick={() => loginWithRedirect()}>Sign up</button> */}
+        </div>
       </div>
     </div>
   </div>)
