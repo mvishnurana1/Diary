@@ -11,7 +11,7 @@ export function Login(): JSX.Element {
         <h3 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
       </div>
       <div className="form-container">
-        <input 
+        {/* <input 
           className="input" 
           placeholder="email"
           type="email"
@@ -23,11 +23,11 @@ export function Login(): JSX.Element {
           placeholder="password"
           type="password"
           required 
-        />
+        /> */}
 
       <div>
-        <button className="button red" onClick={() => loginWithRedirect()}>Log In</button>
-        <button className="button purple" onClick={() => loginWithRedirect()}>Sign up</button>
+        <button className="button red" onClick={() => loginWithRedirect()}>Log In / Sign up</button>
+        {/* <button className="button purple" onClick={() => loginWithRedirect()}>Sign up</button> */}
       </div>
       </div>
     </div>
