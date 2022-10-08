@@ -17,5 +17,8 @@ export function Login(): JSX.Element {
         </button>
       </div>
     </div>
+    <div className="footer">
+      <div>Blue Horse &copy; 2022</div>
+    </div>
   </section>)
 };
