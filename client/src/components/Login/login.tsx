@@ -18,7 +18,7 @@ export function Login(): JSX.Element {
       </div>
     </div>
     <div className="footer">
-      <div>Blue Horse &copy; 2022</div>
+      <div>Blue Horse &copy; {new Date().getFullYear()}</div>
     </div>
   </section>)
 };
