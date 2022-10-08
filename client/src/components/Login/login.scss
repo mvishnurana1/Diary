@@ -1,16 +1,6 @@
 @import "../../global.scss";
 
 .login-page-container {
-    .button {
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 1rem 2rem;
-        outline: none;
-        padding: .5rem 1rem;
-    }
-
     .header {
         color: $tomato;;
     }
@@ -35,6 +25,14 @@
             border: 1px solid $blue;
             color: $grey-dark;
         }
+    }
+
+    .footer {
+        color: $silver;
+        display: flex;
+        font-size: 11px;
+        justify-content: center;
+        margin-top: 5rem;
     }
 
     .main-content {
