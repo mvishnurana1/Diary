@@ -8,7 +8,7 @@ export async function fetchDatesofNotesForLoggedInUser(loggedInUserID: string) {
 
     const token = GetToken();
 
-    const response = await fetch(`${BASE_URL}getdates/?id=${loggedInUserID}`, {
+    const response = await fetch(`${BASE_URL}getdates/?loggedInUserID=${loggedInUserID}`, {
         method: 'GET',
         headers: {
             'Authorization': `bearer ${token}`,
