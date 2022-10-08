@@ -5,17 +5,6 @@
         color: $tomato;;
     }
 
-    .red {
-        border: 1px solid $tomato;
-        color: $tomato;
-
-        &:hover {
-            background-color: $tomato;
-            border: 1px solid $grey-dark;
-            color: $grey-dark;
-        }
-    }
-
     .blue {
         border: 1px solid $blue;
         color: $blue;
@@ -25,6 +14,11 @@
             border: 1px solid $tomato;
             color: $grey-dark;
         }
+    }
+
+    .flex {
+        align-items: center;
+        display: flex;
     }
 
     .footer {
@@ -53,7 +47,7 @@
         max-width: calc(100% - 30px);
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1243px) {
         .main-content{
             display: flex;
             flex-direction: column;

@@ -11,9 +11,9 @@ export function Login(): JSX.Element {
         <h3 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
       </div>
       <div>
-        <button className="button blue" onClick={() => loginWithRedirect()}>
+        <button className="blue button flex" onClick={() => loginWithRedirect()}>
           <img className='logo' src={require("../../assets/google-logo.png")} alt="google-logo" />
-          <span>Log In / Sign up</span>
+          <div>Log In / Sign up</div>
         </button>
       </div>
     </div>
