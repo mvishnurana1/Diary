@@ -11,22 +11,6 @@
         padding: .5rem 1rem;
     }
 
-    .form-container {
-        display: flex;
-        flex-direction: column;
-
-        .input {
-            border: 1px solid $tomato;
-            border-radius: 0.5rem;
-            color: $tomato;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-            font-size: large;
-            height: 3rem;
-            margin: 0.5rem;
-            text-align: center;
-        }
-    }
-
     .header {
         color: $tomato;;
     }
@@ -58,7 +42,7 @@
         background-color: $white;
         display: flex;
         height: 600px;
-        justify-content: space-evenly;
+        justify-content: center;
         margin: 0;
         padding: 15rem 0 15rem 0;
         width: 100%;
@@ -73,9 +57,9 @@
 
     @media (max-width: 1024px) {
         .main-content{
-            align-items: stretch;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             padding: 1rem 0.5rem;
         }
     }
