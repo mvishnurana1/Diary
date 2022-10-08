@@ -60,6 +60,22 @@ namespace API.Controllers
             return Ok(searchResults);
         }
 
+        [HttpGet("/getdates")]
+        public async Task<ActionResult<IEnumerable<DiaryEntry>>> GetAllDatesWithEntriesForUser([FromQuery] Guid loggedInUserID)
+        {
+            _logger.LogInformation($"GetAllDatesWithEntriesForUser Controller Executed with argument - {loggedInUserID} on {DateTime.Now}");
+
+            if (loggedInUserID == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var searchResults = await _diaryService.GetAllDatesWithEntriesForUser(loggedInUserID);
+
+            _logger.LogInformation($"GetAllDatesWithEntriesForUser responded with Http-{Ok().StatusCode} response - {searchResults}");
+            return Ok(searchResults);
+        }
+
         [HttpPost("/post")]
         public async Task<ActionResult<DiaryEntry>> PostEntry([FromBody] PostDiaryEntryDto entry)
         {
