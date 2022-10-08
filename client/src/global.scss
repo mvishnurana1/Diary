@@ -2,9 +2,20 @@ $blue: rgb(38, 97, 222);
 $grey: rgb(187, 186, 186);
 $grey-dark: rgb(66, 55, 55);
 $pink: rgb(238, 137, 238);
+$silver: rgb(115, 115, 115);
 $tomato: rgb(235, 88, 88);
 $white: rgb(240, 242, 245);
 $white-dark: rgb(255, 255, 255);
+
+.button {
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1rem 2rem;
+    outline: none;
+    padding: .5rem 1rem;
+}
 
 .logo {
     border-radius: 50%;

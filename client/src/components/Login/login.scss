@@ -1,32 +1,6 @@
 @import "../../global.scss";
 
 .login-page-container {
-    .button {
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 1rem 2rem;
-        outline: none;
-        padding: .5rem 1rem;
-    }
-
-    .form-container {
-        display: flex;
-        flex-direction: column;
-
-        .input {
-            border: 1px solid $tomato;
-            border-radius: 0.5rem;
-            color: $tomato;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-            font-size: large;
-            height: 3rem;
-            margin: 0.5rem;
-            text-align: center;
-        }
-    }
-
     .header {
         color: $tomato;;
     }
@@ -47,10 +21,18 @@
         color: $blue;
 
         &:hover {
-            background-color: $blue;
-            border: 1px solid $blue;
+            background-color: $tomato;
+            border: 1px solid $tomato;
             color: $grey-dark;
         }
+    }
+
+    .footer {
+        color: $silver;
+        display: flex;
+        font-size: 11px;
+        justify-content: center;
+        margin-top: 5rem;
     }
 
     .main-content {
@@ -58,7 +40,7 @@
         background-color: $white;
         display: flex;
         height: 600px;
-        justify-content: space-evenly;
+        justify-content: center;
         margin: 0;
         padding: 15rem 0 15rem 0;
         width: 100%;
@@ -73,9 +55,9 @@
 
     @media (max-width: 1024px) {
         .main-content{
-            align-items: stretch;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             padding: 1rem 0.5rem;
         }
     }
