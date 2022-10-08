@@ -44,7 +44,7 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                setLoading(true);
+                // setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
                 
@@ -58,24 +58,25 @@ export function Notes(): JSX.Element {
                     loginWithRedirect();
                 }
             }
-            finally {
-                setLoading(false);
-            }
+            // finally {
+            //     setLoading(false);
+            // }
         })();
     });
 
     useEffect(() => {
         (async () => {
             try {
-                setLoading(true);
+                // setLoading(true);
 
                 const user = await fetchUser();
                 setLoggedInUser(user);
             } catch (err) {
                 setError(true);
-            } finally {
-                setLoading(false);
-            }
+            } 
+            // finally {
+            //     setLoading(false);
+            // }
         })();
     }, []);
 
@@ -248,11 +249,12 @@ export function Notes(): JSX.Element {
                                                 <DatePicker
                                                     className={error ? 'no-display': 'input' }
                                                     highlightDates={validNoteDates}
+                                                    inline
                                                     maxDate={new Date()}
                                                     onChange={(date: Date) => {
                                                         fetchDiaryEntryContentByDate(date);
                                                         setStartDate(new Date(date));
-                                                        setLoading(true);
+                                                        // setLoading(true);
                                                     }}
                                                     selected={startDate}
                                                     title="date-picker"
