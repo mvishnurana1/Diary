@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Routes } from 'react-router';
 import { Notes } from './components/Notes/notes';
-import { Login } from './components/Login/login';
+import { LandingPage } from './components/LandingPage/landingPage';
 import { NoPage }  from './components/common/NoPage/NoPage';
 import { Header } from './components/common/Header/Header';
 import './App.scss';
@@ -11,7 +11,7 @@ function App(): JSX.Element {
       <Router>
         <Header />
         <Routes>
-            <Route path="" element={<Login />} />
+            <Route path="" element={<LandingPage />} />
             <Route path="new" element={<Notes />} />
             <Route path="*" element={<NoPage />} />
         </Routes>

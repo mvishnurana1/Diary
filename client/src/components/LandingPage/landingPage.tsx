@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import './login.scss';
+import './landingPage.scss';
 
-export function Login(): JSX.Element {
+export function LandingPage(): JSX.Element {
   const { loginWithRedirect } = useAuth0();
 
   return (<section className="login-page-container">
