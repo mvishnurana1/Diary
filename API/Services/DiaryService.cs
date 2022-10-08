@@ -37,9 +37,8 @@ namespace API.Helpers.Services
 
         public async Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID)
         {
-            var dates = await Task.Run(() => _context.Entries.Where(e => e.UserID == loggedInUserID).Select(e => e.SubmittedDateTime));
-
-            return dates;
+            return await Task.Run(() => _context.Entries.Where(e => e.UserID == loggedInUserID)
+                                                        .Select(e => e.SubmittedDateTime));
         }
 
         public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
