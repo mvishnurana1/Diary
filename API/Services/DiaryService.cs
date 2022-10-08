@@ -15,6 +15,7 @@ namespace API.Helpers.Services
         Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry);
         Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request);
         Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request);
+        Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID);
     }
 
     public class DiaryService : IDiaryService
@@ -32,6 +33,12 @@ namespace API.Helpers.Services
             _context = dataContext;
             _logger = logger;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID)
+        {
+            return await Task.Run(() => _context.Entries.Where(e => e.UserID == loggedInUserID)
+                                                        .Select(e => e.SubmittedDateTime));
         }
 
         public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
