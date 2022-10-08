@@ -12,6 +12,7 @@ import { fetchUser } from '../../utils/api/fetchUser';
 import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
+import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -30,6 +31,7 @@ export function Notes(): JSX.Element {
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
+    const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
 
     const {
         getAccessTokenSilently,
@@ -76,6 +78,30 @@ export function Notes(): JSX.Element {
             }
         })();
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                let id = undefined;
+
+                if (loggedInUser.userID === undefined) {
+                    const user = await fetchUser();
+                    id = user.userID;
+                    setLoggedInUser(user);
+                }
+
+                if (id !== undefined) {
+                    const x = await fetchDatesofNotesForLoggedInUser(id);
+
+                    const dates = x?.map(date => new Date(date));
+                    setValidNoteDates(dates!);
+                }
+                
+            } catch (err) {
+                console.error('Could not fetch dates');
+            }
+        })();
+    }, [loggedInUser])
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
@@ -218,19 +244,20 @@ export function Notes(): JSX.Element {
             </div>
 
             <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
-                {!loading ? <div className='left'>
-                                <DatePicker
-                                    className={error ? 'no-display': 'input' }
-                                    title="date-picker"
-                                    selected={startDate}
-                                    onChange={(date: Date) => {
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
-                                        setLoading(true);
-                                    }}
-                                    maxDate={new Date()}
-                                />
-                            </div> : null
+                {!loading && validNoteDates ? <div className='left'>
+                                                <DatePicker
+                                                    className={error ? 'no-display': 'input' }
+                                                    highlightDates={validNoteDates}
+                                                    maxDate={new Date()}
+                                                    onChange={(date: Date) => {
+                                                        fetchDiaryEntryContentByDate(date);
+                                                        setStartDate(new Date(date));
+                                                        setLoading(true);
+                                                    }}
+                                                    selected={startDate}
+                                                    title="date-picker"
+                                                />
+                                    </div> : null
                 }
 
                 {loading ? <div className="centre">
