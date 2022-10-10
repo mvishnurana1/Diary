@@ -109,19 +109,23 @@
         max-width: 70%;
     }
     
-    @media (max-width: 800px) {
+    @media (max-width: 1243px) {
+        .save-button-container {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            margin-top: 0.25rem;
+        }
+
         .notes-layout {
             flex-direction: column;
-            gap: 2rem;
         }
     
         .textArea {
-            margin: 5%;
+            margin: 1rem auto;
             width: 90%;
         }
-    }
 
-    @media (max-width: 1243px) {
         .left {
             align-items: center;
             display: flex;
