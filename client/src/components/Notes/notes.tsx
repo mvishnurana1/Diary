@@ -32,6 +32,7 @@ export function Notes(): JSX.Element {
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
+    const [recentlyPosted, setRecentlyPosted] = useState(false);
 
     const {
         getAccessTokenSilently,
@@ -102,7 +103,19 @@ export function Notes(): JSX.Element {
                 console.error('Could not fetch dates');
             }
         })();
-    }, [loggedInUser])
+    }, [loggedInUser]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const x = await fetchDatesofNotesForLoggedInUser(loggedInUser.userID);
+                const dates = x?.map(date => new Date(date));
+                setValidNoteDates(dates!);
+            } catch (err) {
+                console.error('Could not fetch dates');
+            }
+        })();
+    }, [recentlyPosted]);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
@@ -156,6 +169,7 @@ export function Notes(): JSX.Element {
                 setError(true);
             } finally {
                 setLoading(false);
+                setRecentlyPosted(true);
             }
         }
     }
