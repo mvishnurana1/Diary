@@ -44,7 +44,7 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                // setLoading(true);
+                // // setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
                 
@@ -58,9 +58,9 @@ export function Notes(): JSX.Element {
                     loginWithRedirect();
                 }
             }
-            // finally {
-            //     setLoading(false);
-            // }
+            finally {
+                // setLoading(false);
+            }
         })();
     });
 
@@ -74,9 +74,9 @@ export function Notes(): JSX.Element {
             } catch (err) {
                 setError(true);
             } 
-            // finally {
-            //     setLoading(false);
-            // }
+            finally {
+                setLoading(false);
+            }
         })();
     }, []);
 
@@ -106,7 +106,7 @@ export function Notes(): JSX.Element {
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            setLoading(true);
+            // setLoading(true);
             let id = undefined;
 
             if (loggedInUser.userID === undefined) {
@@ -134,7 +134,7 @@ export function Notes(): JSX.Element {
         } else {
             try 
             {
-                setLoading(true);
+                // setLoading(true);
 
                 let id = undefined;
 
@@ -166,7 +166,7 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                setLoading(true);
+                // setLoading(true);
 
                 let id = undefined;
 
@@ -254,7 +254,7 @@ export function Notes(): JSX.Element {
                                                     onChange={(date: Date) => {
                                                         fetchDiaryEntryContentByDate(date);
                                                         setStartDate(new Date(date));
-                                                        // setLoading(true);
+                                                        // // setLoading(true);
                                                     }}
                                                     selected={startDate}
                                                     title="date-picker"
@@ -295,7 +295,7 @@ export function Notes(): JSX.Element {
                 className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
                 onClick={() => {
                     postNote();
-                    setLoading(true);
+                    // setLoading(true);
                     setContent('')
                 }}
                 disabled={ content?.length === 0 }>
