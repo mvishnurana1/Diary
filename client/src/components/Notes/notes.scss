@@ -120,5 +120,12 @@
             width: 90%;
         }
     }
+
+    @media (max-width: 1243px) {
+        .left {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+    }
 }
- 
