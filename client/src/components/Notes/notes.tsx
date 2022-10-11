@@ -244,7 +244,7 @@ export function Notes(): JSX.Element {
             </>
             {!loading && validNoteDates ? <div className='left'>
                                                     <DatePicker
-                                                        className={error ? 'no-display': 'input' }
+                                                        className={error ? 'no-display': '' }
                                                         highlightDates={validNoteDates}
                                                         inline
                                                         maxDate={new Date()}
@@ -308,19 +308,20 @@ export function Notes(): JSX.Element {
                             </div>
                         : null
                 }
-
-                    <button
-                        className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
-                        onClick={() => {
-                            postNote();
-                            // setLoading(true);
-                            setContent('')
-                        }}
-                        disabled={ content?.length === 0 }>
-                        { content?.length === 0 ? 'Write note' : 'SAVE' }
-                    </button>
-                </div>
+                    <div className="centre">
+                        <button
+                            className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
+                            onClick={() => {
+                                postNote();
+                                // setLoading(true);
+                                setContent('')
+                            }}
+                            disabled={ content?.length === 0 }>
+                            { content?.length === 0 ? 'Write note' : 'SAVE' }
+                        </button>
+                    </div>
+            </div>
                 {displayCard()}
-        </div>
+    </div>
     )
 }
