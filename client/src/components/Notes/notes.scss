@@ -1,8 +1,10 @@
 @import "../../global.scss";
 
 .notes-landing-page {
-    display: flex;
-    margin: 1rem 0.25rem;
+    .notes {
+        display: flex;
+        margin: 1rem 0.25rem;
+    }
 
     .button-container {
         display: flex;
@@ -81,11 +83,6 @@
         display: none;
     }
 
-    .notes-layout {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
     .save {
         background-color: $tomato;
 
@@ -102,6 +99,7 @@
         width: 80%;
         margin-left: 1rem;
         padding: 1rem;
+        resize: vertical;
     }
 
     .textArea-container {
@@ -109,14 +107,16 @@
     }
 
     .vertical-rule {
-        border: 6px solid $tomato;
+        border: 2px solid $silver-dark;
+        box-shadow: 0.25rem 0.25rem 0.25rem black;
         min-height: 100%;
         margin: 0 1rem;
     }
     
     @media (max-width: 1243px) {
-        .notes-layout {
+        .notes {
             flex-direction: column;
+            gap: 1rem;
         }
     
         .textArea {
@@ -125,9 +125,10 @@
         }
 
         .left {
-            align-items: center;
             display: flex;
             justify-content: center;
+            margin-left: 0;
+            order: 0;
         }
 
         .vertical-rule {
