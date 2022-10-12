@@ -1,7 +1,10 @@
 @import "../../global.scss";
 
 .notes-landing-page {
-    margin: 1rem 0.25rem;
+    .notes {
+        display: flex;
+        margin: 1rem 0.25rem;
+    }
 
     .button-container {
         display: flex;
@@ -9,8 +12,11 @@
         margin-top: -2rem;
     }
 
-    .centre {
-        margin: 0 30% 0 30%
+    .column {
+        display: flex;
+        flex-basis: 100%;
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .entry-card-container {
@@ -34,6 +40,10 @@
         padding: 2rem;
     }
 
+    .react-datepicker__day--highlighted-custom-1 {
+        background-color: aqua;
+    }
+
     .red {
         color: $tomato;
         margin-left: 1rem;
@@ -47,14 +57,6 @@
         align-items: center;
         display: flex;
         justify-content: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .input {
-        border-radius: 1rem;
-        box-shadow: 1rem .25rem 1rem 0.5rem 
-            $grey;
-        padding: 0 0.25rem;
     }
 
     .search {
@@ -81,11 +83,6 @@
         display: none;
     }
 
-    .notes-layout {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
     .save {
         background-color: $tomato;
 
@@ -96,29 +93,46 @@
 
     .textArea {
         border-radius: 1rem;
-        box-shadow: 1rem 1rem 1rem 1rem
-            $grey;
+        box-shadow: 1rem 1rem 1rem 1rem $grey;
         font-size: medium;
         font-weight: 500;
         width: 80%;
         margin-left: 1rem;
         padding: 1rem;
+        resize: vertical;
     }
 
     .textArea-container {
         max-width: 70%;
     }
+
+    .vertical-rule {
+        border: 2px solid $silver-dark;
+        box-shadow: 0.25rem 0.25rem 0.25rem black;
+        min-height: 100%;
+        margin: 0 1rem;
+    }
     
-    @media (max-width: 800px) {
-        .notes-layout {
+    @media (max-width: 1243px) {
+        .notes {
             flex-direction: column;
-            gap: 2rem;
+            gap: 1rem;
         }
     
         .textArea {
-            margin: 5%;
+            margin: 1rem auto;
             width: 90%;
+        }
+
+        .left {
+            display: flex;
+            justify-content: center;
+            margin-left: 0;
+            order: 0;
+        }
+
+        .vertical-rule {
+            display: none;
         }
     }
 }
- 

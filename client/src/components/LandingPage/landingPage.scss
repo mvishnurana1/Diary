@@ -2,7 +2,8 @@
 
 .login-page-container {
     .header {
-        color: $tomato;;
+        color: $tomato;
+        user-select: none;
     }
 
     .blue {

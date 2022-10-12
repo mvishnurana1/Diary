@@ -32,6 +32,7 @@ export function Notes(): JSX.Element {
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
+    const [recentlyPosted, setRecentlyPosted] = useState(false);
 
     const {
         getAccessTokenSilently,
@@ -102,7 +103,19 @@ export function Notes(): JSX.Element {
                 console.error('Could not fetch dates');
             }
         })();
-    }, [loggedInUser])
+    }, [loggedInUser]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const x = await fetchDatesofNotesForLoggedInUser(loggedInUser.userID);
+                const dates = x?.map(date => new Date(date));
+                setValidNoteDates(dates!);
+            } catch (err) {
+                console.error('Could not fetch dates');
+            }
+        })();
+    }, [recentlyPosted]);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
@@ -156,6 +169,7 @@ export function Notes(): JSX.Element {
                 setError(true);
             } finally {
                 setLoading(false);
+                setRecentlyPosted(true);
             }
         }
     }
@@ -198,110 +212,120 @@ export function Notes(): JSX.Element {
 
     function displayCard() {
         if (searchedResult?.length > 0) {
-            return <div className="entry-card-container">
-                    <div>
-                        <SearchResults
-                            entries={searchedResult}
-                            setContent={setContent}
-                            setSearchedContent={setSearchedContent}
-                            setStartDate={setStartDate}
-                            setSearchedResult={setSearchedResult}
-                        />
-                    </div>
-                    <div className="center">
-                        <FontAwesomeIcon
-                            className='red'
-                            icon={faXmark}
-                            onClick={() => {
-                                setSearchedResult([]);
-                                setSearchedContent('');
-                            }}
-                            size="lg"
-                        />
-                    </div>
-                </div>
+            return (
+            <div className="entry-card-container">
+                        <div>
+                            <SearchResults
+                                entries={searchedResult}
+                                setContent={setContent}
+                                setSearchedContent={setSearchedContent}
+                                setStartDate={setStartDate}
+                                setSearchedResult={setSearchedResult}
+                            />
+                        </div>
+                        <div className="center">
+                            <FontAwesomeIcon
+                                className='red'
+                                icon={faXmark}
+                                onClick={() => {
+                                    setSearchedResult([]);
+                                    setSearchedContent('');
+                                }}
+                                size="lg"
+                            />
+                        </div>
+            </div>
+            )
         }
     }
 
     return (
         <div className='notes-landing-page'>
-            <>
-                {displayError()}
-            </>
-            <div className='search-box-container'>
-                <input
-                    className='search'
-                    placeholder='find submitted entries...'
-                    value={searchedContent}
-                    onChange={(e) => setSearchedContent(e.target.value)}
-                />
-
-                <FontAwesomeIcon
-                    className='red'
-                    icon={faMagnifyingGlass}
-                    onClick={() => getSearchedEntryByContent()}
-                    size="lg"
-                />
-            </div>
-
-            <div className={searchedResult?.length > 0 || error ? 'no-display' : 'notes-layout'}>
+            <div className='notes'>
+                <>
+                    {displayError()}
+                </>
                 {!loading && validNoteDates ? <div className='left'>
-                                                <DatePicker
-                                                    className={error ? 'no-display': 'input' }
-                                                    highlightDates={validNoteDates}
-                                                    inline
-                                                    maxDate={new Date()}
-                                                    onChange={(date: Date) => {
-                                                        fetchDiaryEntryContentByDate(date);
-                                                        setStartDate(new Date(date));
-                                                        // // setLoading(true);
-                                                    }}
-                                                    selected={startDate}
-                                                    title="date-picker"
-                                                />
-                                    </div> : null
+                                                        <DatePicker
+                                                            className={error ? 'no-display': 'textArea' }
+                                                            highlightDates={validNoteDates}
+                                                            inline
+                                                            maxDate={new Date()}
+                                                            onChange={(date: Date) => {
+                                                                fetchDiaryEntryContentByDate(date);
+                                                                setStartDate(new Date(date));
+                                                                // // setLoading(true);
+                                                            }}
+                                                            selected={startDate}
+                                                            title="date-picker"
+                                                        />
+                                            </div> : null
                 }
 
-                {loading ? <div className="centre">
-                                <ClipLoader
-                                    color='red'
-                                    data-testid="clip-loader"
-                                    size={150}
-                                />
-                            </div>
-                         : <textarea
-                                className={ error ? 'no-display': 'textArea' }
-                                rows={15}
-                                placeholder="Dear Diary..."
-                                onChange={(e) => setContent(e.target.value)}
-                                spellCheck={false}
-                                value={content}
-                            />}
-            </div>
+                <div className='vertical-rule'></div>
 
-            {error ?   <div
-                            className='error-container'
-                            data-testid="error-emoji">
-                            <FontAwesomeIcon
-                                icon={faFaceSadCry}
-                                size="3x"
-                            />
-                            <h6>Something went wrong. Please try again later!</h6>
+                <div className='column'>
+                    <div className='search-box-container'>
+                        <input
+                            className='search'
+                            placeholder='find submitted entries...'
+                            value={searchedContent}
+                            onChange={(e) => setSearchedContent(e.target.value)}
+                        />
+
+                        <FontAwesomeIcon
+                            className='red'
+                            icon={faMagnifyingGlass}
+                            onClick={() => getSearchedEntryByContent()}
+                            size="lg"
+                        />
+                    </div>
+
+                    <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
+                        {loading ? <div>
+                                        <ClipLoader
+                                            color='red'
+                                            data-testid="clip-loader"
+                                            size={150}
+                                        />
+                                    </div>
+                                : <textarea
+                                        className={ error ? 'no-display': 'textArea' }
+                                        rows={15}
+                                        placeholder="Dear Diary..."
+                                        onChange={(e) => setContent(e.target.value)}
+                                        spellCheck={false}
+                                        value={content}
+                                    />
+                        }
+                    </div>
+
+                    {error ?   <div
+                                    className='error-container'
+                                    data-testid="error-emoji">
+                                    <FontAwesomeIcon
+                                        icon={faFaceSadCry}
+                                        size="3x"
+                                    />
+                                    <h6>Something went wrong. Please try again later!</h6>
+                                </div>
+                            : null
+                    }
+                        <div className="centre">
+                            <button
+                                className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
+                                onClick={() => {
+                                    postNote();
+                                    // setLoading(true);
+                                    setContent('')
+                                }}
+                                disabled={ content?.length === 0 }>
+                                { content?.length === 0 ? 'Write note' : 'SAVE' }
+                            </button>
                         </div>
-                    : null
-            }
-
-            <button
-                className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
-                onClick={() => {
-                    postNote();
-                    // setLoading(true);
-                    setContent('')
-                }}
-                disabled={ content?.length === 0 }>
-                { content?.length === 0 ? 'Write note' : 'SAVE' }
-            </button>
-            {displayCard()}
+                </div>
+                    {displayCard()}
         </div>
+    </div>
     )
 }
