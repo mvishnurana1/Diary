@@ -38,13 +38,9 @@ namespace API.Helpers.Services
 
                 if (user == null)
                 {
-                    var createdUser = await CreateUser();
-                    user = new User()
-                    {
-                        Email = createdUser.Email,
-                        UserID = createdUser.UserID,
-                        UserName = createdUser.UserName
-                    };
+                    var createdUser = await CreateUser(token);
+
+                    return createdUser;
                 }
 
                 var loggedInUser = new UserResponseDto()
@@ -61,8 +57,18 @@ namespace API.Helpers.Services
             }
         }
 
-        private async Task<UserResponseDto> CreateUser()
+        private async Task<UserResponseDto> CreateUser(string token)
         {
+            try
+            {
+                // Read the token...
+                // extract user information from the token...
+                // Save it to the Database...
+                // return the newly created user...
+            } catch (Exception)
+            {
+                return null;
+            }
             return await Task.Run(() => new UserResponseDto());
         }
     }
