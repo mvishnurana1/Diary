@@ -3,7 +3,6 @@ import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-soli
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
-import ClipLoader from "react-spinners/ClipLoader";
 import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
@@ -16,17 +15,17 @@ import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNo
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
+const defaultUser: LoggedInUser = {
+    email: undefined!,
+    userID: undefined!,
+    userName: undefined!
+}
+
 export function Notes(): JSX.Element {
-    const defaultUser: LoggedInUser = {
-        email: undefined!,
-        userID: undefined!,
-        userName: undefined!
-    }
 
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error,  setError] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [searchedContent,  setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
@@ -45,7 +44,6 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                // // setLoading(true);
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
                 
@@ -59,25 +57,17 @@ export function Notes(): JSX.Element {
                     loginWithRedirect();
                 }
             }
-            finally {
-                // setLoading(false);
-            }
         })();
     });
 
     useEffect(() => {
         (async () => {
             try {
-                // setLoading(true);
-
                 const user = await fetchUser();
                 setLoggedInUser(user);
             } catch (err) {
                 setError(true);
             } 
-            finally {
-                setLoading(false);
-            }
         })();
     }, []);
 
@@ -115,11 +105,10 @@ export function Notes(): JSX.Element {
                 console.error('Could not fetch dates');
             }
         })();
-    }, [recentlyPosted]);
+    }, [recentlyPosted, loggedInUser.userID]);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            // setLoading(true);
             let id = undefined;
 
             if (loggedInUser.userID === undefined) {
@@ -136,8 +125,6 @@ export function Notes(): JSX.Element {
             return content;
         } catch (error) {
             setError(true);
-        } finally {
-            setLoading(false);
         }
     }
 
@@ -147,8 +134,6 @@ export function Notes(): JSX.Element {
         } else {
             try 
             {
-                // setLoading(true);
-
                 let id = undefined;
 
                 if (loggedInUser.userID  === undefined) {
@@ -168,7 +153,6 @@ export function Notes(): JSX.Element {
             } catch (err) {
                 setError(true);
             } finally {
-                setLoading(false);
                 setRecentlyPosted(true);
             }
         }
@@ -180,8 +164,6 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                // setLoading(true);
-
                 let id = undefined;
 
                 if (loggedInUser.userID  === undefined) {
@@ -196,8 +178,6 @@ export function Notes(): JSX.Element {
                 setSearchedResult(searchResult);
             } catch (err) {
                 setError(true);
-            } finally {
-                setLoading(false);
             }
         }
     }
@@ -245,7 +225,8 @@ export function Notes(): JSX.Element {
                 <>
                     {displayError()}
                 </>
-                {!loading && validNoteDates ? <div className='left'>
+
+                {validNoteDates && !searchedResult.length ? <div className='left'>
                                                         <DatePicker
                                                             className={error ? 'no-display': 'textArea' }
                                                             highlightDates={validNoteDates}
@@ -254,15 +235,14 @@ export function Notes(): JSX.Element {
                                                             onChange={(date: Date) => {
                                                                 fetchDiaryEntryContentByDate(date);
                                                                 setStartDate(new Date(date));
-                                                                // // setLoading(true);
                                                             }}
                                                             selected={startDate}
                                                             title="date-picker"
                                                         />
                                             </div> : null
                 }
-
-                <div className='vertical-rule'></div>
+                
+                <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 
                 <div className='column'>
                     <div className='search-box-container'>
@@ -282,22 +262,14 @@ export function Notes(): JSX.Element {
                     </div>
 
                     <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
-                        {loading ? <div>
-                                        <ClipLoader
-                                            color='red'
-                                            data-testid="clip-loader"
-                                            size={150}
-                                        />
-                                    </div>
-                                : <textarea
-                                        className={ error ? 'no-display': 'textArea' }
-                                        rows={15}
-                                        placeholder="Dear Diary..."
-                                        onChange={(e) => setContent(e.target.value)}
-                                        spellCheck={false}
-                                        value={content}
-                                    />
-                        }
+                        <textarea
+                            className={ error ? 'no-display': 'textArea' }
+                            rows={15}
+                            placeholder="Dear Diary..."
+                            onChange={(e) => setContent(e.target.value)}
+                            spellCheck={false}
+                            value={content}
+                        />
                     </div>
 
                     {error ?   <div
@@ -313,18 +285,18 @@ export function Notes(): JSX.Element {
                     }
                         <div className="centre">
                             <button
-                                className={ searchedResult.length > 0 || error || loading ? 'no-display' : 'save button' }
+                                className={ searchedResult.length > 0 || error ? 'no-display' : 'save button' }
                                 onClick={() => {
                                     postNote();
-                                    // setLoading(true);
                                     setContent('')
                                 }}
+                                title={ content?.length === 0 ? 'Write note' : 'SAVE' }
                                 disabled={ content?.length === 0 }>
                                 { content?.length === 0 ? 'Write note' : 'SAVE' }
                             </button>
                         </div>
-                </div>
                     {displayCard()}
+                </div>
         </div>
     </div>
     )
