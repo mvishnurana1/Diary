@@ -34,6 +34,7 @@ namespace API.Helpers.Services
                 var handler = new JwtSecurityTokenHandler();
                 var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
                 var email = jsonToken.Claims.First(x => x.Type == "email").Value;
+                var userName = jsonToken.Claims.First(x => x.Type == "nickname").Value;
 
                 var user = await Task.Run(() => _context.User
                                                         .Where(x => x.Email == email)
@@ -42,7 +43,7 @@ namespace API.Helpers.Services
 
                 if (user == null)
                 {
-                    var createdUser = await CreateUser(token);
+                    var createdUser = await CreateUser(email, userName);
 
                     return createdUser;
                 }
@@ -54,15 +55,10 @@ namespace API.Helpers.Services
             }
         }
 
-        private async Task<UserResponseDto> CreateUser(string token)
+        private async Task<UserResponseDto> CreateUser(string email, string userName)
         {
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-                var userName = jsonToken.Claims.First(x => x.Type == "nickname").Value;
-                var email = jsonToken.Claims.First(x => x.Type == "email").Value;
-
                 var newUser = new User() 
                 { 
                     Email = email,
@@ -70,6 +66,7 @@ namespace API.Helpers.Services
                 };
 
                 await _context.User.AddAsync(newUser);
+                await _context.SaveChangesAsync();
 
                 return _mapper.Map<UserResponseDto>(newUser);
             }
