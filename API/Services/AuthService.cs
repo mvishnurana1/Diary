@@ -3,6 +3,7 @@ using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using API.DTOs.Users;
+using API.model;
 
 namespace API.Helpers.Services
 {
@@ -35,6 +36,17 @@ namespace API.Helpers.Services
                                                         .ToList()
                                                         .FirstOrDefault());
 
+                if (user == null)
+                {
+                    var createdUser = await CreateUser();
+                    user = new User()
+                    {
+                        Email = createdUser.Email,
+                        UserID = createdUser.UserID,
+                        UserName = createdUser.UserName
+                    };
+                }
+
                 var loggedInUser = new UserResponseDto()
                 {
                     Email = user.Email,
@@ -47,6 +59,11 @@ namespace API.Helpers.Services
             {
                 return null;
             }
+        }
+
+        private async Task<UserResponseDto> CreateUser()
+        {
+            return await Task.Run(() => new UserResponseDto());
         }
     }
 }
