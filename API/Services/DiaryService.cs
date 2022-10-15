@@ -53,7 +53,7 @@ namespace API.Helpers.Services
             var parsedDate = DateTime.Parse(newEntry.SubmittedDateTime);
             var userDetails = await GetResponsibleUserDetails(newEntry.UserID, parsedDate.Date);
 
-            if (userDetails.Entries.Count > 0)
+            if (userDetails?.Entries.Count > 0)
             {
                 var entry = await UpdateEntry(userDetails.Entries.FirstOrDefault(), newEntry);
                 return entry;
