@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using API.DTOs.Users;
 using API.model;
+using AutoMapper;
 
 namespace API.Helpers.Services
 {
@@ -15,12 +16,15 @@ namespace API.Helpers.Services
     public class AuthService : IAuthService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
         public AuthService(
-            DataContext context
+            DataContext context,
+            IMapper mapper
         )
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<UserResponseDto> GetLoggedInUser(string token)
@@ -43,14 +47,7 @@ namespace API.Helpers.Services
                     return createdUser;
                 }
 
-                var loggedInUser = new UserResponseDto()
-                {
-                    Email = user.Email,
-                    UserID = user.UserID,
-                    UserName = user.UserName
-                };
-
-                return loggedInUser;
+                return _mapper.Map<UserResponseDto>(user);
             } catch(Exception)
             {
                 return null;
@@ -61,15 +58,25 @@ namespace API.Helpers.Services
         {
             try
             {
-                // Read the token...
-                // extract user information from the token...
-                // Save it to the Database...
-                // return the newly created user...
-            } catch (Exception)
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                var userName = jsonToken.Claims.First(x => x.Type == "nickname").Value;
+                var email = jsonToken.Claims.First(x => x.Type == "email").Value;
+
+                var newUser = new User() 
+                { 
+                    Email = email,
+                    UserName = userName,
+                };
+
+                await _context.User.AddAsync(newUser);
+
+                return _mapper.Map<UserResponseDto>(newUser);
+            }
+            catch (Exception)
             {
                 return null;
             }
-            return await Task.Run(() => new UserResponseDto());
         }
     }
 }
