@@ -59,17 +59,16 @@ namespace API
             }
 
             app.UseHttpsRedirection();
- 
-            app.UseAuthentication();
             app.UseRouting();
-            app.UseAuthorization();
-
             app.UseCors(policy =>
             {
                 policy.AllowAnyHeader()
                       .AllowAnyMethod()
                       .WithOrigins("http://localhost:3000");
             });
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
