@@ -28,9 +28,9 @@ export function MonthGoal(): JSX.Element {
     const [ edit, setEdit ] = useState<defaultGoal>(defaultEdit);
     const [ edittedContent,  setEdittedContent] = useState('');
 
+
     function editGoal(_event: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number) {
-        const content = monthlyGoal[index].content;
-        monthlyGoal.splice(0, 1, { content: edittedContent });
+        monthlyGoal.splice(index, 1, { content: edittedContent });
         setEdit({ isEditting: !edit.isEditting, index: index, content: edittedContent });
         setEdittedContent('');
     }
