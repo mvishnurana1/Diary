@@ -1,0 +1,48 @@
+@import '../../global.scss';
+
+.month-goal {
+    .goal-item {
+        margin: 0 0 0.75em 0;
+    }
+
+    .content {
+        font-weight: 400;
+        margin: 0 0 0 -0.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 150px;
+    }
+
+    .edit-panel {
+        display: flex;
+        gap: 1rem;
+
+        .edit-button {
+            border: none;
+            border-radius: 0.25rem;
+            outline: none;
+        }
+    }
+
+    .goal-delete {
+        color: $grey-dark;
+    }
+
+    .goal-edit {
+        color: $blue;
+    }
+
+    .goal-logo {
+        color: $tomato;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .top {
+        padding: 1rem 0 0 0;
+    }
+}
