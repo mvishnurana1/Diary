@@ -1,3 +1,4 @@
+import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +13,7 @@ import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
+import { MonthGoal } from '../MonthGoal/monthGoal';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -74,7 +76,7 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID === undefined) {
                     const user = await fetchUser();
@@ -109,7 +111,7 @@ export function Notes(): JSX.Element {
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            let id = undefined;
+            let id = '';
 
             if (loggedInUser.userID === undefined) {
                 const user = await fetchUser();
@@ -134,7 +136,7 @@ export function Notes(): JSX.Element {
         } else {
             try 
             {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
@@ -164,7 +166,7 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
@@ -239,6 +241,7 @@ export function Notes(): JSX.Element {
                                                             selected={startDate}
                                                             title="date-picker"
                                                         />
+                                                        <MonthGoal />
                                             </div> : null
                 }
                 
