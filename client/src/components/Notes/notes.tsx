@@ -241,38 +241,39 @@ export function Notes(): JSX.Element {
                     {displayError()}
                 </>
 
-                {validNoteDates && !searchedResult.length ? <div className='left'>
-                                                    <div className={error ? 'no-display': 'datepicker'}>
-                                                        <div className='mobile'>
-                                                            {active === activeOnMobileDisplay.calendar && 
-                                                                <DatePicker
-                                                                    highlightDates={validNoteDates}
-                                                                    inline
-                                                                    maxDate={new Date()}
-                                                                    onChange={(date: Date) => {
-                                                                        fetchDiaryEntryContentByDate(date);
-                                                                        setStartDate(new Date(date));
-                                                                    }}
-                                                                    selected={startDate}
-                                                                    title="date-picker"
-                                                                />
-                                                            }
-                                                        </div>
-                                                        <div className={error ? 'no-display': 'desktop datepicker'}>
-                                                            <DatePicker
-                                                                highlightDates={validNoteDates}
-                                                                inline
-                                                                maxDate={new Date()}
-                                                                onChange={(date: Date) => {
-                                                                    fetchDiaryEntryContentByDate(date);
-                                                                    setStartDate(new Date(date));
-                                                                }}
-                                                                selected={startDate}
-                                                                title="date-picker"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                            </div> : null
+                {validNoteDates && !searchedResult.length &&
+                <div className='left'>
+                    <div className={error ? 'no-display': 'datepicker'}>
+                        <div className='mobile'>
+                            {active === activeOnMobileDisplay.calendar &&
+                                <DatePicker
+                                    highlightDates={validNoteDates}
+                                    inline
+                                    maxDate={new Date()}
+                                    onChange={(date: Date) => {
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                    }}
+                                    selected={startDate}
+                                    title="date-picker"
+                                />
+                            }
+                        </div>
+                        <div className={error ? 'no-display': 'desktop datepicker'}>
+                            <DatePicker
+                                highlightDates={validNoteDates}
+                                inline
+                                maxDate={new Date()}
+                                onChange={(date: Date) => {
+                                    fetchDiaryEntryContentByDate(date);
+                                    setStartDate(new Date(date));
+                                }}
+                                selected={startDate}
+                                title="date-picker"
+                            />
+                        </div>
+                    </div>
+                </div>
                 }
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
@@ -332,7 +333,7 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    {error ?   <div
+                    {error  &&  <div
                                     className='error-container'
                                     data-testid="error-emoji">
                                     <FontAwesomeIcon
@@ -341,7 +342,6 @@ export function Notes(): JSX.Element {
                                     />
                                     <h6>Something went wrong. Please try again later!</h6>
                                 </div>
-                            : null
                     }
                         <div className="centre">
                             <button
