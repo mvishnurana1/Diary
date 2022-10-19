@@ -287,23 +287,25 @@ export function Notes(): JSX.Element {
                         </div>
                     }
 
-                    {(active === activeOnMobileDisplay.search) && <div className='mobile search-box-container'>
-                        <input
-                            className='search'
-                            placeholder='find submitted entries...'
-                            value={searchedContent}
-                            onChange={(e) => setSearchedContent(e.target.value)}
-                        />
+                    <div className='mobile'>
+                        {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
+                            <input
+                                className='search'
+                                placeholder='find submitted entries...'
+                                value={searchedContent}
+                                onChange={(e) => setSearchedContent(e.target.value)}
+                            />
 
-                        <FontAwesomeIcon
-                            className='red'
-                            icon={faMagnifyingGlass}
-                            onClick={() => getSearchedEntryByContent()}
-                            size="lg"
-                        />
-                    </div>}
+                            <FontAwesomeIcon
+                                className='red'
+                                icon={faMagnifyingGlass}
+                                onClick={() => getSearchedEntryByContent()}
+                                size="lg"
+                            />
+                        </div>}
+                    </div>
 
-                    <div className='search-box-container desktop'>
+                    <div className='desktop search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -358,7 +360,7 @@ export function Notes(): JSX.Element {
         </div>
         
         <div className='mobile'>
-            <div className='fab-container'>
+            {searchedContent.length <= 0 && <div className='fab-container'>
                 <button className='button iconbutton centre' onClick=
                 {
                     () => active === activeOnMobileDisplay.calendar 
@@ -376,7 +378,7 @@ export function Notes(): JSX.Element {
                     size="2x"
                 />}
                 </button>
-            </div>
+            </div>}
         </div>
     </div>
     )
