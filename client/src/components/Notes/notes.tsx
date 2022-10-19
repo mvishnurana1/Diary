@@ -243,7 +243,22 @@ export function Notes(): JSX.Element {
 
                 {validNoteDates && !searchedResult.length ? <div className='left'>
                                                     <div className={error ? 'no-display': 'datepicker'}>
-                                                        {active === activeOnMobileDisplay.calendar && 
+                                                        <div className='mobile'>
+                                                            {active === activeOnMobileDisplay.calendar && 
+                                                                <DatePicker
+                                                                    highlightDates={validNoteDates}
+                                                                    inline
+                                                                    maxDate={new Date()}
+                                                                    onChange={(date: Date) => {
+                                                                        fetchDiaryEntryContentByDate(date);
+                                                                        setStartDate(new Date(date));
+                                                                    }}
+                                                                    selected={startDate}
+                                                                    title="date-picker"
+                                                                />
+                                                            }
+                                                        </div>
+                                                        <div className={error ? 'no-display': 'desktop datepicker'}>
                                                             <DatePicker
                                                                 highlightDates={validNoteDates}
                                                                 inline
@@ -255,7 +270,7 @@ export function Notes(): JSX.Element {
                                                                 selected={startDate}
                                                                 title="date-picker"
                                                             />
-                                                        }
+                                                        </div>
                                                     </div>
                                             </div> : null
                 }
@@ -272,7 +287,7 @@ export function Notes(): JSX.Element {
                         </div>
                     }
 
-                    {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
+                    {(active === activeOnMobileDisplay.search) && <div className='mobile search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -287,6 +302,22 @@ export function Notes(): JSX.Element {
                             size="lg"
                         />
                     </div>}
+
+                    <div className='search-box-container desktop'>
+                        <input
+                            className='search'
+                            placeholder='find submitted entries...'
+                            value={searchedContent}
+                            onChange={(e) => setSearchedContent(e.target.value)}
+                        />
+
+                        <FontAwesomeIcon
+                            className='red'
+                            icon={faMagnifyingGlass}
+                            onClick={() => getSearchedEntryByContent()}
+                            size="lg"
+                        />
+                    </div>
 
                     <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
                         <textarea
