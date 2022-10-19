@@ -3,13 +3,11 @@ import { Routes } from 'react-router';
 import { Notes } from './components/Notes/notes';
 import { LandingPage } from './components/LandingPage/landingPage';
 import { NoPage }  from './components/common/NoPage/NoPage';
-import { Header } from './components/common/Header/Header';
 import './App.scss';
 
 function App(): JSX.Element {
   return (
       <Router>
-        <Header />
         <Routes>
             <Route path="" element={<LandingPage />} />
             <Route path="new" element={<Notes />} />
