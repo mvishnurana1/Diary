@@ -1,5 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faFaceSadCry, 
+    faMagnifyingGlass, 
+    faXmark,
+    faCalendar} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -12,6 +15,8 @@ import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
+import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
+import { Header } from '../common/Header/Header';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -22,7 +27,6 @@ const defaultUser: LoggedInUser = {
 }
 
 export function Notes(): JSX.Element {
-
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error,  setError] = useState(false);
@@ -32,13 +36,15 @@ export function Notes(): JSX.Element {
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
     const [recentlyPosted, setRecentlyPosted] = useState(false);
+    const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
     const {
         getAccessTokenSilently,
         isAuthenticated,
         loginWithRedirect,
         user,
-        getIdTokenClaims
+        getIdTokenClaims,
+        logout
     } = useAuth0();
 
     useEffect(() => {
@@ -221,31 +227,83 @@ export function Notes(): JSX.Element {
 
     return (
         <div className='notes-landing-page'>
+                { user && isAuthenticated &&
+                    <div className='mobile'>
+                        <Header 
+                            user={user}
+                            logout={logout}
+                        />
+                    </div>
+                }
+
             <div className='notes'>
                 <>
                     {displayError()}
                 </>
 
                 {validNoteDates && !searchedResult.length ? <div className='left'>
-                                                        <DatePicker
-                                                            className={error ? 'no-display': 'textArea' }
-                                                            highlightDates={validNoteDates}
-                                                            inline
-                                                            maxDate={new Date()}
-                                                            onChange={(date: Date) => {
-                                                                fetchDiaryEntryContentByDate(date);
-                                                                setStartDate(new Date(date));
-                                                            }}
-                                                            selected={startDate}
-                                                            title="date-picker"
-                                                        />
+                                                    <div className={error ? 'no-display': 'datepicker'}>
+                                                        <div className='mobile'>
+                                                            {active === activeOnMobileDisplay.calendar && 
+                                                                <DatePicker
+                                                                    highlightDates={validNoteDates}
+                                                                    inline
+                                                                    maxDate={new Date()}
+                                                                    onChange={(date: Date) => {
+                                                                        fetchDiaryEntryContentByDate(date);
+                                                                        setStartDate(new Date(date));
+                                                                    }}
+                                                                    selected={startDate}
+                                                                    title="date-picker"
+                                                                />
+                                                            }
+                                                        </div>
+                                                        <div className={error ? 'no-display': 'desktop datepicker'}>
+                                                            <DatePicker
+                                                                highlightDates={validNoteDates}
+                                                                inline
+                                                                maxDate={new Date()}
+                                                                onChange={(date: Date) => {
+                                                                    fetchDiaryEntryContentByDate(date);
+                                                                    setStartDate(new Date(date));
+                                                                }}
+                                                                selected={startDate}
+                                                                title="date-picker"
+                                                            />
+                                                        </div>
+                                                    </div>
                                             </div> : null
                 }
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 
                 <div className='column'>
-                    <div className='search-box-container'>
+                    { isAuthenticated && user &&
+                        <div className='desktop'>
+                            <Header 
+                                user={user}
+                                logout={logout}
+                            />
+                        </div>
+                    }
+
+                    {(active === activeOnMobileDisplay.search) && <div className='mobile search-box-container'>
+                        <input
+                            className='search'
+                            placeholder='find submitted entries...'
+                            value={searchedContent}
+                            onChange={(e) => setSearchedContent(e.target.value)}
+                        />
+
+                        <FontAwesomeIcon
+                            className='red'
+                            icon={faMagnifyingGlass}
+                            onClick={() => getSearchedEntryByContent()}
+                            size="lg"
+                        />
+                    </div>}
+
+                    <div className='search-box-container desktop'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -297,6 +355,28 @@ export function Notes(): JSX.Element {
                         </div>
                     {displayCard()}
                 </div>
+        </div>
+        
+        <div className='mobile'>
+            <div className='fab-container'>
+                <button className='button iconbutton centre' onClick=
+                {
+                    () => active === activeOnMobileDisplay.calendar 
+                        ? setActive(activeOnMobileDisplay.search)
+                        : setActive(activeOnMobileDisplay.calendar)
+                }>
+                {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
+                    color='white'
+                    icon={faCalendar}
+                    size="2x"
+                />}
+                {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
+                    color='white'
+                    icon={faMagnifyingGlass}
+                    size="2x"
+                />}
+                </button>
+            </div>
         </div>
     </div>
     )
