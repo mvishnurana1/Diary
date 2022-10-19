@@ -1,5 +1,8 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { faFaceSadCry, faMagnifyingGlass, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faFaceSadCry, 
+    faMagnifyingGlass, 
+    faXmark,
+    faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -12,6 +15,7 @@ import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
+import { Header } from '../common/Header/Header';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -221,14 +225,18 @@ export function Notes(): JSX.Element {
 
     return (
         <div className='notes-landing-page'>
+            <div className='mobile'>
+                <Header />
+            </div>
+
             <div className='notes'>
                 <>
                     {displayError()}
                 </>
 
                 {validNoteDates && !searchedResult.length ? <div className='left'>
+                                                    <div className={error ? 'no-display': 'datepicker'}>
                                                         <DatePicker
-                                                            className={error ? 'no-display': 'textArea' }
                                                             highlightDates={validNoteDates}
                                                             inline
                                                             maxDate={new Date()}
@@ -239,12 +247,17 @@ export function Notes(): JSX.Element {
                                                             selected={startDate}
                                                             title="date-picker"
                                                         />
+                                                    </div>
                                             </div> : null
                 }
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 
                 <div className='column'>
+                    <div className='desktop'>
+                        <Header />
+                    </div>
+
                     <div className='search-box-container'>
                         <input
                             className='search'
@@ -297,6 +310,18 @@ export function Notes(): JSX.Element {
                         </div>
                     {displayCard()}
                 </div>
+        </div>
+        
+        <div className='mobile'>
+            <div className='fab-container'>
+                <div className='button iconbutton centre'>
+                    <FontAwesomeIcon
+                        color='white'
+                        icon={faCalendar}
+                        size="2x"
+                    />
+                </div>
+            </div>
         </div>
     </div>
     )
