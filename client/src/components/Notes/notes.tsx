@@ -15,6 +15,7 @@ import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
+import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
@@ -26,7 +27,6 @@ const defaultUser: LoggedInUser = {
 }
 
 export function Notes(): JSX.Element {
-
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error,  setError] = useState(false);
@@ -36,6 +36,7 @@ export function Notes(): JSX.Element {
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
     const [recentlyPosted, setRecentlyPosted] = useState(false);
+    const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
     const {
         getAccessTokenSilently,
