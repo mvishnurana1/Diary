@@ -42,7 +42,8 @@ export function Notes(): JSX.Element {
         isAuthenticated,
         loginWithRedirect,
         user,
-        getIdTokenClaims
+        getIdTokenClaims,
+        logout
     } = useAuth0();
 
     useEffect(() => {
@@ -225,9 +226,14 @@ export function Notes(): JSX.Element {
 
     return (
         <div className='notes-landing-page'>
-            <div className='mobile'>
-                <Header />
-            </div>
+                { user && isAuthenticated &&
+                    <div className='mobile'>
+                        <Header 
+                            user={user}
+                            logout={logout}
+                        />
+                    </div>
+                }
 
             <div className='notes'>
                 <>
@@ -254,9 +260,14 @@ export function Notes(): JSX.Element {
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 
                 <div className='column'>
-                    <div className='desktop'>
-                        <Header />
-                    </div>
+                    { isAuthenticated && user &&
+                        <div className='desktop'>
+                            <Header 
+                                user={user}
+                                logout={logout}
+                            />
+                        </div>
+                    }
 
                     <div className='search-box-container'>
                         <input
