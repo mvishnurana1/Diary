@@ -41,10 +41,6 @@
         padding: 2rem;
     }
 
-    .react-datepicker__day--highlighted-custom-1 {
-        background-color: aqua;
-    }
-
     .red {
         color: $tomato;
         margin-left: 1rem;
@@ -141,6 +137,10 @@
             justify-content: center;
             margin-left: 0;
             order: 0;
+
+            .datepicker {
+                margin: 0;
+            }
         }
 
         .vertical-rule {
