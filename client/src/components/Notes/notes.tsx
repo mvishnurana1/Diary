@@ -2,7 +2,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, 
     faMagnifyingGlass, 
     faXmark,
-    faCalendar } from "@fortawesome/free-solid-svg-icons";
+    faCalendar} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -243,17 +243,19 @@ export function Notes(): JSX.Element {
 
                 {validNoteDates && !searchedResult.length ? <div className='left'>
                                                     <div className={error ? 'no-display': 'datepicker'}>
-                                                        <DatePicker
-                                                            highlightDates={validNoteDates}
-                                                            inline
-                                                            maxDate={new Date()}
-                                                            onChange={(date: Date) => {
-                                                                fetchDiaryEntryContentByDate(date);
-                                                                setStartDate(new Date(date));
-                                                            }}
-                                                            selected={startDate}
-                                                            title="date-picker"
-                                                        />
+                                                        {active === activeOnMobileDisplay.calendar && 
+                                                            <DatePicker
+                                                                highlightDates={validNoteDates}
+                                                                inline
+                                                                maxDate={new Date()}
+                                                                onChange={(date: Date) => {
+                                                                    fetchDiaryEntryContentByDate(date);
+                                                                    setStartDate(new Date(date));
+                                                                }}
+                                                                selected={startDate}
+                                                                title="date-picker"
+                                                            />
+                                                        }
                                                     </div>
                                             </div> : null
                 }
@@ -270,7 +272,7 @@ export function Notes(): JSX.Element {
                         </div>
                     }
 
-                    <div className='search-box-container'>
+                    {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -284,7 +286,7 @@ export function Notes(): JSX.Element {
                             onClick={() => getSearchedEntryByContent()}
                             size="lg"
                         />
-                    </div>
+                    </div>}
 
                     <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
                         <textarea
@@ -326,16 +328,22 @@ export function Notes(): JSX.Element {
         
         <div className='mobile'>
             <div className='fab-container'>
-                <button className='button iconbutton centre' onClick={() => 
-                        active === activeOnMobileDisplay.calendar 
+                <button className='button iconbutton centre' onClick=
+                {
+                    () => active === activeOnMobileDisplay.calendar 
                         ? setActive(activeOnMobileDisplay.search)
                         : setActive(activeOnMobileDisplay.calendar)
-                    }>
-                    <FontAwesomeIcon
-                        color='white'
-                        icon={faCalendar}
-                        size="2x"
-                    />
+                }>
+                {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
+                    color='white'
+                    icon={faCalendar}
+                    size="2x"
+                />}
+                {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
+                    color='white'
+                    icon={faMagnifyingGlass}
+                    size="2x"
+                />}
                 </button>
             </div>
         </div>
