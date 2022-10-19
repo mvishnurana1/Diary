@@ -116,7 +116,7 @@
     }
     
     @media (max-width: 1243px) {
-        .mobile { display: block; }
+        .mobile { display: inherit; }
 
         .desktop {
             display: none;
