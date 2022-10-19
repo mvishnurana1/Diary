@@ -1,9 +1,10 @@
 @import "../../global.scss";
 
 .notes-landing-page {
+    .mobile { display: none; }
+
     .notes {
         display: flex;
-        margin: 1rem 0.25rem;
     }
 
     .button-container {
@@ -69,6 +70,10 @@
 
     .left {
         margin-left: 1.5rem;
+
+        .datepicker {
+            margin-top: 1rem;
+        }
     }
 
     .logout {
@@ -107,13 +112,20 @@
     }
 
     .vertical-rule {
+        background-color: $silver-dark;
         border: 2px solid $silver-dark;
         box-shadow: 0.25rem 0.25rem 0.25rem black;
-        min-height: 100%;
+        min-height: 100vh;
         margin: 0 1rem;
     }
     
     @media (max-width: 1243px) {
+        .mobile { display: block; }
+
+        .desktop {
+            display: none;
+        }
+
         .notes {
             flex-direction: column;
             gap: 1rem;
@@ -133,6 +145,35 @@
 
         .vertical-rule {
             display: none;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            cursor: pointer;
+
+            .iconbutton {
+                width: 50px;
+                height: 50px;
+                border-radius: 100%;
+                background: #FF4F79;
+                box-shadow: 10px 10px 5px #aaaaaa;
+            }
+            
+            .button{
+                width: 60px;
+                height: 60px;
+                background: $tomato;
+            }
+
+            .i{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                color: white;
+            }
         }
     }
 }
