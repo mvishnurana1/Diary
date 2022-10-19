@@ -326,13 +326,17 @@ export function Notes(): JSX.Element {
         
         <div className='mobile'>
             <div className='fab-container'>
-                <div className='button iconbutton centre'>
+                <button className='button iconbutton centre' onClick={() => 
+                        active === activeOnMobileDisplay.calendar 
+                        ? setActive(activeOnMobileDisplay.search)
+                        : setActive(activeOnMobileDisplay.calendar)
+                    }>
                     <FontAwesomeIcon
                         color='white'
                         icon={faCalendar}
                         size="2x"
                     />
-                </div>
+                </button>
             </div>
         </div>
     </div>
