@@ -66,6 +66,7 @@
 
     .left {
         background-color: $white;
+        box-shadow: 0.25rem 0.25rem 0.25rem 0.25rem #6b7078;
         padding: 1rem;
 
         .datepicker {
@@ -94,7 +95,7 @@
     }
 
     .textArea {
-        border: 1rem solid rgb(255, 255, 255);
+        border: 1rem solid $white-dark;
         border-radius: 1rem;
         box-shadow: 1rem 1rem 1rem 1rem $grey;
         font-size: medium;
@@ -134,7 +135,8 @@
         }
 
         .left {
-            background-color: rgb(255, 255, 255);
+            background-color: $white-dark;
+            box-shadow: none;
             display: flex;
             justify-content: center;
             margin-left: 0;
