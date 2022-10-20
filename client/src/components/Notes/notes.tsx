@@ -19,6 +19,7 @@ import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNo
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { MonthGoal } from '../MonthGoal/monthGoal';
+import { ToDos } from '../ToDos/todos';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -313,6 +314,7 @@ export function Notes(): JSX.Element {
                                 title="date-picker"
                             />
                             <MonthGoal />
+                            <ToDos />
                         </div>
                     </div>
                 </div>
