@@ -17,7 +17,7 @@
         display: flex;
         flex-basis: 100%;
         flex-direction: column;
-        gap: 1rem;
+        gap: 2.5rem;
     }
 
     .entry-card-container {
@@ -66,7 +66,7 @@
 
     .left {
         background-color: $white;
-        box-shadow: 0.25rem 0.25rem 0.25rem 0.25rem #6b7078;
+        box-shadow: 0.25rem 0.25rem 1.25rem $white;
         padding: 1rem;
 
         .datepicker {
@@ -97,7 +97,7 @@
     .textArea {
         border: 1rem solid $white-dark;
         border-radius: 1rem;
-        box-shadow: 1rem 1rem 1rem 1rem $grey;
+        box-shadow: 0.25rem 0.25rem 0.5rem 0.5rem $grey-shadow;
         font-size: medium;
         font-weight: 500;
         width: 80%;
@@ -118,6 +118,10 @@
     }
     
     @media (max-width: 1243px) {
+        .column {
+            gap: 0;
+        }
+
         .mobile { display: block; }
 
         .desktop {
@@ -126,7 +130,6 @@
 
         .notes {
             flex-direction: column;
-            gap: 1rem;
         }
     
         .textArea {
