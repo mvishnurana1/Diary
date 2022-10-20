@@ -1,0 +1,36 @@
+@import '../../global.scss';
+
+.todos-section {
+    .todo-item {
+        align-items: center;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .gap {
+        margin-bottom: 0.75rem;
+    }
+
+    .input {
+        border-radius: 1rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .logo-button {
+        background-color: $tomato;
+        border: none;
+        border-radius: 0.5rem;
+        display: flex;
+        font-size: 1rem;
+        font-weight: 600;
+        gap: 0.25rem;
+        outline: none;
+        padding: 0.75rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-top: 2rem;
+    }
+}
