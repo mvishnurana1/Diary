@@ -1,4 +1,8 @@
-﻿namespace API.model
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace API.model
 {
     public class User
     {

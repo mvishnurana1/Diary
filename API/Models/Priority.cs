@@ -1,4 +1,7 @@
-﻿namespace API.model
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace API.model
 {
     public class Priority
     {
