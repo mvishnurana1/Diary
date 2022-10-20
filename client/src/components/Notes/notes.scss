@@ -65,7 +65,8 @@
     }
 
     .left {
-        margin-left: 1.5rem;
+        background-color: $white;
+        padding: 1rem;
 
         .datepicker {
             margin-top: 1rem;
@@ -93,6 +94,7 @@
     }
 
     .textArea {
+        border: 1rem solid rgb(255, 255, 255);
         border-radius: 1rem;
         box-shadow: 1rem 1rem 1rem 1rem $grey;
         font-size: medium;
@@ -108,11 +110,10 @@
     }
 
     .vertical-rule {
-        background-color: $silver-dark;
-        border: 2px solid $silver-dark;
-        box-shadow: 0.25rem 0.25rem 0.25rem black;
+        background-color: $white;
+        border: 2px solid $white;
+        box-shadow: 0.25rem 0.25rem 0.25rem $white;
         min-height: 100vh;
-        margin: 0 1rem;
     }
     
     @media (max-width: 1243px) {
@@ -133,6 +134,7 @@
         }
 
         .left {
+            background-color: rgb(255, 255, 255);
             display: flex;
             justify-content: center;
             margin-left: 0;
