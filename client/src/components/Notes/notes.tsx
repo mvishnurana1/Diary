@@ -115,6 +115,38 @@ export function Notes(): JSX.Element {
         })();
     }, [recentlyPosted, loggedInUser.userID]);
 
+    async function postCachedActivity() {
+        const active = JSON.parse(localStorage.getItem('active')!);
+        
+        if (!active?.content || !active?.startDate) {
+            return;
+        } else {
+            try {
+                let id = undefined;
+
+                if (loggedInUser.userID  === undefined) {
+                    const user = await fetchUser();
+                    id = user.userID;
+                    setLoggedInUser(user);
+                }
+
+                const diaryEntry = await postNewNotes(
+                {
+                    UserID: loggedInUser.userID ?? id,
+                    Content: active?.content,
+                    SubmittedDateTime: dateFormat(active?.startDate)
+                });
+
+                setContent(diaryEntry.content);
+            } catch (err) {
+                
+            } finally {
+                setRecentlyPosted(true);
+                localStorage.removeItem('active');
+            }
+        }
+    }
+
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
             let id = '';
@@ -198,6 +230,11 @@ export function Notes(): JSX.Element {
         }
     }
 
+    function cacheActiveEntry(e: React.ChangeEvent<HTMLTextAreaElement>) {
+        const active = { startDate, content };
+        localStorage.setItem('active', JSON.stringify(active));
+    }
+
     function displayCard() {
         if (searchedResult?.length > 0) {
             return (
@@ -243,41 +280,42 @@ export function Notes(): JSX.Element {
                     {displayError()}
                 </>
 
-                {validNoteDates && !searchedResult.length 
-                    ? <div className='left'>
-                            <div className={error ? 'no-display': 'datepicker'}>
-                                <div className='mobile'>
-                                    {active === activeOnMobileDisplay.calendar && 
-                                        <DatePicker
-                                            highlightDates={validNoteDates}
-                                            inline
-                                            maxDate={new Date()}
-                                            onChange={(date: Date) => {
-                                                fetchDiaryEntryContentByDate(date);
-                                                setStartDate(new Date(date));
-                                            }}
-                                            selected={startDate}
-                                            title="date-picker"
-                                        />
-                                    }
-                                </div>
-                                {/* <div className='desktop'> */}
-                                    <DatePicker
-                                        highlightDates={validNoteDates}
-                                        inline
-                                        maxDate={new Date()}
-                                        onChange={(date: Date) => {
-                                            fetchDiaryEntryContentByDate(date);
-                                            setStartDate(new Date(date));
-                                        }}
-                                        selected={startDate}
-                                        title="date-picker"
-                                    />
-                                    <MonthGoal />
-                                {/* </div> */}
-                            </div>
-                        </div> 
-                    : null
+                {validNoteDates && !searchedResult.length &&
+                <div className='left'>
+                    <div className={error ? 'no-display': 'datepicker'}>
+                        <div className='mobile'>
+                            {active === activeOnMobileDisplay.calendar &&
+                                <DatePicker
+                                    highlightDates={validNoteDates}
+                                    inline
+                                    maxDate={new Date()}
+                                    onChange={(date: Date) => {
+                                        postCachedActivity();
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                    }}
+                                    selected={startDate}
+                                    title="date-picker"
+                                />
+                            }
+                        </div>
+                        <div className={error ? 'no-display': 'desktop datepicker'}>
+                            <DatePicker
+                                highlightDates={validNoteDates}
+                                inline
+                                maxDate={new Date()}
+                                onChange={(date: Date) => {
+                                    postCachedActivity();
+                                    fetchDiaryEntryContentByDate(date);
+                                    setStartDate(new Date(date));
+                                }}
+                                selected={startDate}
+                                title="date-picker"
+                            />
+                            <MonthGoal />
+                        </div>
+                    </div>
+                </div>
                 }
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
@@ -292,23 +330,25 @@ export function Notes(): JSX.Element {
                         </div>
                     }
 
-                    {(active === activeOnMobileDisplay.search) && <div className='mobile search-box-container'>
-                        <input
-                            className='search'
-                            placeholder='find submitted entries...'
-                            value={searchedContent}
-                            onChange={(e) => setSearchedContent(e.target.value)}
-                        />
+                    <div className='mobile'>
+                        {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
+                            <input
+                                className='search'
+                                placeholder='find submitted entries...'
+                                value={searchedContent}
+                                onChange={(e) => setSearchedContent(e.target.value)}
+                            />
 
-                        <FontAwesomeIcon
-                            className='red'
-                            icon={faMagnifyingGlass}
-                            onClick={() => getSearchedEntryByContent()}
-                            size="lg"
-                        />
-                    </div>}
+                            <FontAwesomeIcon
+                                className='red'
+                                icon={faMagnifyingGlass}
+                                onClick={() => getSearchedEntryByContent()}
+                                size="lg"
+                            />
+                        </div>}
+                    </div>
 
-                    <div className='search-box-container desktop'>
+                    <div className='desktop search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -329,13 +369,16 @@ export function Notes(): JSX.Element {
                             className={ error ? 'no-display': 'textArea' }
                             rows={15}
                             placeholder="Dear Diary..."
-                            onChange={(e) => setContent(e.target.value)}
+                            onChange={(e) => {
+                                setContent(e.target.value);
+                                cacheActiveEntry(e);
+                            }}
                             spellCheck={false}
                             value={content}
                         />
                     </div>
 
-                    {error ?   <div
+                    {error  &&  <div
                                     className='error-container'
                                     data-testid="error-emoji">
                                     <FontAwesomeIcon
@@ -344,7 +387,6 @@ export function Notes(): JSX.Element {
                                     />
                                     <h6>Something went wrong. Please try again later!</h6>
                                 </div>
-                            : null
                     }
                         <div className="centre">
                             <button
@@ -363,7 +405,7 @@ export function Notes(): JSX.Element {
         </div>
         
         <div className='mobile'>
-            <div className='fab-container'>
+            {searchedContent.length <= 0 && <div className='fab-container'>
                 <button className='button iconbutton centre' onClick=
                 {
                     () => active === activeOnMobileDisplay.calendar 
@@ -381,7 +423,7 @@ export function Notes(): JSX.Element {
                     size="2x"
                 />}
                 </button>
-            </div>
+            </div>}
         </div>
     </div>
     )
