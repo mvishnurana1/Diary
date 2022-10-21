@@ -4,9 +4,11 @@
     .todo-item {
         align-items: center;
         display: flex;
+        font-size: 1.25em;
         gap: 1rem;
 
         .isCompleted {
+            font-size: 1rem;
             opacity: 0.7;
             text-decoration: line-through;     
         }
