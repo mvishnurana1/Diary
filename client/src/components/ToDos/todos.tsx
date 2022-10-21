@@ -35,56 +35,63 @@ export function ToDos(): JSX.Element {
     const [active, setActive] = useState<UserTask>(defaultTask);
 
     return (
-        <>
-            <section className="todos-section">
-                <div>
-                    <h1 className="title">To Dos {new Date().toLocaleDateString()}</h1>
-                        <div className="gap">
-                            {todos.map((todo) => 
-                                <div className="todo-item" key={todo.id}>
-                                    <input 
-                                        type={"checkbox"} 
-                                        title={todo.content} 
-                                    />
-                                    <span className={todo.isCompleted ? 'isCompleted': ''}>
-                                        {todo.content}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
+        <section className="todos-section">
+            <div>
+                <h1 className="title">To Dos {new Date().toLocaleDateString()}</h1>
+                    <div className="gap">
+                        {todos.map((todo, index) => 
+                            <div className="todo-item" key={todo.id}>
+                                <input 
+                                    type={"checkbox"} 
+                                    title={todo.content}
+                                    onChange={(e) => {
+                                        console.log('toggled...', e.target.checked, index);
+                                        
+                                    }}
+                                />
+                                <span className={todo.isCompleted ? 'isCompleted': ''}>
+                                    {todo.content}
+                                </span>
+                            </div>
+                        )}
+                    </div>
 
-                        {isAdding && <input className="gap input" onChange={(e) => { 
-                                const value = e.target.value.trim();
-                                if (value.length <= 0) {
-                                    return;
-                                }
-
-                                if (value.length > 0) {
-                                    const newToDo: UserTask = { id: '100', content: value, date: new Date(), isCompleted: false };
-                                    setActive(newToDo)
-                                }}
+                    {isAdding && <input className="gap input" onChange={(e) => { 
+                            const value = e.target.value.trim();
+                            if (value.length <= 0) {
+                                return;
                             }
-                        />}
 
-                    <button 
-                        className="logo-button centre" 
-                        title="Add"
-                        onClick={() => {
-                            setIsAdding(!isAdding);
+                            if (value.length > 0) {
+                                const newToDo: UserTask = { 
+                                    id: '100', 
+                                    content: value, 
+                                    date: new Date(), 
+                                    isCompleted: false
+                                };
+                                setActive(newToDo)
+                            }}
+                        }
+                    />}
 
-                            const activeContent = active.content.trim();
+                <button 
+                    className="logo-button centre" 
+                    title="Add"
+                    onClick={() => {
+                        setIsAdding(!isAdding);
 
-                            if (activeContent.length > 0) {
-                                setToDos([...todos, active]);
-                                setActive(defaultTask);
-                            }
-                        }}
-                    >
-                        <FontAwesomeIcon icon={ faPlus } />
-                        <div>Add</div>
-                    </button>
-                </div>
-            </section>
-        </>
+                        const activeContent = active.content.trim();
+
+                        if (activeContent.length > 0) {
+                            setToDos([...todos, active]);
+                            setActive(defaultTask);
+                        }
+                    }}
+                >
+                    <FontAwesomeIcon icon={ faPlus } />
+                    <div>Add</div>
+                </button>
+            </div>
+        </section>
     )
 }
