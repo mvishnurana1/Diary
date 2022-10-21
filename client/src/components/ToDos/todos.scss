@@ -1,0 +1,53 @@
+@import '../../global.scss';
+
+.todos-section {
+    .trash-button {
+        border: none;
+        border-radius: 0.25rem;
+        outline: none;
+    }
+
+    .date {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .flex-gap {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .todo-item {
+        align-items: center;
+        display: flex;
+        font-size: 1.25em;
+        gap: 1rem;
+
+        .isCompleted {
+            font-size: 1rem;
+            opacity: 0.7;
+            text-decoration: line-through;     
+        }
+    }
+
+    .gap {
+        margin-bottom: 0.75rem;
+    }
+
+    .input {
+        border-radius: 1rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .logo-button {
+        background-color: $tomato;
+        border: none;
+        border-radius: 0.5rem;
+        display: flex;
+        font-size: 0.75rem;
+        font-weight: 600;
+        gap: 0.25rem;
+        outline: none;
+        padding: 0.5rem;
+    }
+}

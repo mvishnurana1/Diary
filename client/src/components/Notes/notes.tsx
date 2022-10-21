@@ -1,3 +1,4 @@
+import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faFaceSadCry, 
     faMagnifyingGlass, 
@@ -17,6 +18,9 @@ import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryB
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
+import { MonthGoal } from '../MonthGoal/monthGoal';
+import { ToDos } from '../ToDos/todos';
+import { PerformanceChart } from '../PerformanceChart/performanceChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -80,7 +84,7 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID === undefined) {
                     const user = await fetchUser();
@@ -147,7 +151,7 @@ export function Notes(): JSX.Element {
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            let id = undefined;
+            let id = '';
 
             if (loggedInUser.userID === undefined) {
                 const user = await fetchUser();
@@ -172,7 +176,7 @@ export function Notes(): JSX.Element {
         } else {
             try 
             {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
@@ -202,7 +206,7 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                let id = undefined;
+                let id = '';
 
                 if (loggedInUser.userID  === undefined) {
                     const user = await fetchUser();
@@ -298,6 +302,9 @@ export function Notes(): JSX.Element {
                             }
                         </div>
                         <div className={error ? 'no-display': 'desktop datepicker'}>
+                            <ToDos />
+                            <h1 className='title'>Pick a Date</h1>
+                            <h2 className='sub-title'>Write journal</h2>
                             <DatePicker
                                 highlightDates={validNoteDates}
                                 inline
@@ -310,10 +317,12 @@ export function Notes(): JSX.Element {
                                 selected={startDate}
                                 title="date-picker"
                             />
+                            <hr />
+                            <MonthGoal />
+                            <PerformanceChart />
                         </div>
                     </div>
-                </div>
-                }
+                </div>}
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 

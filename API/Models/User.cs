@@ -16,5 +16,7 @@ namespace API.model
         public string Email { get; set; }
 
         public ICollection<DiaryEntry> Entries { get; set; } = new List<DiaryEntry>();
+        public ICollection<DailyTodo> Todos { get; set; } = new List<DailyTodo>();
+        public ICollection<Priority> MonthPriorities { get; set; } = new List<Priority>();
     }
 }
