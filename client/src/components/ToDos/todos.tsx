@@ -13,10 +13,15 @@ const defaultTask : UserTask = {
 }
 
 export function ToDos(): JSX.Element {
-    const [todos, setToDos] = useState<UserTask[]>([]);
+    const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
     const [isAdding, setIsAdding] = useState(false);
     const [active, setActive] = useState<UserTask>(defaultTask);
     
+    function getExistingTodos(): UserTask[] {
+        const tasks: UserTask[] = JSON.parse(localStorage.getItem('todos')!);
+        return tasks;
+    }
+
     return (
         <section className="todos-section">
             <div>
@@ -26,7 +31,8 @@ export function ToDos(): JSX.Element {
                         {todos.map((todo, index) => 
                             <div className="todo-item" key={index}>
                                 <input 
-                                    type={"checkbox"} 
+                                    checked={todo.isCompleted}
+                                    type={"checkbox"}
                                     title={todo.content}
                                     onChange={(e) => {
                                         const itemToAdd: UserTask = {
@@ -38,6 +44,8 @@ export function ToDos(): JSX.Element {
 
                                         todos.splice(index, 1, itemToAdd);
                                         setToDos([...todos]);
+                                        const jsonTodos = JSON.stringify(todos);
+                                        localStorage.setItem('todos', jsonTodos);
                                     }}
                                 />
                                 <span className={todo.isCompleted ? 'isCompleted': ''}>
@@ -79,6 +87,7 @@ export function ToDos(): JSX.Element {
 
                         if (activeContent.length > 0) {
                             setToDos([...todos, active]);
+                            localStorage.setItem('todos', JSON.stringify([...todos, active]));
                             setActive(defaultTask);
                         }
                     }}
