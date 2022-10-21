@@ -37,6 +37,7 @@ export function Header(props: headerProps): JSX.Element {
                                 window.localStorage.removeItem('email');
                                 window.localStorage.removeItem('idToken');
                                 window.localStorage.removeItem('photo');
+                                window.localStorage.removeItem('todos');
 
                                 logout({
                                     returnTo: window.location.origin,
