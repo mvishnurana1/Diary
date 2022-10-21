@@ -6,7 +6,6 @@ import { UserTask } from "../../models/UserTask";
 import './todos.scss';
 
 const defaultTask : UserTask = {
-    id: '',
     content: '',
     date: new Date(),
     isCompleted: false
@@ -36,7 +35,6 @@ export function ToDos(): JSX.Element {
                                     title={todo.content}
                                     onChange={(e) => {
                                         const itemToAdd: UserTask = {
-                                            id: todo.id,
                                             content: todo.content,
                                             date: todo.date,
                                             isCompleted: e.target.checked
@@ -66,7 +64,6 @@ export function ToDos(): JSX.Element {
 
                                     if (value.length > 0) {
                                         const newToDo: UserTask = { 
-                                            id: '100', 
                                             content: value, 
                                             date: new Date(), 
                                             isCompleted: false
