@@ -20,6 +20,15 @@ $white-smoke: rgb(214, 206, 206);
     padding: .5rem 1rem;
 }
 
+.content {
+    font-weight: 400;
+    margin: 0 0 0 -0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+
 .logo {
     border-radius: 50%;
     height: 30px;

@@ -1,9 +1,20 @@
 @import '../../global.scss';
 
 .todos-section {
+    .trash-button {
+        border: none;
+        border-radius: 0.25rem;
+        outline: none;
+    }
+
     .date {
         font-weight: 600;
         font-size: 1rem;
+    }
+
+    .flex-gap {
+        display: flex;
+        gap: 2rem;
     }
 
     .todo-item {
