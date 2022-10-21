@@ -1,14 +1,9 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { localisedDate } from "../../helper/date-fn";
+import { UserTask } from "../../models/UserTask";
 import './todos.scss';
-
-interface UserTask {
-    id: string,
-    content: string,
-    date: Date,
-    isCompleted: boolean
-}
 
 const defaultTask : UserTask = {
     id: '',
@@ -33,20 +28,29 @@ export function ToDos(): JSX.Element {
     const [todos, setToDos] = useState(defaultToDos);
     const [isAdding, setIsAdding] = useState(false);
     const [active, setActive] = useState<UserTask>(defaultTask);
-
+    
     return (
         <section className="todos-section">
             <div>
-                <h1 className="title">To Dos {new Date().toLocaleDateString()}</h1>
+                <h1 className="title">Tasks </h1>
+                    <h2 className="date">{localisedDate()}</h2>
+                    <hr />
                     <div className="gap">
                         {todos.map((todo, index) => 
-                            <div className="todo-item" key={todo.id}>
+                            <div className="todo-item" key={index}>
                                 <input 
                                     type={"checkbox"} 
                                     title={todo.content}
                                     onChange={(e) => {
-                                        console.log('toggled...', e.target.checked, index);
-                                        
+                                        const itemToAdd: UserTask = {
+                                            id: todo.id,
+                                            content: todo.content,
+                                            date: todo.date,
+                                            isCompleted: e.target.checked
+                                        };
+
+                                        todos.splice(index, 1, itemToAdd);
+                                        setToDos([...todos]);
                                     }}
                                 />
                                 <span className={todo.isCompleted ? 'isCompleted': ''}>
