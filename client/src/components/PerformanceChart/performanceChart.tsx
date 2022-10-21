@@ -23,8 +23,8 @@ import './performanceChart.scss';
 
 export function PerformanceChart(): JSX.Element {
     const options = {
-    responsive: true,
-    plugins: {
+        responsive: true,
+        plugins: {
             legend: {
                 display: false
             },
@@ -34,28 +34,27 @@ export function PerformanceChart(): JSX.Element {
             title: {
                 display: false,
             }
+        },
+        scales: {
+            y: {
+                ticks: { display: false },
+                grid: { display: false }
+            },
+            x: {
+                ticks: { display: false },
+                grid: { display: false }
+            }
         }
     };
 
-    const labels = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "Aug",
-        "Sep",
-        "Oct"
-    ];
+    const labels = new Array(30).fill("");
     
     const data = {
         labels,
         datasets: [
           {
             label: `${labels[new Date().getMonth()]}`,
-            data: [121, 67, 89, 102, 114, 69, 55, 114, 126, 49],
+            data: [122, 52, 82, 12, 42, 62, 12, 42, 72, 32, 2, 42, 12, 2, 142, 22, 62, 142, 128, 65, 21, 92, 72, 32, 92, 32, 72, 62, 122, 21],
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)"
           }
