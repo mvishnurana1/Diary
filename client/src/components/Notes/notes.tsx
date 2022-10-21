@@ -20,7 +20,7 @@ import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { MonthGoal } from '../MonthGoal/monthGoal';
 import { ToDos } from '../ToDos/todos';
-import { PerformanceChart } from '../PerformanceChart/performanceChart';
+import { PerformanceChart } from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 

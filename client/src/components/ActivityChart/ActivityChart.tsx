@@ -9,17 +9,17 @@ import {
     Legend
   } from "chart.js";
 import { Line } from "react-chartjs-2";
-import './performanceChart.scss';
+import './ActivityChart.scss';
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export function PerformanceChart(): JSX.Element {
     const options = {
