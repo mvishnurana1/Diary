@@ -13,19 +13,7 @@ const defaultTask : UserTask = {
 }
 
 export function ToDos(): JSX.Element {
-    const defaultToDos: UserTask[] = [{
-        id: '1',
-        content: 'some bullshit',
-        date: new Date('2022-10-19'),
-        isCompleted: true
-    }, {
-        id: '2',
-        content: 'some more bullshit',
-        date: new Date('2022-10-19'),
-        isCompleted: false
-    }];
-
-    const [todos, setToDos] = useState(defaultToDos);
+    const [todos, setToDos] = useState<UserTask[]>([]);
     const [isAdding, setIsAdding] = useState(false);
     const [active, setActive] = useState<UserTask>(defaultTask);
     
