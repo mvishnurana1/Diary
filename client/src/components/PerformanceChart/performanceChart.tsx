@@ -55,7 +55,7 @@ export function PerformanceChart(): JSX.Element {
         datasets: [
           {
             label: `${labels[new Date().getMonth()]}`,
-            data: labels.map(() => [1, 5, 78, 86, 100]),
+            data: [121, 67, 89, 102, 114, 69, 55, 114, 126, 49],
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)"
           }
