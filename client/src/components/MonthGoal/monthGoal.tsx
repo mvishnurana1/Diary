@@ -35,9 +35,18 @@ export function MonthGoal(): JSX.Element {
         setEdittedContent('');
     }
 
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const { id, value  } = e.target;
+
+        setEdittedContent(value);
+    }
+
     return (
     <div className="month-goal">
-        <h1 className="title top">{getMonthTitle()} priorities</h1>
+        <h1 className="title">
+            <div>{getMonthTitle()}'s</div> 
+            <div className='sub-title'>top priorities</div>
+        </h1>
         <div className="goals-group-container">
             {monthlyGoal.map((goal, index) => 
                 <div className="flex-gap-row goal-item" key={index}>
@@ -49,8 +58,9 @@ export function MonthGoal(): JSX.Element {
                             (edit.isEditting && edit.index === index) 
                             ? <input 
                                 className='update-input' 
-                                type="text" 
-                                onChange={e => setEdittedContent(e.target.value)}
+                                type="text"
+
+                                onChange={e => handleChange(e)}
                               /> 
                             : <div className="content">{goal.content}</div>
                         }
@@ -61,8 +71,6 @@ export function MonthGoal(): JSX.Element {
                             title="edit"
                             onClick={(event) => {
                                 editGoal(event, index);
-                                // monthlyGoal.splice();
-                                // setEdit({ content: monthlyGoal[index].content, index, isEditting: !edit.isEditting }); 
                             }}>
                             <FontAwesomeIcon className="goal-edit" icon={ faPen } />
                         </button>
@@ -73,5 +81,6 @@ export function MonthGoal(): JSX.Element {
                 </div>
             )}
         </div>
+        <hr />
     </div>)
 }
