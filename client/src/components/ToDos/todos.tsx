@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { localisedDate } from "../../helper/date-fn";
 import { UserTask } from "../../models/UserTask";
 import './todos.scss';
@@ -27,6 +27,7 @@ export function ToDos(): JSX.Element {
                 <h1 className="title">{localisedDate()}</h1>
                     <h2 className="sub-title">Tasks</h2>
                     <div className="gap">
+                        {todos?.length === 0 && <span>Nothing to do?</span>}
                         {todos?.length > 0 && todos.map((todo, index) => 
                             <div className="todo-item" key={index}>
                                 <input 
@@ -46,9 +47,20 @@ export function ToDos(): JSX.Element {
                                         localStorage.setItem('todos', jsonTodos);
                                     }}
                                 />
-                                <span className={todo.isCompleted ? 'isCompleted': ''}>
-                                    {todo.content}
-                                </span>
+                                <div className="flex-gap">
+                                    <div className={todo.isCompleted ? 'content isCompleted': 'content'}>
+                                        {todo.content}
+                                    </div>
+                                    <button 
+                                        className="trash-button" 
+                                        onClick={() => {
+                                            todos.splice(index, 1);
+                                            setToDos([...todos]);
+                                        }}
+                                        title="remove">
+                                        <FontAwesomeIcon icon={ faTrash } />
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
