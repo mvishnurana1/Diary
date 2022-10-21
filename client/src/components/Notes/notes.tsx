@@ -20,6 +20,7 @@ import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { MonthGoal } from '../MonthGoal/monthGoal';
 import { ToDos } from '../ToDos/todos';
+import { PerformanceChart } from '../PerformanceChart/performanceChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -301,6 +302,9 @@ export function Notes(): JSX.Element {
                             }
                         </div>
                         <div className={error ? 'no-display': 'desktop datepicker'}>
+                            <ToDos />
+                            <h1 className='title'>Pick a Date</h1>
+                            <h2 className='sub-title'>Write journal</h2>
                             <DatePicker
                                 highlightDates={validNoteDates}
                                 inline
@@ -313,12 +317,12 @@ export function Notes(): JSX.Element {
                                 selected={startDate}
                                 title="date-picker"
                             />
+                            <hr />
                             <MonthGoal />
-                            <ToDos />
+                            <PerformanceChart />
                         </div>
                     </div>
-                </div>
-                }
+                </div>}
                 
                 <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
 
