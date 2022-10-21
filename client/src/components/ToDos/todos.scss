@@ -5,6 +5,11 @@
         align-items: center;
         display: flex;
         gap: 1rem;
+
+        .isCompleted {
+            opacity: 0.7;
+            text-decoration: line-through;     
+        }
     }
 
     .gap {
