@@ -64,7 +64,6 @@ export function PerformanceChart(): JSX.Element {
     <div className='chart-section'>
         <h1 className='title'>Activity</h1>
         <h2 className='sub-title'>this month</h2>
-        <Line data={data} options={options} />;
-        <hr />
+        <Line data={data} options={options} />
     </div>)
 }
