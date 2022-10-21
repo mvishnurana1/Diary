@@ -303,20 +303,22 @@ export function Notes(): JSX.Element {
                         </div>
                         <div className={error ? 'no-display': 'desktop datepicker'}>
                             <ToDos />
-                            <h1 className='title'>Pick a Date</h1>
-                            <h2 className='sub-title'>Write journal</h2>
-                            <DatePicker
-                                highlightDates={validNoteDates}
-                                inline
-                                maxDate={new Date()}
-                                onChange={(date: Date) => {
-                                    postCachedActivity();
-                                    fetchDiaryEntryContentByDate(date);
-                                    setStartDate(new Date(date));
-                                }}
-                                selected={startDate}
-                                title="date-picker"
-                            />
+                            <div className='centralise'>
+                                <h1 className='title'>Pick a Date</h1>
+                                <h2 className='sub-title'>Write journal</h2>
+                                <DatePicker
+                                    highlightDates={validNoteDates}
+                                    inline
+                                    maxDate={new Date()}
+                                    onChange={(date: Date) => {
+                                        postCachedActivity();
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                    }}
+                                    selected={startDate}
+                                    title="date-picker"
+                                />
+                            </div>
                             <hr />
                             <MonthGoal />
                             <PerformanceChart />
