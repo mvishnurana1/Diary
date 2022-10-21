@@ -40,6 +40,9 @@ export function PerformanceChart(): JSX.Element {
                 ticks: { display: false },
                 grid: { display: false }
             }
+        },
+        elements: {
+          point: { radius: 0 }
         }
     };
 
@@ -49,11 +52,12 @@ export function PerformanceChart(): JSX.Element {
         labels,
         datasets: [
           {
-            data: [122, 52, 82, 12, 42, 62, 12, 42, 72, 32, 2, 42, 12, 2, 142, 22, 62, 142, 128, 65, 21, 92, 72, 32, 92, 32, 72, 62, 122, 21],
+            backgroundColor: "rgb(235, 88, 88)",
             borderColor: "rgb(235, 88, 88)",
-            backgroundColor: "rgb(235, 88, 88)"
+            data: [122, 52, 82, 12, 42, 62, 12, 42, 72, 32, 2, 42, 12, 2, 142, 22, 62, 142, 128, 65, 21, 92, 72, 32, 92, 32, 72, 62, 122, 21],
+            tension: 0.3
           }
-        ]
+        ],
     };
     
     return (
