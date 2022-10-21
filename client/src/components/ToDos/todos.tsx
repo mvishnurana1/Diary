@@ -18,7 +18,7 @@ export function ToDos(): JSX.Element {
     
     function getExistingTodos(): UserTask[] {
         const tasks: UserTask[] = JSON.parse(localStorage.getItem('todos')!);
-        return tasks;
+        return tasks === null ? [] : tasks;
     }
 
     return (
@@ -27,7 +27,7 @@ export function ToDos(): JSX.Element {
                 <h1 className="title">{localisedDate()}</h1>
                     <h2 className="sub-title">Tasks</h2>
                     <div className="gap">
-                        {todos.map((todo, index) => 
+                        {todos?.length > 0 && todos.map((todo, index) => 
                             <div className="todo-item" key={index}>
                                 <input 
                                     checked={todo.isCompleted}
