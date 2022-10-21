@@ -20,9 +20,8 @@ export function ToDos(): JSX.Element {
     return (
         <section className="todos-section">
             <div>
-                <h1 className="title">Tasks </h1>
-                    <h2 className="date">{localisedDate()}</h2>
-                    <hr />
+                <h1 className="title">{localisedDate()}</h1>
+                    <h2 className="sub-title">Tasks</h2>
                     <div className="gap">
                         {todos.map((todo, index) => 
                             <div className="todo-item" key={index}>
@@ -48,22 +47,26 @@ export function ToDos(): JSX.Element {
                         )}
                     </div>
 
-                    {isAdding && <input className="gap input" onChange={(e) => { 
-                            const value = e.target.value.trim();
-                            if (value.length <= 0) {
-                                return;
-                            }
+                    {isAdding && 
+                        <input 
+                            className="gap input" 
+                            onChange={(e) => { 
+                                    const value = e.target.value.trim();
+                                    if (value.length <= 0) {
+                                        return;
+                                    }
 
-                            if (value.length > 0) {
-                                const newToDo: UserTask = { 
-                                    id: '100', 
-                                    content: value, 
-                                    date: new Date(), 
-                                    isCompleted: false
-                                };
-                                setActive(newToDo)
-                            }}
-                        }
+                                    if (value.length > 0) {
+                                        const newToDo: UserTask = { 
+                                            id: '100', 
+                                            content: value, 
+                                            date: new Date(), 
+                                            isCompleted: false
+                                        };
+                                        setActive(newToDo)
+                                    }}
+                            }
+                            placeholder="write new task here"
                     />}
 
                 <button 
@@ -84,6 +87,7 @@ export function ToDos(): JSX.Element {
                     <div>Add</div>
                 </button>
             </div>
+            <hr />
         </section>
     )
 }
