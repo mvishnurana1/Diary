@@ -7,7 +7,7 @@ interface UserTask {
     id: string,
     content: string,
     date: Date,
-    isCompleted: false
+    isCompleted: boolean
 }
 
 const defaultTask : UserTask = {
@@ -22,7 +22,7 @@ export function ToDos(): JSX.Element {
         id: '1',
         content: 'some bullshit',
         date: new Date('2022-10-19'),
-        isCompleted: false
+        isCompleted: true
     }, {
         id: '2',
         content: 'some more bullshit',
@@ -45,8 +45,10 @@ export function ToDos(): JSX.Element {
                                     <input 
                                         type={"checkbox"} 
                                         title={todo.content} 
-                                        />
-                                    {todo.content}
+                                    />
+                                    <span className={todo.isCompleted ? 'isCompleted': ''}>
+                                        {todo.content}
+                                    </span>
                                 </div>
                             )}
                         </div>
