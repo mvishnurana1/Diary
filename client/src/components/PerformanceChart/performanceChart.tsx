@@ -31,9 +31,8 @@ export function PerformanceChart(): JSX.Element {
             data: {
                 labels: { display: false }
             },
-                title: {
-                display: true,
-                text: "Chart.js Line Chart"
+            title: {
+                display: false,
             }
         }
     };
@@ -56,7 +55,7 @@ export function PerformanceChart(): JSX.Element {
         datasets: [
           {
             label: `${labels[new Date().getMonth()]}`,
-            data: labels.map(() => [1, 100]),
+            data: labels.map(() => [1, 5, 78, 86, 100]),
             borderColor: "rgb(255, 99, 132)",
             backgroundColor: "rgba(255, 99, 132, 0.5)"
           }
@@ -65,7 +64,7 @@ export function PerformanceChart(): JSX.Element {
     
     return (
     <div className='chart-section'>
-        <h1 className='title'>Performance</h1>
+        <h1 className='title'>Activity</h1>
         <h2 className='sub-title'>this month</h2>
         <Line data={data} options={options} />;
         <hr />
