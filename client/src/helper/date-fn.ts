@@ -15,3 +15,9 @@ export const getMonthTitle = (): string => {
     
     return months[month];
 }
+
+export const localisedDate = (): string => {
+    const date = new Date();
+
+    return date.toDateString();
+}
