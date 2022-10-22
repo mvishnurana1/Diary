@@ -303,9 +303,9 @@ export function Notes(): JSX.Element {
                         </div>
                         <div className={error ? 'no-display': 'desktop datepicker'}>
                             <ToDos />
+                            <h1 className='title'>Pick a Date</h1>
+                            <h2 className='sub-title'>Write journal</h2>
                             <div className='centralise'>
-                                <h1 className='title'>Pick a Date</h1>
-                                <h2 className='sub-title'>Write journal</h2>
                                 <DatePicker
                                     highlightDates={validNoteDates}
                                     inline
