@@ -24,5 +24,7 @@ namespace API.Helpers
 
         public DbSet<User> User { get; set; }
         public DbSet<DiaryEntry> Entries { get; set; }
+        public DbSet<Priority> Priority { get; set; }
+        public DbSet<DiaryEntry> Todo { get; set; }
     }
 }

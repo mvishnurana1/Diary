@@ -37,7 +37,7 @@ namespace API.Helpers.Services
 
         public async Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID)
         {
-            return await Task.Run(() => _context.Entries.Where(e => e.UserID == loggedInUserID)
+            return await Task.Run(() => _context.Entries.Where(e => e.User.UserID == loggedInUserID)
                                                         .Select(e => e.SubmittedDateTime));
         }
 
@@ -58,7 +58,7 @@ namespace API.Helpers.Services
                 var entry = await UpdateEntry(userDetails.Entries.FirstOrDefault(), newEntry);
                 return entry;
             }
-        
+
             var newerEntry = _mapper.Map<PostDiaryEntryDto, DiaryEntry>(newEntry);
 
             _context.Entries.Add(newerEntry);
@@ -73,10 +73,10 @@ namespace API.Helpers.Services
 
             var entry = await Task.Run(() => _context.Entries
                               .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
-                              .Where(e => e.UserID == request.UserID)
+                              .Where(e => e.User.UserID == request.UserID)
                               .FirstOrDefault());
 
-            if (request.UserID == entry?.UserID)
+            if (request.UserID == entry?.User.UserID)
             {
                 return entry.Content;
             }
@@ -90,7 +90,7 @@ namespace API.Helpers.Services
 
             return await Task.Run(() => _context.Entries
                             .Where(x => x.Content.Contains(request.Content))
-                            .Where(x => x.UserID == request.UserID)
+                            .Where(x => x.User.UserID == request.UserID)
                             .OrderBy(x => x.SubmittedDateTime)
                             .ToList());
         }
@@ -110,7 +110,7 @@ namespace API.Helpers.Services
 
             return new PostDiaryEntryDto()
             {
-                UserID = dbDiaryEntry.UserID,
+                UserID = dbDiaryEntry.User.UserID,
                 Content = dbDiaryEntry.Content,
                 SubmittedDateTime = dbDiaryEntry.SubmittedDateTime.Date.ToString()
             };

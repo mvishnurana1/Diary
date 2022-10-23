@@ -40,7 +40,7 @@ namespace API.Controllers
             var entry = await _diaryService.GetEntryByDate(request);
 
             _logger.LogInformation($"GetEntryByDate responded with Http-{Ok().StatusCode} response - {entry}");
-            
+
             return Ok(entry);
         }
 

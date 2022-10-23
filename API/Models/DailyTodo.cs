@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.model
 {
@@ -14,8 +15,8 @@ namespace API.model
         [Required]
         public bool Completed { get; set; }
 
-        [Required]
-        public Guid UserID { get; set; }
+        [ForeignKey("UserID")]
+        public User User { get; set; }
 
         [Required]
         public string TodoContent { get; set; }
