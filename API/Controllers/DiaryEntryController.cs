@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var entry = await _diaryService.GetEntryByDate(request);
+            var entry = await _diaryService.GetEntryContentByDate(request);
 
             _logger.LogInformation($"GetEntryByDate responded with Http-{Ok().StatusCode} response - {entry}");
 
@@ -45,7 +46,7 @@ namespace API.Controllers
         }
 
         [HttpGet("/searchbycontent")]
-        public async Task<ActionResult<IEnumerable<DiaryEntry>>> SearchByContent([FromQuery] SearchViaContentRequestDto request)
+        public async Task<ActionResult<IEnumerable<SearchByContentResponseDto>>> SearchByContent([FromQuery] SearchViaContentRequestDto request)
         {
             _logger.LogInformation($"SearchByContent Controller Executed with argument - {request.Content} & {request.UserID} on {DateTime.Now}");
 
@@ -56,7 +57,7 @@ namespace API.Controllers
 
             var searchResults = await _diaryService.SearchEntriesByContent(request);
 
-            _logger.LogInformation($"SearchByContent responded with Http-{Ok().StatusCode} response - {searchResults}");
+            _logger.LogInformation($"SearchByContent responded with Http-{Ok().StatusCode} response - {searchResults.Count()}");
             return Ok(searchResults);
         }
 
@@ -77,9 +78,9 @@ namespace API.Controllers
         }
 
         [HttpPost("/post")]
-        public async Task<ActionResult<DiaryEntry>> PostEntry([FromBody] PostDiaryEntryDto entry)
+        public async Task<ActionResult<PostDiaryEntryDto>> PostEntry([FromBody] PostDiaryEntryDto entry)
         {
-            if (entry == null)
+            if (entry.Content == null)
             {
                 _logger.LogInformation($"PostEntry Controller Executed with argument - entry value - {entry}");
 
@@ -96,12 +97,12 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            var newEntry = await _diaryService.AddNewEntries(entry);
+            var newEntry = await _diaryService.AddNewEntries(entry, parsedDate);
 
             if (newEntry == null)
             {
-                _logger.LogError($"PostEntry Controller responded with argument Http-{NotFound().StatusCode} because no Entry found");
-                return NotFound();
+                _logger.LogError($"PostEntry Controller responded with argument Http-{StatusCode(500)} because no Entry found");
+                return StatusCode(500);
             }
 
             _logger.LogInformation($"PostEntry responded with Http-{Ok().StatusCode} response - {newEntry}");
