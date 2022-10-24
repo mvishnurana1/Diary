@@ -7,4 +7,11 @@ namespace API.Helpers.Entities
         public Guid UserID { get; set; }
         public string Content { get; set; }
     }
+
+    public class SearchByContentResponseDto
+    {
+        public Guid EntryID { get; set; }
+        public string Content { get; set; }
+        public DateTime SubmittedDateTime { get; set; }
+    }
 }
