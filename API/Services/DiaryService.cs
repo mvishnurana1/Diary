@@ -12,9 +12,9 @@ namespace API.Helpers.Services
 {
     public interface IDiaryService
     {
-        Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry);
-        Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request);
-        Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request);
+        Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry, DateTime date);
+        Task<string> GetEntryContentByDate(GetDiaryEntryByDateRequestDto request);
+        Task<IEnumerable<SearchByContentResponseDto>> SearchEntriesByContent(SearchViaContentRequestDto request);
         Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID);
     }
 
@@ -41,7 +41,7 @@ namespace API.Helpers.Services
                                                         .Select(e => e.SubmittedDateTime));
         }
 
-        public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry)
+        public async Task<PostDiaryEntryDto> AddNewEntries(PostDiaryEntryDto newEntry, DateTime date)
         {
             _logger.LogInformation($"AddNewEntries() Service method Executed with argument - {newEntry}");
 
@@ -50,79 +50,73 @@ namespace API.Helpers.Services
                 throw new ArgumentException("No Such User Found!");
             }
 
-            var parsedDate = DateTime.Parse(newEntry.SubmittedDateTime);
-            var userDetails = await GetResponsibleUserDetails(newEntry.UserID, parsedDate.Date);
+            var user = await Task.Run(() => _context.User.FirstOrDefault(user => user.UserID == newEntry.UserID));
 
-            if (userDetails?.Entries.Count > 0)
+            if (!String.IsNullOrEmpty(user.Email))
             {
-                var entry = await UpdateEntry(userDetails.Entries.FirstOrDefault(), newEntry);
-                return entry;
+                var fetchedEntry = await Task.Run(() => _context.Entries.Where(e => (e.User.UserID == newEntry.UserID))
+                                                                        .FirstOrDefault(e => e.SubmittedDateTime == date));
+                if (!String.IsNullOrEmpty(fetchedEntry?.Content))
+                {
+                    fetchedEntry.Content = newEntry.Content;
+
+                    _context.Entries.Update(fetchedEntry);
+                    await _context.SaveChangesAsync();
+
+                    return _mapper.Map<DiaryEntry, PostDiaryEntryDto>(fetchedEntry);
+                } else
+                {
+                    var entry = new DiaryEntry()
+                    {
+                        Content = newEntry.Content,
+                        EntryID = Guid.NewGuid(),
+                        SubmittedDateTime = DateTime.Parse(newEntry.SubmittedDateTime),
+                        User = user,
+                    };
+
+                    _context.Entries.Add(entry);
+                    await _context.SaveChangesAsync();
+
+                    return _mapper.Map<DiaryEntry, PostDiaryEntryDto>(entry);
+                }
             }
 
-            var newerEntry = _mapper.Map<PostDiaryEntryDto, DiaryEntry>(newEntry);
-
-            _context.Entries.Add(newerEntry);
-            await _context.SaveChangesAsync();
-
-            return newEntry;
+            return null;
         }
 
-        public async Task<string> GetEntryByDate(GetDiaryEntryByDateRequestDto request)
+        public async Task<string> GetEntryContentByDate(GetDiaryEntryByDateRequestDto request)
         {
-            _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {request.Date}");
+            _logger.LogInformation($"GetEntryContentByDate() Service method Executed with argument - {request.Date}");
+
+            var fetchedUser = await Task.Run(() => _context.User.Where(u => u.UserID == request.UserID).FirstOrDefault());
 
             var entry = await Task.Run(() => _context.Entries
-                              .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
-                              .Where(e => e.User.UserID == request.UserID)
-                              .FirstOrDefault());
-
-            if (request.UserID == entry?.User.UserID)
+                                  .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
+                                  .Where(e => e.User.UserID == request.UserID)
+                                  .FirstOrDefault());
+            
+            if (entry != null)
             {
-                return entry.Content;
+                if (request.UserID == fetchedUser.UserID)
+                {
+                    return entry.Content;
+                }
             }
 
             return "";
         }
 
-        public async Task<IEnumerable<DiaryEntry>> SearchEntriesByContent(SearchViaContentRequestDto request)
+        public async Task<IEnumerable<SearchByContentResponseDto>> SearchEntriesByContent(SearchViaContentRequestDto request)
         {
             _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {request.Content}");
 
-            return await Task.Run(() => _context.Entries
-                            .Where(x => x.Content.Contains(request.Content))
-                            .Where(x => x.User.UserID == request.UserID)
-                            .OrderBy(x => x.SubmittedDateTime)
-                            .ToList());
-        }
+            var entryList = await Task.Run(() => _context.Entries
+                              .Where(x => x.Content.Contains(request.Content))
+                              .Where(x => x.User.UserID == request.UserID)
+                              .OrderBy(x => x.SubmittedDateTime)
+                              .ToList());
 
-        private async Task<PostDiaryEntryDto> UpdateEntry(DiaryEntry entry, PostDiaryEntryDto newEntry)
-        {
-            var dbDiaryEntry = await _context.Entries.FindAsync(entry.EntryID);
-
-            if (dbDiaryEntry.EntryID == Guid.Empty)
-            {
-                return null;
-            }
-
-            dbDiaryEntry.Content = newEntry.Content;
-
-            await _context.SaveChangesAsync();
-
-            return new PostDiaryEntryDto()
-            {
-                UserID = dbDiaryEntry.User.UserID,
-                Content = dbDiaryEntry.Content,
-                SubmittedDateTime = dbDiaryEntry.SubmittedDateTime.Date.ToString()
-            };
-        }
-
-        private async Task<User> GetResponsibleUserDetails(Guid UserID, DateTime SubmittedDate)
-        {
-            _logger.LogInformation($"GetResponsibleUserDetails() Service method Executed with argument - {UserID} & {SubmittedDate}");
-
-            return await Task.Run(() => _context.User
-                .Include(i => i.Entries.Where(e => e.SubmittedDateTime.Date == SubmittedDate))
-                .FirstOrDefault(u => u.UserID == UserID));
+            return _mapper.Map<List<DiaryEntry>, List<SearchByContentResponseDto>>(entryList);
         }
     }
 }
