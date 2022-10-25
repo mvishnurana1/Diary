@@ -63,6 +63,10 @@
         color: $white;
     }
 
+    .react-datepicker__current-month, .react-datepicker__day-name {
+        color: white;
+    }
+
     .red {
         color: $tomato;
         margin-left: 1rem;
@@ -88,7 +92,7 @@
 
     .left {
         background-color: $white;
-        box-shadow: 0.25rem 0.25rem 1.25rem #949eae;
+        box-shadow: 0.3rem 1.25rem 0.5rem .3rem #36383c;
         padding: 1rem;
 
         .datepicker {
