@@ -24,25 +24,4 @@ namespace API.Helpers.Services
             return await Task.Run(() => x);
         }
     }
-
-    public interface IMonthPriority
-    {
-        Task<IEnumerable<Priority>> AddMonthPriority(string content);
-        Task<IEnumerable<Priority>> RemoveMonthPriority(string content);
-    }
-
-    public class MonthPrioritiesService : IMonthPriority
-    {
-        public async Task<IEnumerable<Priority>> AddMonthPriority(string content)
-        {
-            var x = new List<Priority>();
-            return await Task.Run(() => x);
-        }
-
-        public async Task<IEnumerable<Priority>> RemoveMonthPriority(string content)
-        {
-            var x = new List<Priority>();
-            return await Task.Run(() => x);
-        }
-    }
 }
