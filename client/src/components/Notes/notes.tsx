@@ -320,8 +320,8 @@ export function Notes(): JSX.Element {
                                 />
                             </div>
                             <hr />
-                            <MonthGoal />
                             <PerformanceChart />
+                            <MonthGoal />
                         </div>
                     </div>
                 </div>}
