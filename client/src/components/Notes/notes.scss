@@ -47,6 +47,22 @@
         padding: 2rem;
     }
 
+    .react-datepicker__header {
+        background-color: $tomato;
+    }
+
+    .react-datepicker__day--highlighted {
+        background-color: $white;
+        border: 2px solid $tomato;
+        color: $tomato;
+        font-weight: 700;
+    }
+
+    .react-datepicker__day--today, .react-datepicker__day--keyboard-selected {
+        background-color: $tomato;
+        color: $white;
+    }
+
     .red {
         color: $tomato;
         margin-left: 1rem;
