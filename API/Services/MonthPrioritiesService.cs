@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Priority;
 using API.model;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,27 +11,30 @@ namespace API.Helpers.Services
 {
     public interface IMonthPriority
     {
-        Task<IEnumerable<Priority>> AddMonthPriority(PriorityDto priority);
-        Task<IEnumerable<Priority>> RemoveMonthPriority(string content);
+        Task<IEnumerable<PriorityResponseDto>> AddMonthPriority(PriorityDto priority);
+        Task<IEnumerable<PriorityResponseDto>> RemoveMonthPriority(RemovePriorityDto priority);
     }
 
     public class MonthPrioritiesService : IMonthPriority
     {
         private readonly DataContext _context;
         private readonly ILogger<MonthPrioritiesService> _logger;
+        private readonly IMapper _mapper;
 
         public MonthPrioritiesService(
             DataContext dataContext,
-            ILogger<MonthPrioritiesService> logger
+            ILogger<MonthPrioritiesService> logger,
+            IMapper mapper
         )
         {
             _context = dataContext;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Priority>> AddMonthPriority(PriorityDto priority)
+        public async Task<IEnumerable<PriorityResponseDto>> AddMonthPriority(PriorityDto priority)
         {
-            var user = await Task.Run(() => _context.User.FirstOrDefault(u => u.UserID == priority.UserID));
+            var user = await GetUser(priority.UserID);
 
             if (user != null)
             {
@@ -50,17 +54,35 @@ namespace API.Helpers.Services
             return null;
         }
 
-        public async Task<IEnumerable<Priority>> RemoveMonthPriority(string content)
+        public async Task<IEnumerable<PriorityResponseDto>> RemoveMonthPriority(RemovePriorityDto priority)
         {
-            var x = new List<Priority>();
-            return await Task.Run(() => x);
+            var user = await GetUser(priority.UserID);
+            var prioprityToDelete = _context.Priority.FirstOrDefault(p => p.ID == priority.ID);
+            if (user != null && prioprityToDelete != null)
+            {
+                _context.Priority.Remove(prioprityToDelete);
+                await _context.SaveChangesAsync();
+
+                return await GetAllPrioritiesForMonth(user.UserID);
+            } else
+            {
+                return null;
+            }
         }
 
-        public async Task<IEnumerable<Priority>> GetAllPrioritiesForMonth(Guid userID)
+        public async Task<IEnumerable<PriorityResponseDto>> GetAllPrioritiesForMonth(Guid userID)
         {
-            var priorities = await Task.Run(() => _context.Priority.Where(p => (p.User.UserID == userID) && p.Month.Month == DateTime.Now.Month));
+            var priorities = await Task.Run(() => _context.Priority.Where(p => (p.User.UserID == userID) && p.Month.Month == DateTime.Now.Month)
+                                                                   .ToList());
 
-            return priorities;
+            return _mapper.Map<List<Priority>, List<PriorityResponseDto>>(priorities);
+        }
+
+        private async Task<User> GetUser(Guid userID)
+        {
+            var user = await Task.Run(() => _context.User.FirstOrDefault(u => u.UserID == userID));
+
+            return user;
         }
     }
 }
