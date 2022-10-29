@@ -15,7 +15,7 @@ import { fetchUser } from '../../utils/api/fetchUser';
 import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
-import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
+import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser.';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { MonthGoal } from '../MonthGoal/monthGoal';
@@ -92,30 +92,28 @@ export function Notes(): JSX.Element {
                     setLoggedInUser(user);
                 }
 
-                if (id !== undefined) {
-                    const x = await fetchDatesofNotesForLoggedInUser(id);
+                const x = await fetchDatesOfNotesForLoggedInUser(id);
 
-                    const dates = x?.map(date => new Date(date));
-                    setValidNoteDates(dates!);
-                }
+                const dates = x?.map(date => new Date(date));
+                setValidNoteDates(dates!);
                 
             } catch (err) {
                 console.error('Could not fetch dates');
             }
         })();
-    }, [loggedInUser]);
+    }, [recentlyPosted, loggedInUser, startDate]);
 
     useEffect(() => {
         (async () => {
             try {
-                const x = await fetchDatesofNotesForLoggedInUser(loggedInUser.userID);
+                const x = await fetchDatesOfNotesForLoggedInUser(loggedInUser.userID);
                 const dates = x?.map(date => new Date(date));
                 setValidNoteDates(dates!);
             } catch (err) {
                 console.error('Could not fetch dates');
             }
         })();
-    }, [recentlyPosted, loggedInUser.userID]);
+    }, [recentlyPosted, loggedInUser.userID, startDate]);
 
     async function postCachedActivity() {
         const active = JSON.parse(localStorage.getItem('active')!);
@@ -282,13 +280,13 @@ export function Notes(): JSX.Element {
                     {displayError()}
                 </>
 
-                {validNoteDates && !searchedResult.length &&
+                {(validNoteDates?.length > 0) && (searchedResult?.length === 0) &&
                 <div className='left'>
                     <div className={error ? 'no-display': 'datepicker'}>
                         <div className='mobile'>
                             {active === activeOnMobileDisplay.calendar &&
                                 <DatePicker
-                                    highlightDates={validNoteDates}
+                                    highlightDates={[...validNoteDates]}
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
@@ -397,16 +395,6 @@ export function Notes(): JSX.Element {
                                 </div>
                     }
                         <div className="centre">
-                            <button
-                                className={ searchedResult.length > 0 || error ? 'no-display' : 'save button' }
-                                onClick={() => {
-                                    postNote();
-                                    setContent('')
-                                }}
-                                title={ content?.length === 0 ? 'Write note' : 'SAVE' }
-                                disabled={ content?.length === 0 }>
-                                { content?.length === 0 ? 'Write note' : 'SAVE' }
-                            </button>
                         </div>
                     {displayCard()}
                 </div>
