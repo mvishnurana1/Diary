@@ -22,7 +22,7 @@ namespace API.Controllers.Users
             _monthPriorityService = monthPriorityService;
         }
 
-        [HttpGet("/priorities")]
+        [HttpGet("/addpriorities")]
         public async Task<ActionResult<List<PriorityResponseDto>>> GetActivePrioritiesOfMonth([FromQuery] PriorityDto priority)
         {
             if (priority.UserID == Guid.Empty || String.IsNullOrEmpty(priority.PriorityContent))
@@ -46,6 +46,19 @@ namespace API.Controllers.Users
             var x = await _monthPriorityService.RemoveMonthPriority(priority);
 
             return Ok(x);
+        }
+
+        [HttpGet("/priorities")]
+        public async Task<ActionResult<List<PriorityResponseDto>>> GetActivePriorityForCurrentMonth([FromQuery] Guid UserID)
+        {
+            if (UserID == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var priorities = await _monthPriorityService.GetAllPrioritiesForMonth(UserID);
+
+            return Ok(priorities);
         }
     }
 }
