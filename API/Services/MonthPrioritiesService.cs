@@ -13,6 +13,7 @@ namespace API.Helpers.Services
     {
         Task<IEnumerable<PriorityResponseDto>> AddMonthPriority(PriorityDto priority);
         Task<IEnumerable<PriorityResponseDto>> RemoveMonthPriority(RemovePriorityDto priority);
+        Task<IEnumerable<PriorityResponseDto>> GetAllPrioritiesForMonth(Guid userID);
     }
 
     public class MonthPrioritiesService : IMonthPriority
@@ -40,7 +41,7 @@ namespace API.Helpers.Services
             {
                 Priority pri = new Priority()
                 {
-                    Month = priority.Month,
+                    Month = DateTime.Parse(priority.Month),
                     PriorityContent = priority.PriorityContent,
                     User = user,
                 };
