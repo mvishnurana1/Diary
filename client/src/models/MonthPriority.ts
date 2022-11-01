@@ -9,9 +9,9 @@ export interface IRemoveMonthPriorityRequestModel {
 }
 
 export interface IMonthPriorityResponseModel {
-    userID: string,
+    id: string,
     date: string,
-    content: string
+    priorityContent: string
 }
 
 export interface IPriorityModel {

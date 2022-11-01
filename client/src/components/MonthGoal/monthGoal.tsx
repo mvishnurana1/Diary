@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getMonthTitle } from "../../helper/date-fn";
 import { UserTask } from "../../models/UserTask";
+import { fetchPriorityForMonth } from "../../utils/api/monthPriorities";
+import { IMonthPriorityResponseModel } from "../../models/MonthPriority";
 import './monthGoal.scss';
 
 const defaultTask : UserTask = {
@@ -11,10 +13,27 @@ const defaultTask : UserTask = {
     isCompleted: false
 }
 
+type monthlyGoalsProps = {
+    userID: string
+};
+
 export function MonthGoal(): JSX.Element {
-    const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
+    // const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
     const [isAdding, setIsAdding] = useState(false);
+    const [priorities, setPriorities] = useState<IMonthPriorityResponseModel[]>([]);
     const [active, setActive] = useState<UserTask>(defaultTask);
+
+    useEffect(() => {
+      (async () => {
+        try {
+            const prioritiesList = await fetchPriorityForMonth('d7c4c5d9-6d5b-4708-3f63-08dab43498f2');
+            setPriorities([...prioritiesList]);
+            console.log(priorities);
+        } catch(err: any) {
+
+        }
+      })();
+    }, []);
     
     function getExistingTodos(): UserTask[] {
         const tasks: UserTask[] = JSON.parse(localStorage.getItem('priorities')!);
@@ -27,21 +46,20 @@ export function MonthGoal(): JSX.Element {
                 <h1 className="title">{getMonthTitle()}'s</h1>
                     <h2 className="sub-title">top priorities</h2>
                     <div className="gap">
-                        {todos?.length === 0 && <span>Nothing to prioritise?</span>}
-                        {todos?.length > 0 && todos.map((todo, index) => 
+                        {priorities?.length === 0 && <span>Nothing to prioritise?</span>}
+                        {priorities?.length > 0 && priorities.map((priority, index) => 
                             <div className="todo-item" key={index}>
                                 <FontAwesomeIcon className="goal-logo" icon={ faBullseye } />
 
                                 <div className="flex-gap">
-                                    <div className={todo.isCompleted ? 'content isCompleted': 'content'}>
-                                        {todo.content}
+                                    <div className='content'>
+                                        {priority?.priorityContent}
                                     </div>
                                     <button 
                                         className="trash-button" 
                                         onClick={() => {
-                                            todos.splice(index, 1);
-                                            setToDos([...todos]);
-                                            localStorage.setItem('priorities', JSON.stringify([...todos]));
+                                            priorities.splice(index, 1);
+                                            setPriorities([]);
                                         }}
                                         title="remove">
                                         <FontAwesomeIcon icon={ faTrash } />
@@ -81,9 +99,9 @@ export function MonthGoal(): JSX.Element {
                         const activeContent = active.content.trim();
 
                         if (activeContent.length > 0) {
-                            setToDos([...todos, active]);
-                            localStorage.setItem('priorities', JSON.stringify([...todos, active]));
-                            setActive(defaultTask);
+                            // setToDos([...todos, active]);
+                            // localStorage.setItem('priorities', JSON.stringify([...todos, active]));
+                            // setActive(defaultTask);
                         }
                     }}
                 >
