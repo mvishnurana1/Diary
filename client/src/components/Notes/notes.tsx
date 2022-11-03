@@ -319,7 +319,7 @@ export function Notes(): JSX.Element {
                             </div>
                             <hr />
                             <PerformanceChart />
-                            <MonthGoal />
+                            {loggedInUser && <MonthGoal userID={loggedInUser?.userID} />}
                         </div>
                     </div>
                 </div>}
