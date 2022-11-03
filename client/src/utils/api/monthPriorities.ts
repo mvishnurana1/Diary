@@ -3,7 +3,7 @@ import { GetToken } from '../../helper/getToken';
 import { IAddMonthPriorityRequestModel, IMonthPriorityResponseModel, IPriorityModel, IRemoveMonthPriorityRequestModel } from '../../models/MonthPriority';
 import { BASE_URL } from '../url';
 
-export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequestModel) {
+export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequestModel): Promise<IMonthPriorityResponseModel[]> {
     // Check everything exists on the priority model
     // check if the userID exists
     // has a date in the right format 
@@ -11,12 +11,13 @@ export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequ
     const { userID, content } = priority;
 
     if (userID.length === 0 || content.length === 0) {
-        return;
+        return [];
     }
 
     const token = GetToken();
+    const formattedDate = dateFormat(new Date());
 
-    const response = await fetch(`${BASE_URL}addpriorities?$month=${dateFormat(new Date())}&userID=${priority.userID}&priorityContent=${priority.content}`, {
+    const response = await fetch(`${BASE_URL}addpriorities?month=${formattedDate}&userID=${priority.userID}&priorityContent=${priority.content}`, {
         method: 'GET',
         headers: {
             'Authorization': `bearer ${token}`,
@@ -24,7 +25,7 @@ export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequ
         }
     });
 
-    return await response.json() as Promise<IPriorityModel[]>;
+    return await response.json() as Promise<IMonthPriorityResponseModel[]>;
 }
 
 export async function removeAnotherPriorityForMonth(priority: IRemoveMonthPriorityRequestModel) {
@@ -39,7 +40,7 @@ export async function removeAnotherPriorityForMonth(priority: IRemoveMonthPriori
         }
     });
 
-    return await response.json() as Promise<IPriorityModel[]>;
+    return await response.json() as Promise<IMonthPriorityResponseModel[]>;
 }
 
 export async function fetchPriorityForMonth(userID: string) {
