@@ -2,42 +2,54 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getMonthTitle } from "../../helper/date-fn";
-import { UserTask } from "../../models/UserTask";
-import { fetchPriorityForMonth } from "../../utils/api/monthPriorities";
-import { IMonthPriorityResponseModel } from "../../models/MonthPriority";
+import { addAnotherPriorityForMonth, fetchPriorityForMonth, removeAnotherPriorityForMonth } from "../../utils/api/monthPriorities";
+import { IAddMonthPriorityRequestModel, IMonthPriorityResponseModel, IRemoveMonthPriorityRequestModel } from "../../models/MonthPriority";
 import './monthGoal.scss';
 
-const defaultTask : UserTask = {
-    content: '',
-    date: new Date(),
-    isCompleted: false
-}
-
-type monthlyGoalsProps = {
+interface userInfo {
     userID: string
 };
 
-export function MonthGoal(): JSX.Element {
-    // const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
+export function MonthGoal(user: userInfo): JSX.Element {
     const [isAdding, setIsAdding] = useState(false);
     const [priorities, setPriorities] = useState<IMonthPriorityResponseModel[]>([]);
-    const [active, setActive] = useState<UserTask>(defaultTask);
+    const [active, setActive] = useState("");
 
     useEffect(() => {
       (async () => {
         try {
             const prioritiesList = await fetchPriorityForMonth('d7c4c5d9-6d5b-4708-3f63-08dab43498f2');
             setPriorities([...prioritiesList]);
-            console.log(priorities);
         } catch(err: any) {
 
         }
       })();
     }, []);
-    
-    function getExistingTodos(): UserTask[] {
-        const tasks: UserTask[] = JSON.parse(localStorage.getItem('priorities')!);
-        return tasks === null ? [] : tasks;
+
+    async function addAnotherPriority() {
+        try {
+            const priorityToAdd: IAddMonthPriorityRequestModel = {
+                   content: active,
+                   userID: user.userID,
+            }
+            const priority = await addAnotherPriorityForMonth(priorityToAdd);
+            setPriorities([...priorities, ...priority]);
+        } catch (err) {
+
+        }
+    }
+
+    async function removePriority(priority: IMonthPriorityResponseModel) {
+        try {
+            const priorityToRemove: IRemoveMonthPriorityRequestModel = {
+                id: priority.id,
+                userID: user.userID
+            }
+            const priorities = await removeAnotherPriorityForMonth(priorityToRemove);
+            setPriorities([...priorities]);
+        } catch (err) {
+
+        }
     }
 
     return (
@@ -57,9 +69,8 @@ export function MonthGoal(): JSX.Element {
                                     </div>
                                     <button 
                                         className="trash-button" 
-                                        onClick={() => {
-                                            priorities.splice(index, 1);
-                                            setPriorities([]);
+                                        onClick={async () => {
+                                            await removePriority(priority);
                                         }}
                                         title="remove">
                                         <FontAwesomeIcon icon={ faTrash } />
@@ -79,12 +90,7 @@ export function MonthGoal(): JSX.Element {
                                     }
 
                                     if (value.length > 0) {
-                                        const newToDo: UserTask = { 
-                                            content: value, 
-                                            date: new Date(), 
-                                            isCompleted: false
-                                        };
-                                        setActive(newToDo)
+                                        setActive(value);
                                     }}
                             }
                             placeholder="write new task here"
@@ -96,12 +102,10 @@ export function MonthGoal(): JSX.Element {
                     onClick={() => {
                         setIsAdding(!isAdding);
 
-                        const activeContent = active.content.trim();
+                        const activeContent = active.trim();
 
                         if (activeContent.length > 0) {
-                            // setToDos([...todos, active]);
-                            // localStorage.setItem('priorities', JSON.stringify([...todos, active]));
-                            // setActive(defaultTask);
+                            addAnotherPriority();
                         }
                     }}
                 >
