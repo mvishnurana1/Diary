@@ -23,7 +23,7 @@ namespace API.Controllers.Users
         }
 
         [HttpGet("/addpriorities")]
-        public async Task<ActionResult<List<PriorityResponseDto>>> AddNewPrioritiesForCurrentMonth([FromQuery] PriorityDto priority)
+        public async Task<ActionResult<PriorityResponseDto>> AddNewPrioritiesForCurrentMonth([FromQuery] PriorityDto priority)
         {
             if (priority.UserID == Guid.Empty || String.IsNullOrEmpty(priority.PriorityContent))
             {
