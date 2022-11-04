@@ -11,7 +11,7 @@ namespace API.Helpers.Services
 {
     public interface IMonthPriority
     {
-        Task<IEnumerable<PriorityResponseDto>> AddMonthPriority(PriorityDto priority);
+        Task<PriorityResponseDto> AddMonthPriority(PriorityDto priority);
         Task<IEnumerable<PriorityResponseDto>> RemoveMonthPriority(RemovePriorityDto priority);
         Task<IEnumerable<PriorityResponseDto>> GetAllPrioritiesForMonth(Guid userID);
     }
@@ -33,7 +33,7 @@ namespace API.Helpers.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PriorityResponseDto>> AddMonthPriority(PriorityDto priority)
+        public async Task<PriorityResponseDto> AddMonthPriority(PriorityDto priority)
         {
             var user = await GetUser(priority.UserID);
 
@@ -49,7 +49,7 @@ namespace API.Helpers.Services
                 _context.Priority.Add(pri);
                 await _context.SaveChangesAsync();
 
-                return await GetAllPrioritiesForMonth(user.UserID);
+                return _mapper.Map<Priority, PriorityResponseDto>(pri);
             }
 
             return null;
