@@ -32,20 +32,28 @@ export function MonthGoal(user: userInfo): JSX.Element {
                    content: active,
                    userID: user.userID,
             }
+
             const priority = await addAnotherPriorityForMonth(priorityToAdd);
-            setPriorities([...priorities, ...priority]);
+            if (priority !== null) {
+                priorities.splice(priorities.length, 0, priority);
+                setPriorities([...priorities]);
+            }
         } catch (err) {
 
+        } finally {
+            setActive('');
         }
     }
 
-    async function removePriority(priority: IMonthPriorityResponseModel) {
+    async function removePriority(priority: IMonthPriorityResponseModel, index: number) {
         try {
             const priorityToRemove: IRemoveMonthPriorityRequestModel = {
                 id: priority.id,
                 userID: user.userID
             }
-            const priorities = await removeAnotherPriorityForMonth(priorityToRemove);
+            await removeAnotherPriorityForMonth(priorityToRemove);
+
+            priorities.splice(index, 1);
             setPriorities([...priorities]);
         } catch (err) {
 
@@ -70,7 +78,7 @@ export function MonthGoal(user: userInfo): JSX.Element {
                                     <button 
                                         className="trash-button" 
                                         onClick={async () => {
-                                            await removePriority(priority);
+                                            await removePriority(priority, index);
                                         }}
                                         title="remove">
                                         <FontAwesomeIcon icon={ faTrash } />
