@@ -1,9 +1,9 @@
 import { dateFormat } from '../../helper/date-fn';
 import { GetToken } from '../../helper/getToken';
-import { IAddMonthPriorityRequestModel, IMonthPriorityResponseModel, IPriorityModel, IRemoveMonthPriorityRequestModel } from '../../models/MonthPriority';
+import { IAddMonthPriorityRequestModel, IMonthPriorityResponseModel, IRemoveMonthPriorityRequestModel } from '../../models/MonthPriority';
 import { BASE_URL } from '../url';
 
-export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequestModel): Promise<IMonthPriorityResponseModel[]> {
+export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequestModel): Promise<IMonthPriorityResponseModel | null> {
     // Check everything exists on the priority model
     // check if the userID exists
     // has a date in the right format 
@@ -11,7 +11,7 @@ export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequ
     const { userID, content } = priority;
 
     if (userID.length === 0 || content.length === 0) {
-        return [];
+        return null;
     }
 
     const token = GetToken();
@@ -25,7 +25,7 @@ export async function addAnotherPriorityForMonth(priority: IAddMonthPriorityRequ
         }
     });
 
-    return await response.json() as Promise<IMonthPriorityResponseModel[]>;
+    return await response.json() as Promise<IMonthPriorityResponseModel>;
 }
 
 export async function removeAnotherPriorityForMonth(priority: IRemoveMonthPriorityRequestModel) {
