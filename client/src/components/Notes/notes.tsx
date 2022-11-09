@@ -305,7 +305,7 @@ export function Notes(): JSX.Element {
                             <h2 className='sub-title'>Write journal</h2>
                             <div className='centralise'>
                                 <DatePicker
-                                    highlightDates={validNoteDates}
+                                    highlightDates={[...validNoteDates]}
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
