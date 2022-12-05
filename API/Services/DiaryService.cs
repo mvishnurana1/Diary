@@ -37,7 +37,7 @@ namespace API.Helpers.Services
 
         public async Task<IEnumerable<DateTime>> GetAllDatesWithEntriesForUser(Guid loggedInUserID)
         {
-            return await Task.Run(() => _context.Entries.Where(e => e.UserID == loggedInUserID)
+            return await Task.Run(() => _context.DiaryEntry.Where(e => e.UserID == loggedInUserID)
                                                         .Select(e => e.SubmittedDateTime));
         }
 
@@ -61,7 +61,7 @@ namespace API.Helpers.Services
         
             var newerEntry = _mapper.Map<PostDiaryEntryDto, DiaryEntry>(newEntry);
 
-            _context.Entries.Add(newerEntry);
+            _context.DiaryEntry.Add(newerEntry);
             await _context.SaveChangesAsync();
 
             return newEntry;
@@ -71,7 +71,7 @@ namespace API.Helpers.Services
         {
             _logger.LogInformation($"GetEntryByDate() Service method Executed with argument - {request.Date}");
 
-            var entry = await Task.Run(() => _context.Entries
+            var entry = await Task.Run(() => _context.DiaryEntry
                               .Where(e => e.SubmittedDateTime.Date == request.Date.Date)
                               .Where(e => e.UserID == request.UserID)
                               .FirstOrDefault());
@@ -88,7 +88,7 @@ namespace API.Helpers.Services
         {
             _logger.LogInformation($"SearchEntriesByContent() Service method Executed with argument - {request.Content}");
 
-            return await Task.Run(() => _context.Entries
+            return await Task.Run(() => _context.DiaryEntry
                             .Where(x => x.Content.Contains(request.Content))
                             .Where(x => x.UserID == request.UserID)
                             .OrderBy(x => x.SubmittedDateTime)
@@ -97,7 +97,7 @@ namespace API.Helpers.Services
 
         private async Task<PostDiaryEntryDto> UpdateEntry(DiaryEntry entry, PostDiaryEntryDto newEntry)
         {
-            var dbDiaryEntry = await _context.Entries.FindAsync(entry.EntryID);
+            var dbDiaryEntry = await _context.DiaryEntry.FindAsync(entry.EntryID);
 
             if (dbDiaryEntry.EntryID == Guid.Empty)
             {
