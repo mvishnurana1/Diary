@@ -26,6 +26,15 @@
         gap: 2.5rem;
     }
 
+    .react-datepicker__header, .react-datepicker__day--highlighted {
+        background-color: $tomato;
+        color: white;
+    }
+
+    .react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+        background-color: rgb(114, 36, 22);
+    }
+
     .entry-card-container {
         display: flex;
         justify-content: space-between;
