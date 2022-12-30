@@ -13,6 +13,7 @@ namespace API.DTOs.Todos
     public class DeleteTodoRequestDto 
     {
         public Guid ID { get; set; }
-        public Guid loggedInUserID { get; set; }
+        public Guid LoggedInUserID { get; set; }
+        public DateTime CompletedDateTime { get; set; }
     }
 }
