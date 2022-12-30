@@ -1,5 +1,8 @@
 ﻿using API.DTOs.Todos;
 using API.model;
+using AutoMapper;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Helpers.Services
@@ -7,19 +10,54 @@ namespace API.Helpers.Services
     public interface IToDoService
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
-        Task<string> DeleteTodo(DeleteTodoRequestDto deleteTodoRequestDto);
+        Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto);
     }
 
     public class ToDoService : IToDoService
     {
-        public Task<DailyTodo> AddNewTodo(TodoDto todo)
+        private readonly DataContext _context;
+        private readonly ILogger<ToDoService> _logger;
+        private readonly IMapper _mapper;
+
+        public ToDoService(DataContext context, ILogger<ToDoService> logger, IMapper mapper)
         {
-            throw new System.NotImplementedException();
+            _context = context;
+            _logger = logger;
+            _mapper = mapper;
         }
 
-        public Task<string> DeleteTodo(DeleteTodoRequestDto deleteTodoRequestDto)
+        public async Task<DailyTodo> AddNewTodo(TodoDto todo)
         {
-            throw new System.NotImplementedException();
+            var newTodo = new DailyTodo()
+            {
+                Completed = false,
+                DateDue = todo.DateDue,
+                TodoContent = todo.TodoContent,
+                UserID = todo.UserID
+            };
+
+            _context.Todo.Add(newTodo);
+            await _context.SaveChangesAsync();
+
+            return newTodo;
+        }
+
+        public async Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto)
+        {
+            var todo = await Task.Run(() => _context.Todo
+                                 .Where(t => t.UserID == deleteTodoRequestDto.LoggedInUserID)
+                                 .Where(t => t.ID == deleteTodoRequestDto.ID)
+                                 .FirstOrDefault());
+
+            if (todo != null)
+            {
+                todo.Completed = true;
+                await _context.SaveChangesAsync();
+
+                return todo.ID.ToString();
+            }
+
+            return null;
         }
     }
 }
