@@ -2,6 +2,8 @@
 using API.model;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +13,7 @@ namespace API.Helpers.Services
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto);
+        Task<List<DailyTodo>> GetActivityTodosForUser(string loggedInUserID);
     }
 
     public class ToDoService : IToDoService
@@ -40,6 +43,11 @@ namespace API.Helpers.Services
             await _context.SaveChangesAsync();
 
             return newTodo;
+        }
+
+        public Task<List<DailyTodo>> GetActivityTodosForUser(string loggedInUserID)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto)
