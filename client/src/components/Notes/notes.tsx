@@ -18,8 +18,8 @@ import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryB
 import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
+import { ToDos } from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
-// import { ToDos } from '../ToDos/todos';
 // import { PerformanceChart } from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
@@ -302,7 +302,7 @@ export function Notes(): JSX.Element {
                             }
                         </div>
                         <div className={error ? 'no-display': 'desktop datepicker'}>
-                            {/* <ToDos /> */}
+                            <ToDos />
                             <h1 className='title'>Pick a Date</h1>
                             <h2 className='sub-title'>Write journal</h2>
                             <div className='centralise'>
