@@ -1,11 +1,13 @@
-﻿using API.Helpers.Services;
-using API.model;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using API.Helpers.Services;
+using API.model;
+using API.DTOs.Todos;
 
 namespace API.Controllers.Users
 {
@@ -29,22 +31,43 @@ namespace API.Controllers.Users
             _logger = logger;
         }
 
-        [HttpGet("activetodos")]
+        [HttpGet("/activetodos")]
         public async Task<ActionResult<List<DailyTodo>>> GetActiveTodos([FromQuery] string userID)
         {
+            if (userID == null)
+            {
+                return BadRequest();
+            }
 
+            var id = new Guid(userID);
+            var todos = await _toDoService.GetActivityTodosForUser(id);
+
+            return Ok(todos);
         }
 
-        [HttpPost("addtodo")]
-        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo()
+        [HttpPost("/addtodo")]
+        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
         {
+            if (String.IsNullOrWhiteSpace(todo.TodoContent))
+            {
+                return BadRequest();
+            }
 
+            var addedTodo = await _toDoService.AddNewTodo(todo);
+            return Ok(addedTodo);
         }
 
-        [HttpPut("updatetodo")]
-        public async Task<ActionResult<List<DailyTodo>>> GetActiveTodos()
+        [HttpPut("/updatetodo")]
+        public async Task<ActionResult<List<DailyTodo>>> TaskStatusChange([FromQuery] DeleteTodoRequestDto completedTodo)
         {
+            var activeTodos = await _toDoService.MarkTodoAsCompleted(completedTodo);
 
+            if (activeTodos == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(activeTodos);
         }
     }
 }
