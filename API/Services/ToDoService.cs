@@ -12,7 +12,7 @@ namespace API.Helpers.Services
     public interface IToDoService
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
-        Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto);
+        Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
     }
 
@@ -21,9 +21,12 @@ namespace API.Helpers.Services
         private readonly DataContext _context;
         private readonly ILogger<ToDoService> _logger;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
 
-        public ToDoService(DataContext context, ILogger<ToDoService> logger, IMapper mapper)
+        public ToDoService(
+            DataContext context, 
+            ILogger<ToDoService> logger, 
+            IMapper mapper
+        )
         {
             _context = context;
             _logger = logger;
@@ -34,13 +37,14 @@ namespace API.Helpers.Services
         {
             var newTodo = new DailyTodo()
             {
-                Completed = false,
+                Completed = todo.Completed,
                 DateDue = todo.DateDue,
                 TodoContent = todo.TodoContent,
-                UserID = todo.UserID
+                UserID = todo.UserID,
+                ID = new Guid()
             };
 
-            _context.Todo.Add(newTodo);
+            _context.DailyTodo.Add(newTodo);
             await _context.SaveChangesAsync();
 
             return newTodo;
@@ -48,25 +52,25 @@ namespace API.Helpers.Services
 
         public async Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID)
         {
-            return await Task.Run(() => _context.Todo.Where(t => t.UserID.Equals(loggedInUserID))
+            return await Task.Run(() => _context.DailyTodo.Where(t => t.UserID.Equals(loggedInUserID))
                                                      .Where(t => !t.Completed)
                                                      .ToList());
         }
 
-        public async Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto)
+        public async Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update)
         {
-            var isValidUser = await _userService.DoesUserExist(deleteTodoRequestDto.LoggedInUserID);
+            var user = await Task.Run(() => _context.User.Where(u => u.UserID == update.LoggedInUserID).FirstOrDefault());
 
-            if (isValidUser)
+            if (!String.IsNullOrEmpty(user.UserID.ToString()))
             {
-                var todo = await Task.Run(() => _context.Todo
-                                     .Where(t => t.UserID == deleteTodoRequestDto.LoggedInUserID)
-                                     .Where(t => t.ID == deleteTodoRequestDto.ID)
-                                     .FirstOrDefault());
-            
+                var todo = await Task.Run(() => _context.DailyTodo
+                                        .Where(t => t.UserID == update.LoggedInUserID)
+                                        .Where(t => t.ID == update.ID)
+                                        .FirstOrDefault());
+
                 if (todo != null)
                 {
-                    todo.Completed = true;
+                    todo.Completed = update.NewStatus;
                     await _context.SaveChangesAsync();
 
                     return todo.ID.ToString();
