@@ -13,7 +13,7 @@ namespace API.Helpers.Services
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto);
-        Task<List<DailyTodo>> GetActivityTodosForUser(string loggedInUserID);
+        Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
     }
 
     public class ToDoService : IToDoService
@@ -45,9 +45,11 @@ namespace API.Helpers.Services
             return newTodo;
         }
 
-        public Task<List<DailyTodo>> GetActivityTodosForUser(string loggedInUserID)
+        public async Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => _context.Todo.Where(t => t.UserID.Equals(loggedInUserID))
+                                                     .Where(t => !t.Completed)
+                                                     .ToList());
         }
 
         public async Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto)
