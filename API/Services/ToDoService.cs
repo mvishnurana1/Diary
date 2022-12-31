@@ -21,6 +21,7 @@ namespace API.Helpers.Services
         private readonly DataContext _context;
         private readonly ILogger<ToDoService> _logger;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
         public ToDoService(DataContext context, ILogger<ToDoService> logger, IMapper mapper)
         {
@@ -54,17 +55,22 @@ namespace API.Helpers.Services
 
         public async Task<string> MarkTodoAsCompleted(DeleteTodoRequestDto deleteTodoRequestDto)
         {
-            var todo = await Task.Run(() => _context.Todo
-                                 .Where(t => t.UserID == deleteTodoRequestDto.LoggedInUserID)
-                                 .Where(t => t.ID == deleteTodoRequestDto.ID)
-                                 .FirstOrDefault());
+            var isValidUser = await _userService.DoesUserExist(deleteTodoRequestDto.LoggedInUserID);
 
-            if (todo != null)
+            if (isValidUser)
             {
-                todo.Completed = true;
-                await _context.SaveChangesAsync();
+                var todo = await Task.Run(() => _context.Todo
+                                     .Where(t => t.UserID == deleteTodoRequestDto.LoggedInUserID)
+                                     .Where(t => t.ID == deleteTodoRequestDto.ID)
+                                     .FirstOrDefault());
+            
+                if (todo != null)
+                {
+                    todo.Completed = true;
+                    await _context.SaveChangesAsync();
 
-                return todo.ID.ToString();
+                    return todo.ID.ToString();
+                }
             }
 
             return null;
