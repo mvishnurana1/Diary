@@ -61,7 +61,7 @@ namespace API.Helpers.Services
         {
             var user = await Task.Run(() => _context.User.Where(u => u.UserID == update.LoggedInUserID).FirstOrDefault());
 
-            if (!String.IsNullOrEmpty(user.UserID.ToString()))
+            if (user != null)
             {
                 var todo = await Task.Run(() => _context.DailyTodo
                                         .Where(t => t.UserID == update.LoggedInUserID)
