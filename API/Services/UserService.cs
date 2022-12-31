@@ -12,6 +12,7 @@ namespace API.Helpers.Services
         Task<User> GetUserByID(Guid userId);
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> FindUserByName(string userName);
+        Task<bool> DoesUserExist(Guid userID);
     }
 
     public class UserService : IUserService
@@ -53,6 +54,18 @@ namespace API.Helpers.Services
                     .Where(x => x.UserID == userId)
                     .ToList()
                     .FirstOrDefault());
+        }
+
+        public async Task<bool> DoesUserExist(Guid userID)
+        {
+            var user = await Task.Run(() => _context.User.Where(u => u.UserID == userID).FirstOrDefault());
+
+            if (!String.IsNullOrEmpty(user.UserID.ToString()))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

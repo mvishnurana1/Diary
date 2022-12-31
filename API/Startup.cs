@@ -86,6 +86,7 @@ namespace API
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDiaryService, DiaryService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IToDoService, ToDoService>();
         }
     }
 }
