@@ -58,7 +58,7 @@ namespace API.Controllers.Users
         }
 
         [HttpPut("/updatetodo")]
-        public async Task<ActionResult<List<DailyTodo>>> TaskStatusChange([FromQuery] DeleteTodoRequestDto completedTodo)
+        public async Task<ActionResult<List<DailyTodo>>> TaskStatusChange([FromQuery] UpdateTodoCompleteStatusDto completedTodo)
         {
             var activeTodos = await _toDoService.MarkTodoAsCompleted(completedTodo);
 
