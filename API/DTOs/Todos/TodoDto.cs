@@ -10,10 +10,11 @@ namespace API.DTOs.Todos
         public string TodoContent { get; set; }
     }
 
-    public class DeleteTodoRequestDto 
+    public class UpdateTodoCompleteStatusDto 
     {
         public Guid ID { get; set; }
         public Guid LoggedInUserID { get; set; }
+        public bool NewStatus { get; set; }
         public DateTime CompletedDateTime { get; set; }
     }
 }
