@@ -20,7 +20,7 @@ import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { ToDos } from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
-// import { PerformanceChart } from '../ActivityChart/ActivityChart';
+import { PerformanceChart } from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -320,8 +320,8 @@ export function Notes(): JSX.Element {
                                 />
                             </div>
                             {/* <hr />
-                            <MonthGoal />
-                            <PerformanceChart /> */}
+                            <MonthGoal />  */}
+                            <PerformanceChart />
                         </div>
                     </div>
                 </div>}
