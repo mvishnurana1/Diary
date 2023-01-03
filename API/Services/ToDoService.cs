@@ -37,7 +37,7 @@ namespace API.Helpers.Services
         {
             var newTodo = new DailyTodo()
             {
-                Completed = todo.Completed,
+                Completed = false,
                 DateDue = todo.DateDue,
                 TodoContent = todo.TodoContent,
                 UserID = todo.UserID,
