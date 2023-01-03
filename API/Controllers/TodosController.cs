@@ -54,7 +54,7 @@ namespace API.Controllers.Users
             }
 
             var addedTodo = await _toDoService.AddNewTodo(todo);
-            return Ok(addedTodo);
+            return Created("Added", addedTodo);
         }
 
         [HttpPut("/updatetodo")]
