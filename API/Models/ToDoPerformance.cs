@@ -6,6 +6,6 @@ namespace API.model
     {
         public Guid ID { get; set; } = new Guid();
         public DateTime? Date { get; set; }
-        public Decimal? Achievement { get; set; }
+        public Double? Achievement { get; set; }
     }
 }
