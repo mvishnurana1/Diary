@@ -18,33 +18,38 @@ namespace API.Controllers.Users
     {
         private readonly ILogger<DiaryEntryController> _logger;
         private readonly IToDoService _toDoService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
         public TodosController(
             IToDoService toDoService,
             IMapper mapper,
-            ILogger<DiaryEntryController> logger
+            ILogger<DiaryEntryController> logger,
+            IUserService userService
         )
         {
             _toDoService = toDoService;
             _mapper = mapper;
             _logger = logger;
+            _userService = userService;
         }
 
         [HttpGet("/activetodos")]
         public async Task<ActionResult<List<DailyTodo>>> GetActiveTodos([FromQuery] string userID)
         {
-            if (userID == null)
+            var id = new Guid(userID);
+            var userExists = await _userService.DoesUserExist(id);
+
+            if (String.IsNullOrEmpty(userID) || !userExists)
             {
                 return BadRequest();
             }
 
-            var id = new Guid(userID);
             var todos = await _toDoService.GetActivityTodosForUser(id);
 
             return Ok(todos);
         }
-
+ 
         [HttpPost("/addtodo")]
         public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
         {
