@@ -73,6 +73,12 @@ namespace API.Helpers.Services
                     todo.Completed = update.NewStatus;
                     await _context.SaveChangesAsync();
 
+                    if (todo.Completed)
+                    {
+                        // get the number of todos for the current date
+                        // re-calculate the ratio of todo vs done
+                    }
+
                     return todo.ID.ToString();
                 }
             }
