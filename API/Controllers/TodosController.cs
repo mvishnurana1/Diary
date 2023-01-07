@@ -49,7 +49,21 @@ namespace API.Controllers.Users
 
             return Ok(todos);
         }
- 
+
+        [HttpGet("/tasksfordate")]
+        public async Task<ActionResult<List<DailyTodo>>> GetTasksForDate([FromQuery] string date)
+        {
+            if (String.IsNullOrEmpty(date))
+            {
+                return BadRequest();
+            }
+
+            var d = DateTime.Parse(date);
+            var todos = await _toDoService.GetAllTasksForDate(d);
+
+            return Ok(todos);
+        }
+
         [HttpPost("/addtodo")]
         public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
         {
