@@ -25,6 +25,6 @@ namespace API.Helpers
         public DbSet<User> User { get; set; }
         public DbSet<DiaryEntry> DiaryEntry { get; set; }
         public DbSet<DailyTodo> DailyTodo { get; set; }
-        public DbSet<ToDoPerformance> DailyTodoPerformance { get; set; }
+        public DbSet<ToDoPerformance> ToDoPerformance { get; set; }
     }
 }
