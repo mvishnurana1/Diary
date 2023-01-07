@@ -14,6 +14,7 @@ namespace API.Helpers.Services
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
+        Task<List<DailyTodo>> GetAllTasksForDate(DateTime date);
     }
 
     public class ToDoService : IToDoService
@@ -84,6 +85,11 @@ namespace API.Helpers.Services
             }
 
             return null;
+        }
+
+        public async Task<List<DailyTodo>> GetAllTasksForDate(DateTime date)
+        {
+            return await Task.Run(() => _context.DailyTodo.Where(dt => dt.DateDue == date).ToList());
         }
     }
 }
