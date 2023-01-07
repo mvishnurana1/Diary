@@ -17,4 +17,10 @@ namespace API.DTOs.Todos
         public bool NewStatus { get; set; }
         public DateTime CompletedDateTime { get; set; }
     }
+
+    public class DueTasksOnDateDto
+    {
+        public string Date { get; set; }
+        public Guid UserID { get; set; }
+    }
 }
