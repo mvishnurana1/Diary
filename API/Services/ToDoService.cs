@@ -14,7 +14,7 @@ namespace API.Helpers.Services
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
-        Task<List<DailyTodo>> GetAllTasksForDate(DateTime date);
+        Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID);
     }
 
     public class ToDoService : IToDoService
@@ -39,7 +39,7 @@ namespace API.Helpers.Services
             var newTodo = new DailyTodo()
             {
                 Completed = todo.Completed,
-                DateDue = todo.DateDue,
+                DateCreated = todo.DateCreated,
                 TodoContent = todo.TodoContent,
                 UserID = todo.UserID,
                 ID = new Guid()
@@ -60,36 +60,66 @@ namespace API.Helpers.Services
 
         public async Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update)
         {
-            var user = await Task.Run(() => _context.User.Where(u => u.UserID == update.LoggedInUserID).FirstOrDefault());
+            var todo = await Task.Run(() => _context.DailyTodo
+                                    .Where(t => t.UserID == update.LoggedInUserID)
+                                    .Where(t => t.ID == update.ID)
+                                    .FirstOrDefault());
 
-            if (user != null)
+            if (todo != null)
             {
-                var todo = await Task.Run(() => _context.DailyTodo
-                                        .Where(t => t.UserID == update.LoggedInUserID)
-                                        .Where(t => t.ID == update.ID)
-                                        .FirstOrDefault());
-
-                if (todo != null)
+                if (update.NewStatus == true)
                 {
-                    todo.Completed = update.NewStatus;
-                    await _context.SaveChangesAsync();
-
-                    if (todo.Completed)
-                    {
-                        // get the number of todos for the current date
-                        // re-calculate the ratio of todo vs done
-                    }
-
-                    return todo.ID.ToString();
+                    todo.DateCompleted = update.UpdateDateTime;
                 }
+
+                todo.Completed = update.NewStatus;
+                await _context.SaveChangesAsync();
+
+                //TODO: Get the number of tasks due today vs number of tasks completed today:
+                var performance = new ToDoPerformance()
+                {
+                    Achievement = await EvaluateTodaysToDoPerformance(update.LoggedInUserID),
+                    Date = update.UpdateDateTime,
+                    UserID = update.LoggedInUserID
+                };
+
+                _context.ToDoPerformance.Add(performance);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine(performance);
+
+                return todo.ID.ToString();
             }
 
             return null;
         }
 
-        public async Task<List<DailyTodo>> GetAllTasksForDate(DateTime date)
+        public async Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID)
         {
-            return await Task.Run(() => _context.DailyTodo.Where(dt => dt.DateDue == date).ToList());
+            return await Task.Run(() => _context.DailyTodo
+                                                .Where(dt => dt.DateCreated == date)
+                                                .Where(dt => dt.UserID == userID)
+                                                .ToList());
+        }
+
+        private async Task<Double> EvaluateTodaysToDoPerformance(Guid userID)
+        {
+            var today = DateTime.Today;
+
+            var totalNumberOfTasks = await GetAllTasksForLoggedInUserOnDate(today, userID);
+
+            // get completed tasks which were due today
+            var tasksCompletedByUserToday = await Task.Run(() => _context.DailyTodo
+                                           .Where(dt => dt.Completed)
+                                           .Where(dt => dt.UserID == userID)
+                                           .ToList());
+
+            if (totalNumberOfTasks.Count > 0)
+            {
+                return tasksCompletedByUserToday.Count/totalNumberOfTasks.Count;
+            }
+
+            return 0;
         }
     }
 }
