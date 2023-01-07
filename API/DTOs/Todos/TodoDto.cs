@@ -4,10 +4,11 @@ namespace API.DTOs.Todos
 {
     public class TodoDto
     {
-        public DateTime DateDue { get; set; }
+        public DateTime DateCreated { get; set; }
         public bool Completed { get; set; }
         public Guid UserID { get; set; }
         public string TodoContent { get; set; }
+        public DateTime? DateCompleted { get; set; }
     }
 
     public class UpdateTodoCompleteStatusDto 
@@ -15,12 +16,12 @@ namespace API.DTOs.Todos
         public Guid ID { get; set; }
         public Guid LoggedInUserID { get; set; }
         public bool NewStatus { get; set; }
-        public DateTime CompletedDateTime { get; set; }
+        public DateTime UpdateDateTime { get; set; }
     }
 
     public class DueTasksOnDateDto
     {
         public string Date { get; set; }
-        public Guid UserID { get; set; }
+        public string UserID { get; set; }
     }
 }
