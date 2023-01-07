@@ -78,7 +78,7 @@ namespace API.Helpers.Services
                 //TODO: Get the number of tasks due today vs number of tasks completed today:
                 var performance = new ToDoPerformance()
                 {
-                    Achievement = await EvaluateTodaysToDoPerformance(update.LoggedInUserID),
+                    Achievement = await EvaluateTodaysToDoPerformance(update.LoggedInUserID, update.UpdateDateTime),
                     Date = update.UpdateDateTime,
                     UserID = update.LoggedInUserID
                 };
@@ -102,21 +102,25 @@ namespace API.Helpers.Services
                                                 .ToList());
         }
 
-        private async Task<Double> EvaluateTodaysToDoPerformance(Guid userID)
+        private async Task<Double> EvaluateTodaysToDoPerformance(Guid userID, DateTime updatedDate)
         {
             var today = DateTime.Today;
 
             var totalNumberOfTasks = await GetAllTasksForLoggedInUserOnDate(today, userID);
 
-            // get completed tasks which were due today
-            var tasksCompletedByUserToday = await Task.Run(() => _context.DailyTodo
-                                           .Where(dt => dt.Completed)
-                                           .Where(dt => dt.UserID == userID)
-                                           .ToList());
+            var allTasksDueForTheDate = await Task.Run(() => _context.DailyTodo
+                                                  .Where(dt => dt.Completed)
+                                                  .Where(dt => dt.UserID == userID)
+                                                  .ToList());
+
+            var allTasksCompletedOnTheDate = await Task.Run(() => _context.DailyTodo
+                                                        .Where(ct => ct.Completed)
+                                                        .Where(ct => ct.DateCompleted == updatedDate)
+                                                        .ToList());
 
             if (totalNumberOfTasks.Count > 0)
             {
-                return tasksCompletedByUserToday.Count/totalNumberOfTasks.Count;
+                return allTasksCompletedOnTheDate.Count/ allTasksDueForTheDate.Count;
             }
 
             return 0;
