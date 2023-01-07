@@ -9,7 +9,7 @@ namespace API.model
         public Guid ID { get; set; } = new Guid();
 
         [Required]
-        public DateTime DateDue { get; set; }
+        public DateTime DateCreated { get; set; }
 
         [Required]
         public bool Completed { get; set; }
@@ -19,5 +19,6 @@ namespace API.model
 
         [Required]
         public string TodoContent { get; set; }
+        public DateTime? DateCompleted { get; set; }
     }
 }
