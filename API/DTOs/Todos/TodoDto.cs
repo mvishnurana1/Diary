@@ -13,7 +13,7 @@ namespace API.DTOs.Todos
 
     public class UpdateTodoCompleteStatusDto 
     {
-        public Guid ID { get; set; }
+        public Guid DailyTodoID { get; set; }
         public Guid LoggedInUserID { get; set; }
         public bool NewStatus { get; set; }
         public DateTime UpdateDateTime { get; set; }
