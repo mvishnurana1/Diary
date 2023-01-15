@@ -107,6 +107,8 @@ namespace API.Helpers.Services
 
         private async Task<Double> EvaluateTodaysToDoPerformance(Guid userID, DateTime updatedDate)
         {
+            var fetchedPerformance = FetchTodosPerformance(updatedDate, userID);
+
             // All Tasks due for completion on 'that' date
             var allTasksDueForTheDate = await Task.Run(() => _context.DailyTodo
                                                   .Where(dt => dt.DateCreated == updatedDate)
@@ -135,14 +137,11 @@ namespace API.Helpers.Services
             };
         }
 
-        private async Task<ToDoPerformance> FetchTodosPerformance(DateTime date, Guid UserID)
+        private async Task<ToDoPerformance> FetchTodosPerformance(DateTime date, Guid userID)
         {
-
-
-            return new ToDoPerformance()
-            {
-
-            };
+            return await Task.Run(() => _context.ToDoPerformance.Where(x => x.UserID == userID)
+                                                                .Where(x => x.Date == date)
+                                                                .FirstOrDefault());
         }
     }
 }
