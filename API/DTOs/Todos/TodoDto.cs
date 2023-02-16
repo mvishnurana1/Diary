@@ -15,7 +15,7 @@ namespace API.DTOs.Todos
     {
         public Guid DailyTodoID { get; set; }
         public Guid LoggedInUserID { get; set; }
-        public bool NewStatus { get; set; }
+        public bool IsCompleted { get; set; }
         public DateTime UpdateDateTime { get; set; }
     }
 
