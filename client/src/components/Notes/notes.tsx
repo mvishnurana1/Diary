@@ -15,7 +15,6 @@ import { fetchUser } from '../../utils/api/fetchUser';
 import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
-import { fetchDatesofNotesForLoggedInUser } from '../../utils/api/fetchDatesofNotesForLoggedInUser.';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import { ToDos } from '../ToDos/todos';
@@ -23,6 +22,7 @@ import { ToDos } from '../ToDos/todos';
 import { PerformanceChart } from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
+import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -93,7 +93,7 @@ export function Notes(): JSX.Element {
                 }
 
                 if (id !== undefined) {
-                    const x = await fetchDatesofNotesForLoggedInUser(id);
+                    const x = await fetchDatesOfNotesForLoggedInUser(id);
 
                     const dates = x?.map(date => new Date(date));
                     setValidNoteDates(dates!);
@@ -108,7 +108,7 @@ export function Notes(): JSX.Element {
     useEffect(() => {
         (async () => {
             try {
-                const x = await fetchDatesofNotesForLoggedInUser(loggedInUser.userID);
+                const x = await fetchDatesOfNotesForLoggedInUser(loggedInUser.userID);
                 const dates = x?.map(date => new Date(date));
                 setValidNoteDates(dates!);
             } catch (err) {
