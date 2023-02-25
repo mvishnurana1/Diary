@@ -75,31 +75,30 @@ namespace API.Helpers.Services
                 todo.Completed = update.IsCompleted;
                 await _context.SaveChangesAsync();
 
-                // TODO: Get the number of tasks due today for the date
-                var numberOfTasksDueForDate = await FetchNumberOfTotalTodosCreatedForDate(todo.DateCreated);
-
-                // vs number of tasks completed today:
-                var tasksCompletedForDate = await FetchNumberOfTotalTodosCompletedOnDate(todo.DateCreated);
-
+                decimal numberOfTasksDueForDate = await FetchNumberOfTotalTodosCreatedForDate(todo.DateCreated);
+                decimal tasksCompletedForDate = await FetchNumberOfTotalTodosCompletedOnDate(todo.DateCreated);
+                
+                var performanceRatio = CalculatePerformance(tasksCompletedForDate, numberOfTasksDueForDate);
+                
                 var existingUserPerforamanceRatio = await FetchTodosPerformanceForUserOnDate(todo.DateCreated, update.LoggedInUserID);
 
-                if (numberOfTasksDueForDate > 0)
+                if (existingUserPerforamanceRatio == null)
                 {
-                    var performanceRatio = Convert.ToDouble((tasksCompletedForDate / numberOfTasksDueForDate) * 100);
-
-                    // If existingUserPerforamanceRatio ?
-                    var performance = new ToDoPerformance()
+                    var newPerformance = new ToDoPerformance()
                     {
                         Achievement = performanceRatio,
-                        Date = update.UpdateDateTime,
-                        UserID = update.LoggedInUserID
+                        Date = todo.DateCreated,
+                        UserID = update.LoggedInUserID,
                     };
 
-                    _context.ToDoPerformance.Add(performance);
-                    await _context.SaveChangesAsync();
-
-                    return todo.ID.ToString();
+                    await _context.ToDoPerformance.AddAsync(newPerformance);
+                } else
+                {
+                    existingUserPerforamanceRatio.Achievement = performanceRatio;
                 }
+
+                await _context.SaveChangesAsync();
+                return todo.ID.ToString();
             }
 
             return null;
@@ -111,6 +110,13 @@ namespace API.Helpers.Services
                                                 .Where(dt => dt.DateCreated == date)
                                                 .Where(dt => dt.UserID == userID)
                                                 .ToList());
+        }
+
+        public double CalculatePerformance(decimal tasksCompletedForDate, decimal numberOfTasksDueForDate)
+        {
+            return numberOfTasksDueForDate > 0
+                                           ? Convert.ToDouble(((tasksCompletedForDate / numberOfTasksDueForDate) * 100m))
+                                           : 0;
         }
 
         private async Task<ToDoPerformance> FetchTodosPerformanceForUserOnDate(DateTime date, Guid userID)
