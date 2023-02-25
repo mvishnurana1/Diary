@@ -49,7 +49,22 @@ namespace API.Controllers.Users
 
             return Ok(todos);
         }
- 
+
+        [HttpGet("/tasksfordate")]
+        public async Task<ActionResult<List<DailyTodo>>> GetTasksForLoggedInUserOnDate([FromQuery] DueTasksOnDateDto dto)
+        {
+            if (String.IsNullOrEmpty(dto.Date))
+            {
+                return BadRequest();
+            }
+
+            var date = DateTime.Parse(dto.Date);
+            var id = new Guid(dto.UserID);
+            var todos = await _toDoService.GetAllTasksForLoggedInUserOnDate(date, id);
+
+            return Ok(todos);
+        }
+
         [HttpPost("/addtodo")]
         public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
         {
@@ -65,6 +80,13 @@ namespace API.Controllers.Users
         [HttpPut("/updatetodo")]
         public async Task<ActionResult<List<DailyTodo>>> TaskStatusChange([FromQuery] UpdateTodoCompleteStatusDto completedTodo)
         {
+            var userExists = await _userService.DoesUserExist(completedTodo.LoggedInUserID);
+
+            if (!userExists)
+            {
+                return BadRequest();
+            }
+
             var activeTodos = await _toDoService.MarkTodoAsCompleted(completedTodo);
 
             if (activeTodos == null)

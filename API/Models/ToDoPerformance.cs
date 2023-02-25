@@ -5,7 +5,8 @@ namespace API.model
     public class ToDoPerformance 
     {
         public Guid ID { get; set; } = new Guid();
-        public DateTime? Date { get; set; }
+        public Guid UserID { get; set; }
+        public DateTime Date { get; set; }
         public Double? Achievement { get; set; }
     }
 }
