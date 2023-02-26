@@ -96,5 +96,20 @@ namespace API.Controllers.Users
 
             return Ok(activeTodos);
         }
+
+        [HttpGet("/todoperformance")]
+        public async Task<ActionResult<List<double?>>> GetToDoPerformance([FromQuery] Guid loggedInUserID)
+        {
+            var userExists = await _userService.DoesUserExist(loggedInUserID);
+
+            if (!userExists)
+            {
+                return BadRequest();
+            }
+
+            var activeTodos = await _toDoService.GetTodoPerformance(loggedInUserID);
+
+            return Ok(activeTodos);
+        }
     }
 }

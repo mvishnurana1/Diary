@@ -1,4 +1,5 @@
-﻿using API.DTOs.Todos;
+﻿using API.DTOs.AchivementDtos;
+using API.DTOs.Todos;
 using API.model;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -15,8 +16,9 @@ namespace API.Helpers.Services
         Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
         Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID);
+        Task<List<AchievementTodoDto>> GetTodoPerformance(Guid loggedInUserID);
     }
-
+     
     public class ToDoService : IToDoService
     {
         private readonly DataContext _context;
@@ -112,7 +114,19 @@ namespace API.Helpers.Services
                                                 .ToList());
         }
 
-        public double CalculatePerformance(decimal tasksCompletedForDate, decimal numberOfTasksDueForDate)
+        public async Task<List<AchievementTodoDto>> GetTodoPerformance(Guid loggedInUserID)
+        {
+            var dateMonthAgo = DateTime.Now.AddMonths(-1);
+            var todaysDate = DateTime.Now;
+
+            var x = await Task.Run(() => _context.ToDoPerformance.Where(tdp => tdp.UserID == loggedInUserID)
+                                                .Where(x => (x.Date > dateMonthAgo) && (x.Date <= todaysDate))
+                                                .ToList());
+
+            return _mapper.Map<List<ToDoPerformance>, List<AchievementTodoDto>>(x);
+        }
+
+        private double CalculatePerformance(decimal tasksCompletedForDate, decimal numberOfTasksDueForDate)
         {
             return numberOfTasksDueForDate > 0
                                            ? Convert.ToDouble(((tasksCompletedForDate / numberOfTasksDueForDate) * 100m))
