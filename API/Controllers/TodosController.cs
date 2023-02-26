@@ -19,17 +19,14 @@ namespace API.Controllers.Users
         private readonly ILogger<DiaryEntryController> _logger;
         private readonly IToDoService _toDoService;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
         public TodosController(
             IToDoService toDoService,
-            IMapper mapper,
             ILogger<DiaryEntryController> logger,
             IUserService userService
         )
         {
             _toDoService = toDoService;
-            _mapper = mapper;
             _logger = logger;
             _userService = userService;
         }
@@ -110,6 +107,46 @@ namespace API.Controllers.Users
             var activeTodos = await _toDoService.GetTodoPerformance(loggedInUserID);
 
             return Ok(activeTodos);
+        }
+
+        [HttpPut("/renametodoContent")]
+        public async Task<ActionResult<List<DailyTodo>>> TaskToDoContentChange([FromQuery] Guid loggedInUserID, Guid todoID, string newName)
+        {
+            var userExists = await _userService.DoesUserExist(loggedInUserID);
+
+            if (!userExists)
+            {
+                return BadRequest();
+            }
+
+            var activeTodos = await _toDoService.RenameTodo(todoID, newName);
+
+            if (activeTodos == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(activeTodos);
+        }
+
+        [HttpDelete("/deletetodo")]
+        public async Task<ActionResult<DailyTodo>> RemoveTodo([FromQuery] Guid loggedInUserID, Guid todoID)
+        {
+            var userExists = await _userService.DoesUserExist(loggedInUserID);
+
+            if (!userExists)
+            {
+                return BadRequest();
+            }
+
+            var activeTodos = await _toDoService.RemoveTodo(todoID);
+
+            if (activeTodos == null)
+            {
+                return BadRequest();
+            }
+
+            return Accepted(activeTodos);
         }
     }
 }
