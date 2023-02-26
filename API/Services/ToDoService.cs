@@ -13,12 +13,14 @@ namespace API.Helpers.Services
     public interface IToDoService
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
-        Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
         Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID);
         Task<List<AchievementTodoDto>> GetTodoPerformance(Guid loggedInUserID);
+        Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
+        Task<DailyTodo> RemoveTodo(Guid todoID);
+        Task<DailyTodo> RenameTodo(Guid todoID, string newName);
     }
-     
+
     public class ToDoService : IToDoService
     {
         private readonly DataContext _context;
@@ -34,6 +36,36 @@ namespace API.Helpers.Services
             _context = context;
             _logger = logger;
             _mapper = mapper;
+        }
+
+        public async Task<DailyTodo> RenameTodo(Guid todoID, string newName)
+        {
+            var todo = await FetchTodo(todoID);
+
+            if (todo != null)
+            {
+                todo.TodoContent = newName;
+                await _context.SaveChangesAsync();
+
+                return todo;
+            }
+
+            return null;
+        }
+
+        public async Task<DailyTodo> RemoveTodo(Guid todoID)
+        {
+            var todo = await FetchTodo(todoID);
+
+            if (todo != null)
+            {
+                _context.DailyTodo.Remove(todo);
+                await _context.SaveChangesAsync();
+
+                return todo;
+            }
+
+            return null;
         }
 
         public async Task<DailyTodo> AddNewTodo(TodoDto todo)
@@ -124,6 +156,11 @@ namespace API.Helpers.Services
                                                 .ToList());
 
             return _mapper.Map<List<ToDoPerformance>, List<AchievementTodoDto>>(x);
+        }
+
+        private async Task<DailyTodo> FetchTodo(Guid todoID)
+        {
+            return await Task.Run(() => _context.DailyTodo.Where(x => x.ID == todoID).FirstOrDefault());
         }
 
         private double CalculatePerformance(decimal tasksCompletedForDate, decimal numberOfTasksDueForDate)
