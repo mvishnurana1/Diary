@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace API.DTOs.NewFolder
+namespace API.DTOs.AchivementDtos
 {
     public class AchievementTodoDto
     {

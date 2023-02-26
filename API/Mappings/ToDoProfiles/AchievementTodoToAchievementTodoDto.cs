@@ -1,4 +1,4 @@
-﻿using API.DTOs.NewFolder;
+﻿using API.DTOs.AchivementDtos;
 using API.model;
 using AutoMapper;
 
