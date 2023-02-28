@@ -143,7 +143,7 @@ namespace API.Controllers.Users
 
             if (activeTodos == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return Accepted(activeTodos);
