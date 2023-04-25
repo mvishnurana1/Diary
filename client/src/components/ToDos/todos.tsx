@@ -5,7 +5,7 @@ import { localisedDate } from "../../helper/date-fn";
 import { UserTask } from "../../models/UserTask";
 import './todos.scss';
 
-const defaultTask : UserTask = {
+const defaultTask: UserTask = {
     content: '',
     date: new Date(),
     isCompleted: false
@@ -15,7 +15,7 @@ export function ToDos(): JSX.Element {
     const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
     const [isAdding, setIsAdding] = useState(false);
     const [active, setActive] = useState<UserTask>(defaultTask);
-    
+
     function getExistingTodos(): UserTask[] {
         const tasks: UserTask[] = JSON.parse(localStorage.getItem('todos')!);
         return tasks === null ? [] : tasks;
@@ -25,69 +25,70 @@ export function ToDos(): JSX.Element {
         <section className="todos-section">
             <div>
                 <h1 className="title">{localisedDate()}</h1>
-                    <h2 className="sub-title">Tasks</h2>
-                    <div className="gap">
-                        {todos?.length === 0 && <span>Nothing to do?</span>}
-                        {todos?.length > 0 && todos.map((todo, index) => 
-                            <div className="todo-item" key={index}>
-                                <input 
-                                    checked={todo.isCompleted}
-                                    type={"checkbox"}
-                                    title={todo.content}
-                                    onChange={(e) => {
-                                        const itemToAdd: UserTask = {
-                                            content: todo.content,
-                                            date: todo.date,
-                                            isCompleted: e.target.checked
-                                        };
+                <h2 className="sub-title">Tasks</h2>
+                <div className="gap">
+                    {todos?.length === 0 && <span>Nothing to do?</span>}
+                    {todos?.length > 0 && todos.map((todo, index) =>
+                        <div className="todo-item" key={index}>
+                            <input
+                                checked={todo.isCompleted}
+                                type={"checkbox"}
+                                title={todo.content}
+                                onChange={(e) => {
+                                    const itemToAdd: UserTask = {
+                                        content: todo.content,
+                                        date: todo.date,
+                                        isCompleted: e.target.checked
+                                    };
 
-                                        todos.splice(index, 1, itemToAdd);
-                                        setToDos([...todos]);
-                                        const jsonTodos = JSON.stringify(todos);
-                                        localStorage.setItem('todos', jsonTodos);
-                                    }}
-                                />
-                                <div className="flex-gap">
-                                    <div className={todo.isCompleted ? 'content isCompleted': 'content'}>
-                                        {todo.content}
-                                    </div>
-                                    <button 
-                                        className="trash-button" 
-                                        onClick={() => {
-                                            todos.splice(index, 1);
-                                            setToDos([...todos]);
-                                        }}
-                                        title="remove">
-                                        <FontAwesomeIcon icon={ faTrash } />
-                                    </button>
+                                    todos.splice(index, 1, itemToAdd);
+                                    setToDos([...todos]);
+                                    const jsonTodos = JSON.stringify(todos);
+                                    localStorage.setItem('todos', jsonTodos);
+                                }}
+                            />
+                            <div className="flex-gap">
+                                <div className={todo.isCompleted ? 'content isCompleted' : 'content'}>
+                                    {todo.content}
                                 </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {isAdding && 
-                        <input 
-                            className="gap input" 
-                            onChange={(e) => { 
-                                    const value = e.target.value.trim();
-                                    if (value.length <= 0) {
-                                        return;
-                                    }
-
-                                    if (value.length > 0) {
-                                        const newToDo: UserTask = { 
-                                            content: value, 
-                                            date: new Date(), 
-                                            isCompleted: false
-                                        };
-                                        setActive(newToDo)
+                                <button
+                                    className="trash-button"
+                                    onClick={() => {
+                                        todos.splice(index, 1);
+                                        setToDos([...todos]);
                                     }}
+                                    title="remove">
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {isAdding &&
+                    <input
+                        className="gap input"
+                        onChange={(e) => {
+                            const value = e.target.value.trim();
+                            if (value.length <= 0) {
+                                return;
                             }
-                            placeholder="write new task here"
+
+                            if (value.length > 0) {
+                                const newToDo: UserTask = {
+                                    content: value,
+                                    date: new Date(),
+                                    isCompleted: false
+                                };
+                                setActive(newToDo)
+                            }
+                        }
+                        }
+                        placeholder="write new task here"
                     />}
 
-                <button 
-                    className="logo-button centre" 
+                <button
+                    className="logo-button centre"
                     title="Add"
                     onClick={() => {
                         setIsAdding(!isAdding);
@@ -101,7 +102,7 @@ export function ToDos(): JSX.Element {
                         }
                     }}
                 >
-                    <FontAwesomeIcon icon={ faPlus } />
+                    <FontAwesomeIcon icon={faPlus} />
                     <div>Add</div>
                 </button>
             </div>

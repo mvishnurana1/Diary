@@ -1,9 +1,11 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { faFaceSadCry, 
-    faMagnifyingGlass, 
+import {
+    faFaceSadCry,
+    faMagnifyingGlass,
     faXmark,
-    faCalendar} from "@fortawesome/free-solid-svg-icons";
+    faCalendar
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -33,8 +35,8 @@ const defaultUser: LoggedInUser = {
 export function Notes(): JSX.Element {
     const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
-    const [error,  setError] = useState(false);
-    const [searchedContent,  setSearchedContent] = useState('');
+    const [error, setError] = useState(false);
+    const [searchedContent, setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
@@ -56,13 +58,13 @@ export function Notes(): JSX.Element {
             try {
                 const accessToken = await getAccessTokenSilently();
                 const idToken = await getIdTokenClaims();
-                
+
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("email", idToken?.email!);
                 window.localStorage.setItem('idToken', idToken?.__raw!);
                 window.localStorage.setItem('photo', user?.picture!);
             }
-            catch(err: any) {
+            catch (err: any) {
                 if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
                     loginWithRedirect();
                 }
@@ -77,7 +79,7 @@ export function Notes(): JSX.Element {
                 setLoggedInUser(user);
             } catch (err) {
                 setError(true);
-            } 
+            }
         })();
     }, []);
 
@@ -98,7 +100,7 @@ export function Notes(): JSX.Element {
                     const dates = x?.map(date => new Date(date));
                     setValidNoteDates(dates!);
                 }
-                
+
             } catch (err) {
                 console.error('Could not fetch dates');
             }
@@ -119,29 +121,29 @@ export function Notes(): JSX.Element {
 
     async function postCachedActivity() {
         const active = JSON.parse(localStorage.getItem('active')!);
-        
+
         if (!active?.content || !active?.startDate) {
             return;
         } else {
             try {
                 let id = undefined;
 
-                if (loggedInUser.userID  === undefined) {
+                if (loggedInUser.userID === undefined) {
                     const user = await fetchUser();
                     id = user.userID;
                     setLoggedInUser(user);
                 }
 
                 const diaryEntry = await postNewNotes(
-                {
-                    UserID: loggedInUser.userID ?? id,
-                    Content: active?.content,
-                    SubmittedDateTime: dateFormat(active?.startDate)
-                });
+                    {
+                        UserID: loggedInUser.userID ?? id,
+                        Content: active?.content,
+                        SubmittedDateTime: dateFormat(active?.startDate)
+                    });
 
                 setContent(diaryEntry.content);
             } catch (err) {
-                
+
             } finally {
                 setRecentlyPosted(true);
                 localStorage.removeItem('active');
@@ -174,22 +176,21 @@ export function Notes(): JSX.Element {
         if (content === null || content.match(/^ *$/) !== null) {
             return;
         } else {
-            try 
-            {
+            try {
                 let id = '';
 
-                if (loggedInUser.userID  === undefined) {
+                if (loggedInUser.userID === undefined) {
                     const user = await fetchUser();
                     id = user.userID;
                     setLoggedInUser(user);
                 }
 
                 const diaryEntry = await postNewNotes(
-                {
-                    UserID: loggedInUser.userID ?? id,
-                    Content: content,
-                    SubmittedDateTime: dateFormat(startDate)
-                });
+                    {
+                        UserID: loggedInUser.userID ?? id,
+                        Content: content,
+                        SubmittedDateTime: dateFormat(startDate)
+                    });
 
                 setContent(diaryEntry.content);
             } catch (err) {
@@ -208,14 +209,14 @@ export function Notes(): JSX.Element {
             try {
                 let id = '';
 
-                if (loggedInUser.userID  === undefined) {
+                if (loggedInUser.userID === undefined) {
                     const user = await fetchUser();
                     id = user.userID;
                     setLoggedInUser(user);
                 }
 
                 const searchResult = await fetchSearchedEntryByContent
-                ({ userID: loggedInUser.userID ?? id, content: searchedContent });
+                    ({ userID: loggedInUser.userID ?? id, content: searchedContent });
 
                 setSearchedResult(searchResult);
             } catch (err) {
@@ -240,42 +241,42 @@ export function Notes(): JSX.Element {
     function displayCard() {
         if (searchedResult?.length > 0) {
             return (
-            <div className="entry-card-container">
-                        <div>
-                            <SearchResults
-                                entries={searchedResult}
-                                setContent={setContent}
-                                setSearchedContent={setSearchedContent}
-                                setStartDate={setStartDate}
-                                setSearchedResult={setSearchedResult}
-                            />
-                        </div>
-                        <div className="center">
-                            <FontAwesomeIcon
-                                className='red'
-                                icon={faXmark}
-                                onClick={() => {
-                                    setSearchedResult([]);
-                                    setSearchedContent('');
-                                }}
-                                size="lg"
-                            />
-                        </div>
-            </div>
+                <div className="entry-card-container">
+                    <div>
+                        <SearchResults
+                            entries={searchedResult}
+                            setContent={setContent}
+                            setSearchedContent={setSearchedContent}
+                            setStartDate={setStartDate}
+                            setSearchedResult={setSearchedResult}
+                        />
+                    </div>
+                    <div className="center">
+                        <FontAwesomeIcon
+                            className='red'
+                            icon={faXmark}
+                            onClick={() => {
+                                setSearchedResult([]);
+                                setSearchedContent('');
+                            }}
+                            size="lg"
+                        />
+                    </div>
+                </div>
             )
         }
     }
 
     return (
         <div className='notes-landing-page'>
-                { user && isAuthenticated &&
-                    <div className='mobile'>
-                        <Header 
-                            user={user}
-                            logout={logout}
-                        />
-                    </div>
-                }
+            {user && isAuthenticated &&
+                <div className='mobile'>
+                    <Header
+                        user={user}
+                        logout={logout}
+                    />
+                </div>
+            }
 
             <div className='notes'>
                 <>
@@ -283,55 +284,55 @@ export function Notes(): JSX.Element {
                 </>
 
                 {validNoteDates && !searchedResult.length &&
-                <div className='left'>
-                    <div className={error ? 'no-display': 'datepicker'}>
-                        <div className='mobile'>
-                            {active === activeOnMobileDisplay.calendar &&
-                                <DatePicker
-                                    highlightDates={validNoteDates}
-                                    inline
-                                    maxDate={new Date()}
-                                    onChange={(date: Date) => {
-                                        postCachedActivity();
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
-                                    }}
-                                    selected={startDate}
-                                    title="date-picker"
-                                />
-                            }
-                        </div>
-                        <div className={error ? 'no-display': 'desktop datepicker'}>
-                            <ToDos />
-                            <h1 className='title'>Pick a Date</h1>
-                            <h2 className='sub-title'>Write journal</h2>
-                            <div className='centralise'>
-                                <DatePicker
-                                    highlightDates={validNoteDates}
-                                    inline
-                                    maxDate={new Date()}
-                                    onChange={(date: Date) => {
-                                        postCachedActivity();
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
-                                    }}
-                                    selected={startDate}
-                                    title="date-picker"
-                                />
+                    <div className='left'>
+                        <div className={error ? 'no-display' : 'datepicker'}>
+                            <div className='mobile'>
+                                {active === activeOnMobileDisplay.calendar &&
+                                    <DatePicker
+                                        highlightDates={validNoteDates}
+                                        inline
+                                        maxDate={new Date()}
+                                        onChange={(date: Date) => {
+                                            postCachedActivity();
+                                            fetchDiaryEntryContentByDate(date);
+                                            setStartDate(new Date(date));
+                                        }}
+                                        selected={startDate}
+                                        title="date-picker"
+                                    />
+                                }
                             </div>
-                            {/* <hr />
+                            <div className={error ? 'no-display' : 'desktop datepicker'}>
+                                <ToDos />
+                                <h1 className='title'>Pick a Date</h1>
+                                <h2 className='sub-title'>Write journal</h2>
+                                <div className='centralise'>
+                                    <DatePicker
+                                        highlightDates={validNoteDates}
+                                        inline
+                                        maxDate={new Date()}
+                                        onChange={(date: Date) => {
+                                            postCachedActivity();
+                                            fetchDiaryEntryContentByDate(date);
+                                            setStartDate(new Date(date));
+                                        }}
+                                        selected={startDate}
+                                        title="date-picker"
+                                    />
+                                </div>
+                                {/* <hr />
                             <MonthGoal />  */}
-                            <PerformanceChart />
+                                <PerformanceChart />
+                            </div>
                         </div>
-                    </div>
-                </div>}
-                
-                <div className={ searchedResult.length > 0 ? 'no-display' : 'vertical-rule' }></div>
+                    </div>}
+
+                <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
 
                 <div className='column'>
-                    { isAuthenticated && user &&
+                    {isAuthenticated && user &&
                         <div className='desktop'>
-                            <Header 
+                            <Header
                                 user={user}
                                 logout={logout}
                             />
@@ -374,7 +375,7 @@ export function Notes(): JSX.Element {
 
                     <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
                         <textarea
-                            className={ error ? 'no-display': 'textArea' }
+                            className={error ? 'no-display' : 'textArea'}
                             rows={15}
                             placeholder="Dear Diary..."
                             onChange={(e) => {
@@ -386,53 +387,53 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    {error  &&  <div
-                                    className='error-container'
-                                    data-testid="error-emoji">
-                                    <FontAwesomeIcon
-                                        icon={faFaceSadCry}
-                                        size="3x"
-                                    />
-                                    <h6>Something went wrong. Please try again later!</h6>
-                                </div>
+                    {error && <div
+                        className='error-container'
+                        data-testid="error-emoji">
+                        <FontAwesomeIcon
+                            icon={faFaceSadCry}
+                            size="3x"
+                        />
+                        <h6>Something went wrong. Please try again later!</h6>
+                    </div>
                     }
-                        <div className="centre">
-                            <button
-                                className={ searchedResult.length > 0 || error ? 'no-display' : 'save button' }
-                                onClick={() => {
-                                    postNote();
-                                    setContent('')
-                                }}
-                                title={ content?.length === 0 ? 'Write note' : 'SAVE' }
-                                disabled={ content?.length === 0 }>
-                                { content?.length === 0 ? 'Write note' : 'SAVE' }
-                            </button>
-                        </div>
+                    <div className="centre">
+                        <button
+                            className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
+                            onClick={() => {
+                                postNote();
+                                setContent('')
+                            }}
+                            title={content?.length === 0 ? 'Write note' : 'SAVE'}
+                            disabled={content?.length === 0}>
+                            {content?.length === 0 ? 'Write note' : 'SAVE'}
+                        </button>
+                    </div>
                     {displayCard()}
                 </div>
+            </div>
+
+            <div className='mobile'>
+                {searchedContent.length <= 0 && <div className='fab-container'>
+                    <button className='button iconbutton centre' onClick=
+                        {
+                            () => active === activeOnMobileDisplay.calendar
+                                ? setActive(activeOnMobileDisplay.search)
+                                : setActive(activeOnMobileDisplay.calendar)
+                        }>
+                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
+                            color='white'
+                            icon={faCalendar}
+                            size="2x"
+                        />}
+                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
+                            color='white'
+                            icon={faMagnifyingGlass}
+                            size="2x"
+                        />}
+                    </button>
+                </div>}
+            </div>
         </div>
-        
-        <div className='mobile'>
-            {searchedContent.length <= 0 && <div className='fab-container'>
-                <button className='button iconbutton centre' onClick=
-                {
-                    () => active === activeOnMobileDisplay.calendar 
-                        ? setActive(activeOnMobileDisplay.search)
-                        : setActive(activeOnMobileDisplay.calendar)
-                }>
-                {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
-                    color='white'
-                    icon={faCalendar}
-                    size="2x"
-                />}
-                {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
-                    color='white'
-                    icon={faMagnifyingGlass}
-                    size="2x"
-                />}
-                </button>
-            </div>}
-        </div>
-    </div>
     )
 }
