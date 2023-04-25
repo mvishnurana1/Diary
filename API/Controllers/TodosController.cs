@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using API.Helpers.Services;
 using API.model;
 using API.DTOs.Todos;
@@ -14,35 +13,46 @@ namespace API.Controllers.Users
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class TodosController : ControllerBase
+    public partial class TodosController : ControllerBase
     {
-        private readonly ILogger<DiaryEntryController> _logger;
         private readonly IToDoService _toDoService;
         private readonly IUserService _userService;
 
         public TodosController(
             IToDoService toDoService,
-            ILogger<DiaryEntryController> logger,
             IUserService userService
         )
         {
             _toDoService = toDoService;
-            _logger = logger;
             _userService = userService;
         }
 
         [HttpGet("/activetodos")]
-        public async Task<ActionResult<List<DailyTodo>>> GetActiveTodos([FromQuery] string userID)
+        public async Task<ActionResult<List<DailyTodo>>> GetActiveTodos([FromQuery] Guid userID)
         {
-            var id = new Guid(userID);
-            var userExists = await _userService.DoesUserExist(id);
+            var userExists = await _userService.DoesUserExist(userID);
 
-            if (String.IsNullOrEmpty(userID) || !userExists)
+            if (!userExists)
             {
                 return BadRequest();
             }
 
-            var todos = await _toDoService.GetActivityTodosForUser(id);
+            var todos = await _toDoService.GetActivityTodosForUser(userID);
+
+            return Ok(todos);
+        }
+
+        [HttpGet("/gettodoperformancefortimeframe")]
+        public async Task<ActionResult<List<DailyTodo>>> GetToDoPerformanceForTheTimeFrame([FromQuery] Guid userID, DateTime startDateTime, DateTime endDateTime)
+        {
+            var userExists = await _userService.DoesUserExist(userID);
+
+            if (!userExists || (endDateTime > startDateTime))
+            {
+                return BadRequest();
+            }
+
+            var todos = await _toDoService.GetToDoPerformanceForTheTimeFrame(userID, startDateTime, endDateTime);
 
             return Ok(todos);
         }
@@ -63,9 +73,15 @@ namespace API.Controllers.Users
         }
 
         [HttpPost("/addtodo")]
-        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
+        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromBody] TodoDto todo)
         {
+            // check if the same todo exists for the loggedInUser, with same content on the same date...!
             if (String.IsNullOrWhiteSpace(todo.TodoContent))
+            {
+                return BadRequest();
+            }
+
+            if (todo.Completed && todo.DateCompleted == null)
             {
                 return BadRequest();
             }
@@ -104,7 +120,7 @@ namespace API.Controllers.Users
                 return BadRequest();
             }
 
-            var activeTodos = await _toDoService.GetTodoPerformance(loggedInUserID);
+            var activeTodos = await _toDoService.GetLastMonthsTodoPerformance(loggedInUserID);
 
             return Ok(activeTodos);
         }

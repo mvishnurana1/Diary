@@ -1,12 +1,12 @@
-﻿using API.DTOs.AchivementDtos;
-using API.DTOs.Todos;
-using API.model;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using API.DTOs.AchivementDtos;
+using API.DTOs.Todos;
+using API.model;
 
 namespace API.Helpers.Services
 {
@@ -15,7 +15,8 @@ namespace API.Helpers.Services
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
         Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID);
-        Task<List<AchievementTodoDto>> GetTodoPerformance(Guid loggedInUserID);
+        Task<List<AchievementTodoDto>> GetLastMonthsTodoPerformance(Guid loggedInUserID);
+        Task<List<AchievementTodoDto>> GetToDoPerformanceForTheTimeFrame(Guid loggedInUserID, DateTime startDateTime, DateTime endDateTime);
         Task<string> MarkTodoAsCompleted(UpdateTodoCompleteStatusDto update);
         Task<DailyTodo> RemoveTodo(Guid todoID);
         Task<DailyTodo> RenameTodo(Guid todoID, string newName);
@@ -28,8 +29,8 @@ namespace API.Helpers.Services
         private readonly IMapper _mapper;
 
         public ToDoService(
-            DataContext context, 
-            ILogger<ToDoService> logger, 
+            DataContext context,
+            ILogger<ToDoService> logger,
             IMapper mapper
         )
         {
@@ -57,12 +58,14 @@ namespace API.Helpers.Services
         {
             var todo = await FetchTodo(todoID);
 
+            var todos = await GetAllTasksForLoggedInUserOnDate(todo.DateCreated, todo.UserID);
+
             if (todo != null)
             {
                 _context.DailyTodo.Remove(todo);
                 await _context.SaveChangesAsync();
 
-                await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated);
+                await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated, todos);
 
                 return todo;
             }
@@ -72,19 +75,23 @@ namespace API.Helpers.Services
 
         public async Task<DailyTodo> AddNewTodo(TodoDto todo)
         {
+            var todos = await GetAllTasksForLoggedInUserOnDate(todo.DateCreated, todo.UserID);
+
             var newTodo = new DailyTodo()
             {
                 Completed = todo.Completed,
+                DateCompleted = todo.DateCompleted,
                 DateCreated = todo.DateCreated,
                 TodoContent = todo.TodoContent,
                 UserID = todo.UserID,
-                ID = new Guid()
             };
+
+            todos.Add(newTodo);
 
             _context.DailyTodo.Add(newTodo);
             await _context.SaveChangesAsync();
 
-            await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated);
+            await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated, todos);
 
             return newTodo;
         }
@@ -103,6 +110,8 @@ namespace API.Helpers.Services
                                     .Where(t => t.ID == update.DailyTodoID)
                                     .FirstOrDefault());
 
+            var todos = await GetAllTasksForLoggedInUserOnDate(todo.DateCreated, todo.UserID);
+
             if (todo != null)
             {
                 if (update.IsCompleted == true)
@@ -110,7 +119,7 @@ namespace API.Helpers.Services
                     todo.DateCompleted = update.UpdateDateTime;
                 }
 
-                await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated);
+                await EvaluatePerformanceForDate(todo.UserID, todo.DateCreated, todos);
             }
 
             return null;
@@ -124,7 +133,7 @@ namespace API.Helpers.Services
                                                 .ToList());
         }
 
-        public async Task<List<AchievementTodoDto>> GetTodoPerformance(Guid loggedInUserID)
+        public async Task<List<AchievementTodoDto>> GetLastMonthsTodoPerformance(Guid loggedInUserID)
         {
             var dateMonthAgo = DateTime.Now.AddMonths(-1);
             var todaysDate = DateTime.Now;
@@ -136,12 +145,23 @@ namespace API.Helpers.Services
             return _mapper.Map<List<ToDoPerformance>, List<AchievementTodoDto>>(x);
         }
 
-        private async Task EvaluatePerformanceForDate(Guid loggedInUserID, DateTime date)
+        public async Task<List<AchievementTodoDto>> GetToDoPerformanceForTheTimeFrame(Guid loggedInUserID, DateTime startDateTime, DateTime endDateTime)
         {
-            decimal numberOfTasksDueForDate = await FetchNumberOfTotalTodosCreatedForDate(date);
-            decimal tasksCompletedForDate = await FetchNumberOfTotalTodosCompletedOnDate(date);
+            var x = await Task.Run(() => _context.ToDoPerformance.Where(tdp => tdp.UserID == loggedInUserID)
+                                                .Where(x => (x.Date > startDateTime) && (x.Date <= endDateTime))
+                                                .ToList());
 
-            var performanceRatio = CalculatePerformance(tasksCompletedForDate, numberOfTasksDueForDate);
+            return _mapper.Map<List<ToDoPerformance>, List<AchievementTodoDto>>(x);
+        }
+
+        private async Task EvaluatePerformanceForDate(Guid loggedInUserID, DateTime date, List<DailyTodo> todoList)
+        {
+            var totalTodosCreatedOnDate = await FetchNumberOfTotalTodosCreatedForDate(date);
+            var totalTodosCompletedOnDate = await FetchNumberOfTotalTodosCompletedOnDate(date);
+
+            //var tasksCompletedForDate = todoList.Where(td => td.DateCompleted == date).Count();
+
+            var performanceRatio = CalculatePerformance(totalTodosCompletedOnDate, totalTodosCreatedOnDate);
 
             var existingUserPerforamanceRatio = await FetchTodosPerformanceForUserOnDate(date, loggedInUserID);
 
@@ -180,14 +200,14 @@ namespace API.Helpers.Services
         {
             return await Task.Run(() => _context.ToDoPerformance.Where(x => x.UserID == userID)
                                                                 .Where(x => x.Date == date)
-                                                                .FirstOrDefault()); 
+                                                                .FirstOrDefault());
         }
 
         private async Task<int> FetchNumberOfTotalTodosCreatedForDate(DateTime date)
         {
             var allTasksCreatedOnTheDate = await Task.Run(() => _context.DailyTodo
-                                            .Where(ct => ct.DateCompleted == date)
-                                            .ToList());
+                                                     .Where(ct => ct.DateCreated == date)
+                                                     .ToList());
 
             return allTasksCreatedOnTheDate.Count;
         }
@@ -195,9 +215,9 @@ namespace API.Helpers.Services
         private async Task<int> FetchNumberOfTotalTodosCompletedOnDate(DateTime date)
         {
             var allTasksCompletedOnTheDate = await Task.Run(() => _context.DailyTodo
-                                            .Where(ct => ct.DateCompleted == date)
-                                            .Where(ct => ct.Completed)
-                                            .ToList());
+                                                       .Where(ct => ct.DateCompleted == date)
+                                                       .Where(ct => ct.Completed == true)
+                                                       .ToList());
 
             return allTasksCompletedOnTheDate.Count;
         }

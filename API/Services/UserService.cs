@@ -15,7 +15,7 @@ namespace API.Helpers.Services
         Task<bool> DoesUserExist(Guid userID);
     }
 
-    public class UserService : IUserService
+    public partial class UserService : IUserService
     {
         private readonly DataContext _context;
         private readonly ILogger<UserService> _logger;
