@@ -81,7 +81,7 @@ namespace API.Controllers.Users
             }
 
             // check if the same todo exists for the loggedInUser, with same content on the same date...!
-            if (await _toDoService.CheckIfTodoExistsForUser(todo.UserID, todo))
+            if (await _toDoService.CheckIfTodoExistsForUser(todo))
             {
                 return Conflict("The todo already exists...");
             }

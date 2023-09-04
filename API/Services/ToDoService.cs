@@ -14,6 +14,7 @@ namespace API.Helpers.Services
     {
         Task<DailyTodo> AddNewTodo(TodoDto todo);
         Task<List<DailyTodo>> GetActivityTodosForUser(Guid loggedInUserID);
+        Task<Boolean> CheckIfTodoExistsForUser(TodoDto todo);
         Task<List<DailyTodo>> GetAllTasksForLoggedInUserOnDate(DateTime date, Guid userID);
         Task<List<AchievementTodoDto>> GetLastMonthsTodoPerformance(Guid loggedInUserID);
         Task<List<AchievementTodoDto>> GetToDoPerformanceForTheTimeFrame(Guid loggedInUserID, DateTime startDateTime, DateTime endDateTime);
@@ -37,6 +38,13 @@ namespace API.Helpers.Services
             _context = context;
             _logger = logger;
             _mapper = mapper;
+        }
+
+        public async Task<bool> CheckIfTodoExistsForUser(TodoDto todo)
+        {
+            var todos = await GetAllTasksForLoggedInUserOnDate(todo.DateCreated, todo.UserID);
+
+            return todos.Where(x => x.TodoContent == todo.TodoContent).Count() == 0;   
         }
 
         public async Task<DailyTodo> RenameTodo(Guid todoID, string newName)
