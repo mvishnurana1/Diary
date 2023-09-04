@@ -60,17 +60,17 @@ export function MonthGoal(): JSX.Element {
                             }
 
                             if (value.length > 0) {
-                                const newToDo: UserTask = {
-                                    content: value,
-                                    date: new Date(),
-                                    isCompleted: false
-                                };
-                                setActive(newToDo)
+                                    const newToDo: UserTask = {
+                                        content: value,
+                                        date: new Date(),
+                                        isCompleted: false
+                                    };
+                                    setActive(newToDo)
+                                }
                             }
                         }
-                        }
-                        placeholder="write new task here"
-                    />}
+                    placeholder="write new task here"/>
+                }
 
                 <button
                     className="logo-button centre"
