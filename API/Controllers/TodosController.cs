@@ -73,12 +73,17 @@ namespace API.Controllers.Users
         }
 
         [HttpPost("/addtodo")]
-        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromBody] TodoDto todo)
+        public async Task<ActionResult<List<DailyTodo>>> AddNewTodo([FromQuery] TodoDto todo)
         {
-            // check if the same todo exists for the loggedInUser, with same content on the same date...!
             if (String.IsNullOrWhiteSpace(todo.TodoContent))
             {
-                return BadRequest();
+                return BadRequest("Please describe a todo description/title");
+            }
+
+            // check if the same todo exists for the loggedInUser, with same content on the same date...!
+            if (await _toDoService.CheckIfTodoExistsForUser(todo.UserID, todo))
+            {
+                return Conflict("The todo already exists...");
             }
 
             if (todo.Completed && todo.DateCompleted == null)

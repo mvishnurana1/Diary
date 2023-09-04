@@ -8,6 +8,9 @@ namespace API.Helpers.Services
 {
     public interface IChartService
     {
+        /// <summary>
+        /// returns Todo performance for the last month by default, if both the dates aren't passed
+        /// </summary>
         Task<List<ChartItem>> GetToDoPerformanceForLoggedInUserForThePassedTimeFrame(Guid userID, DateTime? startDateTime, DateTime? endDateTime);
     }
 
@@ -22,6 +25,9 @@ namespace API.Helpers.Services
             _context = context;
         }
 
+        /// <summary>
+        /// returns Todo performance for the last month by default, if both the dates aren't passed
+        /// </summary>
         public async Task<List<ChartItem>> GetToDoPerformanceForLoggedInUserForThePassedTimeFrame(Guid userID, DateTime? startDateTime, DateTime? endDateTime)
         {
             if (!startDateTime.HasValue || !endDateTime.HasValue)
