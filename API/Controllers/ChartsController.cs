@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using API.Helpers.Services;
 using API.DTOs.ChartsDto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Users
 {
+    [Authorize]
     public class ChartsController : ControllerBase
     {
         public readonly IChartService _chartService;
