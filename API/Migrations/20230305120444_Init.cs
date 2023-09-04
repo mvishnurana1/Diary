@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class ToDoPerformance : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,10 +27,11 @@ namespace API.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateDue = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Completed = table.Column<bool>(type: "bit", nullable: false),
                     UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TodoContent = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    TodoContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCompleted = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -88,9 +89,9 @@ namespace API.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Achievement = table.Column<double>(type: "float", nullable: true),
-                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UserID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Achievement = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,7 +100,8 @@ namespace API.Migrations
                         name: "FK_ToDoPerformance_User_UserID",
                         column: x => x.UserID,
                         principalTable: "User",
-                        principalColumn: "UserID");
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

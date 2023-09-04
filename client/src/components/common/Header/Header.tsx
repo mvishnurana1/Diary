@@ -9,7 +9,7 @@ interface headerProps {
 
 export function Header(props: headerProps): JSX.Element {
     const { logout, user } = props;
-    
+
     if (!props) {
         return <div></div>;
     }
@@ -31,7 +31,7 @@ export function Header(props: headerProps): JSX.Element {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item 
+                        <Dropdown.Item
                             onClick={() => {
                                 window.localStorage.removeItem('accessToken');
                                 window.localStorage.removeItem('email');

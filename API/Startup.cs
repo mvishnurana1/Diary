@@ -26,22 +26,24 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             var domain = $"https://{Configuration["Auth0:Domain"]}/";
-            var audience = $"{Configuration["Auth0:Audience"]}"; 
+            var audience = $"{Configuration["Auth0:Audience"]}";
 
             services.AddAuthentication(options =>
             {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 options.Authority = domain;
                 options.Audience = audience;
-            });
+            }).AddCookie();
 
             AddServices(services);
 
             services.AddDbContext<DataContext>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -87,6 +89,7 @@ namespace API
             services.AddScoped<IDiaryService, DiaryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IToDoService, ToDoService>();
+            services.AddScoped<IChartService, ChartService>();
         }
     }
 }

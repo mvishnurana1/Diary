@@ -15,11 +15,11 @@ interface searchResultsProp {
 
 export function SearchResults(props: searchResultsProp): JSX.Element {
     const {
-        entries, 
-        setContent, 
+        entries,
+        setContent,
         setSearchedContent,
         setSearchedResult,
-        setStartDate 
+        setStartDate
     } = props;
 
     function handleClick(entry: DiaryEntry) {
@@ -31,7 +31,7 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
 
     return <>{
         entries.map((entry: DiaryEntry) => {
-        return (
+            return (
                 <div className="entry-card-layout" key={entry.entryID}>
                     <div className="entry-card">
                         <div className="entry-content">
@@ -53,7 +53,7 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
                         </div>
                     </div>
                 </div>
-        )
-    })}
+            )
+        })}
     </>
 }
