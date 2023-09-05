@@ -8,6 +8,7 @@ export function NoPage(): JSX.Element {
             <div className='icon-container'>
                 <h1 className='header'>404 - Page Not Found</h1>
                 <FontAwesomeIcon
+                    title="404"
                     icon={faFaceFrown}
                     size="2xl"
                     color='#eb5858'
