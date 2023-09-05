@@ -22,7 +22,7 @@ export function Header(props: headerProps): JSX.Element {
                         className='logout'
                         id="dropdown-basic">
                         <img
-                            alt=""
+                            alt="user-google-avatar"
                             className="logo"
                             src={require('../../../assets/user.png')}
                             title={user?.nickname}
