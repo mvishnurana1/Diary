@@ -25,7 +25,6 @@ root.render(
         redirectUri={secrets.redirectUri}
         useRefreshTokens
       >
-        
           <App />
       </Auth0Provider>
   </React.StrictMode>
