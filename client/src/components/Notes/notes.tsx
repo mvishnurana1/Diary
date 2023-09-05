@@ -270,7 +270,7 @@ export function Notes(): JSX.Element {
     return (
         <div className='notes-landing-page'>
             {user && isAuthenticated &&
-                <div className='mobile'>
+                <div className='mobile' id='header'>
                     <Header
                         user={user}
                         logout={logout}
