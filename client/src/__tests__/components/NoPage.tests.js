@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
-import { NoPage } from '../components/common/NoPage/NoPage.tsx';
+import { render, screen } from '@testing-library/react';
+import { NoPage } from '../../components/common/NoPage/NoPage.tsx';
 
 describe('No Page Component', () => {
     test('renders the error message successfully', () => {

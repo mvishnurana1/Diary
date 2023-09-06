@@ -1,8 +1,9 @@
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { mocked } from "jest-mock";
-import { Notes } from '../components/Notes/notes.tsx';
-import fetchSearchedEntryByContent from '../../src/utils/api/fetchSearchedEntryByContent.ts';
+import { Notes } from '../../components/Notes/notes.tsx';
+import ReactDOM from 'react-dom/client';
+import fetchSearchedEntryByContent from '../../utils/api/fetchSearchedEntryByContent.ts';
 
 const user = {
     id: "user_id",
@@ -10,6 +11,18 @@ const user = {
     email_verified: true,
     sub: "google-oauth2|12345678901234",
 };
+
+let container;
+
+beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+});
+
+afterEach(() => {
+    document.body.removeChild(container);
+    container = null;
+});
 
 jest.mock("@auth0/auth0-react");
 const mockedUseAuth0 = mocked(useAuth0, true);
@@ -33,8 +46,10 @@ describe('Notes Component when successfully authenticated', () => {
         window.fetch = jest.fn();
     });
 
-    test("Header Component is rendered when user is authenticated", () => {
-        render(<Notes />);
+    test("Header Component is rendered when user is authenticated", async () => {
+        await act( async () => {
+            await ReactDOM.createRoot(container).render(<Notes />);
+        });
     
         const headerComponent = document.getElementById("header");
     
@@ -60,7 +75,10 @@ describe('Notes Component when successfully authenticated', () => {
             json: async () => [diaryEntries]
         });
 
-        render(<Notes />);
+        await act( async () => {
+            await ReactDOM.createRoot(container).render(<Notes />);
+        });
+    
 
         const SearchResultsComponent = document.getElementsByClassName("entry-card-container");
         expect(SearchResultsComponent).not.toBeNull();
