@@ -50,7 +50,7 @@ describe('Notes Component when successfully authenticated', () => {
         await act( async () => {
             await ReactDOM.createRoot(container).render(<Notes />);
         });
-    
+        render(<Notes />);
         const headerComponent = document.getElementById("header");
     
         expect(headerComponent).toBeInTheDocument();
@@ -78,7 +78,6 @@ describe('Notes Component when successfully authenticated', () => {
         await act( async () => {
             await ReactDOM.createRoot(container).render(<Notes />);
         });
-    
 
         const SearchResultsComponent = document.getElementsByClassName("entry-card-container");
         expect(SearchResultsComponent).not.toBeNull();
