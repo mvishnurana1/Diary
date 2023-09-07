@@ -10,7 +10,6 @@ describe('Header Component', () => {
     });
     
     test("renders the user's nickname properly", () => {
-        // render(<Header />);
         act(() => render(<Header />));
     
         const usersNickName = document.getElementById("dropdown-basic");
