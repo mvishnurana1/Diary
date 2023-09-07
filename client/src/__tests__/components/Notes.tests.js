@@ -1,8 +1,7 @@
-import { act, render } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { mocked } from "jest-mock";
 import { Notes } from '../../components/Notes/notes.tsx';
-import fetchSearchedEntryByContent from '../../utils/api/fetchSearchedEntryByContent.ts';
 
 const user = {
     id: "user_id",
@@ -16,7 +15,12 @@ let container;
 // To fix the warning from the ActivityChart Component
 jest.mock('react-chartjs-2', () => ({
     ...jest.requireActual('react-chartjs-2'),
-    Line: jest.fn(() => <></>),
+    Line: jest.fn(() => <div className="line">LINE</div>),
+}));
+
+jest.mock('../../components/ActivityChart/ActivityChart', () => ({
+    ...jest.requireActual('../../components/ActivityChart/ActivityChart'),
+    Line: jest.fn(() => <div>LINE</div>),
 }));
 
 beforeEach(() => {
@@ -80,5 +84,34 @@ describe('Notes Component when successfully authenticated', () => {
 
         const SearchResultsComponent = document.getElementsByClassName("entry-card-container");
         expect(SearchResultsComponent).not.toBeNull();
+    });
+
+    describe("Should render the Performance Chart for Logged in User:", () => {
+        test("should render the chart performance in the document:", async () => {
+            await act(async () => render(<Notes />));
+    
+            expect(
+                waitFor(() => 
+                    screen.getByText("LINE")
+                    .toBeInTheDocument()));
+        });
+
+        test("should render the 'Activity' header in the document:", async () => {
+            await act(async () => render(<Notes />));
+    
+            expect(
+                waitFor(() => 
+                    screen.getByRole("header", { level: 1, name: 'Activity' })
+                    .toBeInTheDocument()));
+        });
+
+        test("should render the 'this month' header in the document:", async () => {
+            await act(async () => render(<Notes />));
+    
+            expect(
+                waitFor(() => 
+                    screen.getByRole("header", { level: 2, name: 'this month' })
+                    .toBeInTheDocument()));
+        });
     });
 });
