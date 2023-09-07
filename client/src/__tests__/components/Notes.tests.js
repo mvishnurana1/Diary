@@ -2,7 +2,6 @@ import { act, render } from '@testing-library/react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { mocked } from "jest-mock";
 import { Notes } from '../../components/Notes/notes.tsx';
-import ReactDOM from 'react-dom/client';
 import fetchSearchedEntryByContent from '../../utils/api/fetchSearchedEntryByContent.ts';
 
 const user = {
@@ -52,10 +51,7 @@ describe('Notes Component when successfully authenticated', () => {
     });
 
     test("Header Component is rendered when user is authenticated", async () => {
-        await act( async () => {
-            await ReactDOM.createRoot(container).render(<Notes />);
-        });
-        render(<Notes />);
+        await act(async () => render(<Notes />));
         const headerComponent = document.getElementById("header");
     
         expect(headerComponent).toBeInTheDocument();
@@ -80,9 +76,7 @@ describe('Notes Component when successfully authenticated', () => {
             json: async () => [diaryEntries]
         });
 
-        await act( async () => {
-            await ReactDOM.createRoot(container).render(<Notes />);
-        });
+        await act(async () => render(<Notes />));
 
         const SearchResultsComponent = document.getElementsByClassName("entry-card-container");
         expect(SearchResultsComponent).not.toBeNull();
