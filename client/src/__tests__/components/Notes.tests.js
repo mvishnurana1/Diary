@@ -10,31 +10,20 @@ const user = {
     sub: "google-oauth2|12345678901234",
 };
 
-let container;
+
+jest.mock("@auth0/auth0-react");
+const mockedUseAuth0 = mocked(useAuth0, true);
 
 // To fix the warning from the ActivityChart Component
 jest.mock('react-chartjs-2', () => ({
     ...jest.requireActual('react-chartjs-2'),
-    Line: jest.fn(() => <div className="line">LINE</div>),
+    Line: jest.fn(),
 }));
 
 jest.mock('../../components/ActivityChart/ActivityChart', () => ({
     ...jest.requireActual('../../components/ActivityChart/ActivityChart'),
     Line: jest.fn(() => <div>LINE</div>),
 }));
-
-beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-});
-
-afterEach(() => {
-    document.body.removeChild(container);
-    container = null;
-});
-
-jest.mock("@auth0/auth0-react");
-const mockedUseAuth0 = mocked(useAuth0, true);
 
 describe('Notes Component when successfully authenticated', () => {
     beforeEach(() => {
