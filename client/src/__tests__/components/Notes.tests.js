@@ -14,6 +14,11 @@ const user = {
 
 let container;
 
+jest.mock('react-chartjs-2', () => ({
+    ...jest.requireActual('react-chartjs-2'),
+    Line: jest.fn(() => <></>),
+}));
+
 beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
