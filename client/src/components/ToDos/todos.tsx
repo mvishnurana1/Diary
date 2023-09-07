@@ -11,7 +11,7 @@ const defaultTask: UserTask = {
     isCompleted: false
 }
 
-export function ToDos(): JSX.Element {
+function ToDos(): JSX.Element {
     const [todos, setToDos] = useState<UserTask[]>(getExistingTodos());
     const [isAdding, setIsAdding] = useState(false);
     const [active, setActive] = useState<UserTask>(defaultTask);
@@ -27,9 +27,10 @@ export function ToDos(): JSX.Element {
                 <h1 className="title">{localisedDate()}</h1>
                 <h2 className="sub-title">Tasks</h2>
                 <div className="gap">
-                    {todos?.length === 0 && <span>Nothing to do?</span>}
+                    {todos?.length === 0 && <span id="text">Nothing to do?</span>}
                     {todos?.length > 0 && todos.map((todo, index) =>
                         <div className="todo-item" key={index}>
+                            <label htmlFor="todo"></label>
                             <input
                                 checked={todo.isCompleted}
                                 type={"checkbox"}
@@ -66,26 +67,31 @@ export function ToDos(): JSX.Element {
                 </div>
 
                 {isAdding &&
-                    <input
-                        className="gap input"
-                        onChange={(e) => {
-                            const value = e.target.value.trim();
-                            if (value.length <= 0) {
-                                return;
-                            }
+                    <>
+                        <label htmlFor="todo"></label>
+                        <input
+                            className="gap input"
+                            id="todo"
+                            onChange={(e) => {
+                                const value = e.target.value.trim();
+                                if (value.length <= 0) {
+                                    return;
+                                }
 
-                            if (value.length > 0) {
-                                const newToDo: UserTask = {
-                                    content: value,
-                                    date: new Date(),
-                                    isCompleted: false
-                                };
-                                setActive(newToDo)
+                                if (value.length > 0) {
+                                    const newToDo: UserTask = {
+                                        content: value,
+                                        date: new Date(),
+                                        isCompleted: false
+                                    };
+                                    setActive(newToDo)
+                                }
                             }
-                        }
-                        }
-                        placeholder="write new task here"
-                    />}
+                            }
+                            placeholder="write new task here"
+                        />
+                    </>
+                }
 
                 <button
                     className="logo-button centre"
@@ -110,3 +116,5 @@ export function ToDos(): JSX.Element {
         </section>
     )
 }
+
+export default ToDos;
