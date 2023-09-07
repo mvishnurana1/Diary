@@ -13,6 +13,7 @@ const user = {
 
 let container;
 
+// To fix the warning from the ActivityChart Component
 jest.mock('react-chartjs-2', () => ({
     ...jest.requireActual('react-chartjs-2'),
     Line: jest.fn(() => <></>),
@@ -30,7 +31,6 @@ afterEach(() => {
 
 jest.mock("@auth0/auth0-react");
 const mockedUseAuth0 = mocked(useAuth0, true);
-let mockedfetchSearchedEntryByContent = mocked(fetchSearchedEntryByContent);
 
 describe('Notes Component when successfully authenticated', () => {
     beforeEach(() => {
