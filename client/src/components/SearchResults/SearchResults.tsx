@@ -29,31 +29,37 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
         setSearchedResult([]);
     }
 
-    return <>{
-        entries.map((entry: DiaryEntry) => {
-            return (
-                <div className="entry-card-layout" key={entry.entryID}>
-                    <div className="entry-card">
-                        <div className="entry-content">
-                            {entry.content}
-                        </div>
-                        <div className="date-time-log">
-                            <div>
-                                <span className="strong">posted on: </span>
-                                <span className="time">{dateFormat(entry.submittedDateTime)}</span>
+    if (entries?.length) {
+        return <>
+            <h1>No Matches Found for your search</h1>
+        </>
+    } else {
+        return <>{
+            entries?.map((entry: DiaryEntry) => {
+                return (
+                    <div className="entry-card-layout" key={entry.entryID}>
+                        <div className="entry-card">
+                            <div className="entry-content">
+                                {entry.content}
                             </div>
-                            <div>
-                                <FontAwesomeIcon
-                                    className='highlight left'
-                                    icon={faPencil}
-                                    onClick={() => handleClick(entry)}
-                                    size="lg"
-                                />
+                            <div className="date-time-log">
+                                <div>
+                                    <span className="strong">posted on: </span>
+                                    <span className="time">{dateFormat(entry.submittedDateTime)}</span>
+                                </div>
+                                <div>
+                                    <FontAwesomeIcon
+                                        className='highlight left'
+                                        icon={faPencil}
+                                        onClick={() => handleClick(entry)}
+                                        size="lg"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )
-        })}
-    </>
+                )
+            })}
+        </>
+    }
 }
