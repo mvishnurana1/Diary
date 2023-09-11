@@ -102,7 +102,7 @@ export function Notes(): JSX.Element {
                 }
 
             } catch (err) {
-                console.error('Could not fetch dates');
+                // console.error('Could not fetch dates');
             }
         })();
     }, [loggedInUser]);
@@ -114,7 +114,7 @@ export function Notes(): JSX.Element {
                 const dates = x?.map(date => new Date(date));
                 setValidNoteDates(dates!);
             } catch (err) {
-                console.error('Could not fetch dates');
+                // console.error('Could not fetch dates');
             }
         })();
     }, [recentlyPosted, loggedInUser.userID]);
