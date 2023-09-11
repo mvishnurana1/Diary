@@ -32,6 +32,7 @@ function ToDos(): JSX.Element {
                         <div className="todo-item" key={index}>
                             <label htmlFor="todo"></label>
                             <input
+                                id="checkbox"
                                 checked={todo.isCompleted}
                                 type={"checkbox"}
                                 title={todo.content}
@@ -49,10 +50,11 @@ function ToDos(): JSX.Element {
                                 }}
                             />
                             <div className="flex-gap">
-                                <div className={todo.isCompleted ? 'content isCompleted' : 'content'}>
+                                <div id="todo-content" className={todo.isCompleted ? 'content isCompleted' : 'content'}>
                                     {todo.content}
                                 </div>
                                 <button
+                                    id="trash-button"
                                     className="trash-button"
                                     onClick={() => {
                                         todos.splice(index, 1);
