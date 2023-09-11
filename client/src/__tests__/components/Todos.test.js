@@ -44,4 +44,36 @@ describe("ToDos Component", () => {
                 screen.getByLabelText("todo")
                 .toBeInTheDocument()));
     });
+
+    test("New ToDos can be entered", async () => {
+        const newTodo = "example new Todo";
+        const defaultText = "Nothing to do?";
+        render(<ToDos />);
+
+        await user.click(screen.getByRole('button', { name: 'Add' }));
+        
+        const input = await screen.getByRole('textbox');
+        await user.type(input, newTodo);
+        await user.click(screen.getByRole('button', { name: 'Add' }));
+
+        expect(input).toHaveValue(newTodo);
+        waitFor(() => expect(screen.getByText(newTodo)).toBeInTheDocument());
+        waitFor(() => expect(screen.getByText(defaultText)).not.toBeInTheDocument());
+    });
+
+    test("On adding new ToDos, upon checking the checkbox the text gets striked out", async () => {
+        const newTodo = "example new Todo";
+        render(<ToDos />);
+
+        await user.click(screen.getByRole('button', { name: 'Add' }));
+        
+        const input = await screen.getByRole('textbox');
+        await user.type(input, newTodo);
+        await user.click(screen.getByRole('button', { name: 'Add' }));
+
+        const checkbox = document.getElementById('checkbox');
+        await user.click(checkbox);
+
+        waitFor(() => expect(document.getElementById("todo-content")).toHaveClass("content isCompleted"));
+    });
 });
