@@ -81,8 +81,7 @@ describe('Notes Component when successfully authenticated', () => {
     
             expect(
                 waitFor(() => 
-                    screen.getByText("LINE")
-                    .toBeInTheDocument()));
+                    screen.getByText("LINE").toBeInTheDocument()));
         });
 
         test("should render the 'Activity' header in the document:", async () => {
