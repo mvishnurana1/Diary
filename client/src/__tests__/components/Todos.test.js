@@ -39,10 +39,9 @@ describe("ToDos Component", () => {
 
         await user.click(screen.getByRole('button', { name: 'Add' }));
         
-        expect(
-            waitFor(() => 
-                screen.getByLabelText("todo")
-                .toBeInTheDocument()));
+        const input = await screen.getByRole('textbox');
+        expect(input).toBeInTheDocument();
+        expect(input).toHaveClass("gap input");
     });
 
     test("New ToDos can be entered", async () => {
@@ -61,7 +60,7 @@ describe("ToDos Component", () => {
         waitFor(() => expect(screen.getByText(defaultText)).not.toBeInTheDocument());
     });
 
-    test("On adding new ToDos, upon checking the checkbox the text gets striked out", async () => {
+    test("Upon checking the checkbox, the ToDo gets marked as completed", async () => {
         const newTodo = "example new Todo";
         render(<ToDos />);
 
