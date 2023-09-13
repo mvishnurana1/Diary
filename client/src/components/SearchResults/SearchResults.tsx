@@ -29,7 +29,7 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
         setSearchedResult([]);
     }
 
-    if (entries?.length) {
+    if (entries?.length === 0) {
         return <>
             <h1>No Matches Found for your search</h1>
         </>
@@ -43,18 +43,22 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
                                 {entry.content}
                             </div>
                             <div className="date-time-log">
-                                <div>
+                                <>
                                     <span className="strong">posted on: </span>
                                     <span className="time">{dateFormat(entry.submittedDateTime)}</span>
-                                </div>
-                                <div>
-                                    <FontAwesomeIcon
-                                        className='highlight left'
-                                        icon={faPencil}
-                                        onClick={() => handleClick(entry)}
-                                        size="lg"
-                                    />
-                                </div>
+                                </>
+                                <>
+                                    <button
+                                        className='icon-button'
+                                        name='edit-button' 
+                                        onClick={() => handleClick(entry)}>
+                                        <FontAwesomeIcon
+                                            className='highlight left'
+                                            icon={faPencil}
+                                            size="lg"
+                                        />
+                                    </button>
+                                </>
                             </div>
                         </div>
                     </div>

@@ -49,6 +49,13 @@ $white-smoke: rgb(214, 206, 206);
     gap: 1rem;
 }
 
+.icon-button {
+    background-color: $white-dark;
+    border: none;
+    border-radius: 0.25rem;
+    outline: none;
+}
+
 .title {
     font-size: 1.6rem;
     font-weight: 300;
