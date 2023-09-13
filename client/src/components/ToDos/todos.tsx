@@ -23,7 +23,7 @@ function ToDos(): JSX.Element {
 
     return (
         <section className="todos-section">
-            <div>
+            <>
                 <h1 className="title">{localisedDate()}</h1>
                 <h2 className="sub-title">Tasks</h2>
                 <div className="gap">
@@ -113,7 +113,7 @@ function ToDos(): JSX.Element {
                     <FontAwesomeIcon icon={faPlus} />
                     <div>Add</div>
                 </button>
-            </div>
+            </>
             <hr />
         </section>
     )
