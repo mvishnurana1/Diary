@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using API.Auth;
@@ -25,6 +26,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddIdentity<IdentityUser, IdentityRole>();
+
             var domain = $"https://{Configuration["Auth0:Domain"]}/";
             var audience = $"{Configuration["Auth0:Audience"]}";
 
@@ -33,7 +36,13 @@ namespace API
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = "[MyGoogleClientId]";
+                options.ClientSecret = "[MyGoogleSecretKey]";
+            })
+            .AddJwtBearer(options =>
             {
                 options.Authority = domain;
                 options.Audience = audience;
@@ -84,7 +93,7 @@ namespace API
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-
+            
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDiaryService, DiaryService>();
             services.AddScoped<IUserService, UserService>();
