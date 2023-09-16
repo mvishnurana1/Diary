@@ -27,14 +27,14 @@ function ToDos(): JSX.Element {
                 <h1 className="title">{localisedDate()}</h1>
                 <h2 className="sub-title">Tasks</h2>
                 <div className="gap">
-                    {todos?.length === 0 && <span id="text">Nothing to do?</span>}
+                    {todos?.length === 0 && <span data-testid="text">Nothing to do?</span>}
                     {todos?.length > 0 && todos.map((todo, index) =>
                         <div className="todo-item" key={index}>
                             <label htmlFor="todo"></label>
                             <input
-                                id="checkbox"
+                                data-testid="is-completed-checkbox"
                                 checked={todo.isCompleted}
-                                type={"checkbox"}
+                                type="checkbox"
                                 title={todo.content}
                                 onChange={(e) => {
                                     const itemToAdd: UserTask = {
@@ -50,11 +50,11 @@ function ToDos(): JSX.Element {
                                 }}
                             />
                             <div className="flex-gap">
-                                <div id="todo-content" className={todo.isCompleted ? 'content isCompleted' : 'content'}>
+                                <div data-testid="todo-content" className={todo.isCompleted ? 'content isCompleted' : 'content'}>
                                     {todo.content}
                                 </div>
                                 <button
-                                    id="trash-button"
+                                    data-testid="trash-button"
                                     className="trash-button"
                                     onClick={() => {
                                         todos.splice(index, 1);
@@ -73,7 +73,7 @@ function ToDos(): JSX.Element {
                         <label htmlFor="todo"></label>
                         <input
                             className="gap input"
-                            id="todo"
+                            data-testid="todo"
                             onChange={(e) => {
                                 const value = e.target.value.trim();
                                 if (value.length <= 0) {
