@@ -7,8 +7,8 @@ export function LandingPage(): JSX.Element {
     return (<section className="login-page-container">
         <div className="main-content">
             <div>
-                <h1 className="header" id="header">Diary</h1>
-                <h3 className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
+                <h1 className="header" data-testid="header">Diary</h1>
+                <h3 data-testid="text" className="text">Daily journaling helps you reflect on your daily choices and benefits your mental health. </h3>
             </div>
             <div>
                 <button className="blue button flex" onClick={() => loginWithRedirect()}>
