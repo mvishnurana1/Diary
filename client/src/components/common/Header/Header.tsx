@@ -10,8 +10,8 @@ interface headerProps {
 export function Header(props: headerProps): JSX.Element {
     const { logout, user } = props;
 
-    if (!props) {
-        return <div></div>;
+    if (!user) {
+        return <></>;
     }
 
     return (
@@ -20,7 +20,7 @@ export function Header(props: headerProps): JSX.Element {
                 <Dropdown>
                     <Dropdown.Toggle
                         className='logout'
-                        id="dropdown-basic">
+                        data-testid="dropdown-basic">
                         <img
                             alt="user-google-avatar"
                             className="logo"
