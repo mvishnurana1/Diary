@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export function PerformanceChart(): JSX.Element {
+export default function PerformanceChart(): JSX.Element {
     const options = {
         responsive: true,
         plugins: {
