@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import PerformanceChart from "../../../src/components/ActivityChart/ActivityChart.tsx";
 
-
 // To fix the warning from the ActivityChart Component
 jest.mock('react-chartjs-2', () => ({
     ...jest.requireActual('react-chartjs-2'),

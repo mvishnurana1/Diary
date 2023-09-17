@@ -24,7 +24,7 @@ describe('Header Component', () => {
         expect(nickNameNode).toBeInTheDocument();
     });
 
-    test("displays the 'Log Out' button when ", async () => {
+    test("displays the 'Log Out' button when user is logged-in", async () => {
         render(<Header logout={jest.fn()} user={mockedLoggedInUser} />);
         await user.click(screen.getByTestId("dropdown-basic"));
 

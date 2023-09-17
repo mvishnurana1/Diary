@@ -4,9 +4,10 @@ import { NoPage } from '../../../components/common/NoPage/NoPage.tsx';
 describe('No Page Component', () => {
     test('renders the error message successfully', () => {
         render(<NoPage />);
-    
         const errorTextElement = screen.getByText('404 - Page Not Found');
+        
         expect(errorTextElement).toBeInTheDocument();
+        expect(errorTextElement).toHaveClass("header");
     });
     
     test('renders the FontAwesomeIcon compponent with icon', () => {

@@ -47,5 +47,6 @@ describe("SearchResults Component:", () => {
         const editButton = await screen.getAllByRole("button");
 
         expect(editButton[0]).toHaveClass('icon-button');
+        expect(editButton[1]).toHaveClass('icon-button');
     });
 });

@@ -24,7 +24,7 @@ describe('LandingPage Component', () => {
         expect(googleLogo).toBeInTheDocument();
     });
 
-    test('render the footerContent with todays date', () => {
+    test('render the footerContent', () => {
         render(<LandingPage />);
         const footerContent = /Blue Horse/;
         const footerText = screen.getByText(footerContent);
@@ -32,7 +32,7 @@ describe('LandingPage Component', () => {
         expect(footerText).toBeInTheDocument();
     });
 
-    test("render the text in the button 'Log In / Sign up' with todays date", () => {
+    test("render the text in the button with text 'Log In / Sign up'", () => {
         render(<LandingPage />);
         const buttonText = screen.getByText("Log In / Sign up");
 
