@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import user from '@testing-library/user-event';
 import ToDos from '../../components/ToDos/todos.tsx';
 
@@ -23,7 +23,7 @@ describe("ToDos Component", () => {
     test("Renders the text 'Nothing to do?' by default", () => {
         render(<ToDos />);
 
-        const text = document.getElementById('text');
+        const text = screen.getByTestId('text');
         expect(text).toContainHTML("Nothing to do?");
     });
 
@@ -36,28 +36,27 @@ describe("ToDos Component", () => {
 
     test("On clicking the 'Add' button the textfield appears to enter new ToDo", async () => {
         render(<ToDos />);
-
         await user.click(screen.getByRole('button', { name: 'Add' }));
-        
-        const input = await screen.getByRole('textbox');
-        expect(input).toBeInTheDocument();
+        const input = await screen.getByTestId('todo');
+
         expect(input).toHaveClass("gap input");
     });
 
     test("New ToDos can be entered", async () => {
         const newTodo = "example new Todo";
-        const defaultText = "Nothing to do?";
         render(<ToDos />);
 
-        await user.click(screen.getByRole('button', { name: 'Add' }));
+        const addButton = screen.getByRole('button', { name: 'Add' });
+        await user.click(addButton);
         
         const input = await screen.getByRole('textbox');
         await user.type(input, newTodo);
-        await user.click(screen.getByRole('button', { name: 'Add' }));
+        await user.click(addButton);
+
+        const enteredTodo = await screen.getByTestId("todo-content");
 
         expect(input).toHaveValue(newTodo);
-        waitFor(() => expect(screen.getByText(newTodo)).toBeInTheDocument());
-        waitFor(() => expect(screen.getByText(defaultText)).not.toBeInTheDocument());
+        expect(enteredTodo.innerHTML).toEqual(newTodo);
     });
 
     test("Upon checking the checkbox, the ToDo gets marked as completed", async () => {
@@ -70,9 +69,11 @@ describe("ToDos Component", () => {
         await user.type(input, newTodo);
         await user.click(screen.getByRole('button', { name: 'Add' }));
 
-        const checkbox = document.getElementById('checkbox');
+        const checkbox = await screen.getAllByTestId("is-completed-checkbox")[0];
         await user.click(checkbox);
+        const todoContent = await screen.getAllByTestId("todo-content")[0];
 
-        waitFor(() => expect(document.getElementById("todo-content")).toHaveClass("content isCompleted"));
+        expect(checkbox.checked).toBeTruthy();
+        expect(todoContent.classList.contains("isCompleted"));
     });
 });

@@ -21,7 +21,7 @@ import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import ToDos  from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
-import { PerformanceChart } from '../ActivityChart/ActivityChart';
+import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';

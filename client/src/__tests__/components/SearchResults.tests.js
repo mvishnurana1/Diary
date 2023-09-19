@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { SearchResults } from '../../components/SearchResults/SearchResults';
-import dateFormat from '../../helper/date-fn';
+import { dateFormat } from '../../helper/date-fn';
 
 describe("SearchResults Component:", () => {
     const entries = [{
@@ -15,35 +15,38 @@ describe("SearchResults Component:", () => {
         content: "root of Latin literature from 45 BC..."
     }];
 
-    test("Should render the default text - 'No Matches Found for your search' when no matching results are found", () => {
+    test("Should render the default text - 'No Matches Found for your search' when no matching results are found", async () => {
         const defaultText = 'No Matches Found for your search';
         render(<SearchResults entries={[]} />);
+        const textNode = await screen.findByText(defaultText); 
         
-        waitFor(() => expect(screen.findByText(defaultText)).toBeInTheDocument());
+        expect(textNode.innerHTML).toBe(defaultText);
     });
 
-    test("Should render the entries when matches are found", () => {
+    test("Should render the entries when matches are found", async () => {
         render(<SearchResults entries={entries} />);
         
-        waitFor(() => expect(screen.findByText(entries[0].content)).toBeInTheDocument());
-        waitFor(() => expect(screen.findByText(entries[0].content)).toHaveClass("entry-content"));
+        const contentNode = await screen.findAllByTestId('entry-content');
+
+        expect(contentNode[0].innerHTML).toBe(entries[0].content);
+        expect(contentNode[1].innerHTML).toBe(entries[1].content);
     });
 
-    test("Should render the entries for each dateTime log", () => {
+    test("Should render the entries for each dateTime log", async () => {
         render(<SearchResults entries= {entries} />);
-        
-        waitFor(() => expect(dateFormat(entries[0].submittedDateTime)).toBeInTheDocument());
-        waitFor(() => expect(dateFormat(entries[1].submittedDateTime)).toHaveClass("time"));
 
-        waitFor(() => expect(dateFormat(entries[1].submittedDateTime)).toBeInTheDocument());
-        waitFor(() => expect(dateFormat(entries[2].submittedDateTime)).toHaveClass("time"));
+        const dateTimeNode = await screen.findAllByTestId('date-time');
+
+        expect(dateTimeNode[0].innerHTML).toBe(dateFormat(entries[0].submittedDateTime));
+        expect(dateTimeNode[1].innerHTML).toBe(dateFormat(entries[1].submittedDateTime));
     });
 
     test("Should render the edit button next to every result found in search", async () => {
         render(<SearchResults entries={entries} />);
         
-        const editButton = await screen.getAllByRole("button")[0];
+        const editButton = await screen.getAllByRole("button");
 
-        expect(editButton).toHaveClass('icon-button');
+        expect(editButton[0]).toHaveClass('icon-button');
+        expect(editButton[1]).toHaveClass('icon-button');
     });
 });

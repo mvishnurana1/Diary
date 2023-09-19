@@ -39,13 +39,13 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
                 return (
                     <div className="entry-card-layout" key={entry.entryID}>
                         <div className="entry-card">
-                            <div className="entry-content">
+                            <div data-testid="entry-content" className="entry-content">
                                 {entry.content}
                             </div>
                             <div className="date-time-log">
                                 <>
                                     <span className="strong">posted on: </span>
-                                    <span className="time">{dateFormat(entry.submittedDateTime)}</span>
+                                    <span data-testid="date-time" className="time">{dateFormat(entry.submittedDateTime)}</span>
                                 </>
                                 <>
                                     <button

@@ -29,6 +29,8 @@ namespace API.Helpers.Services
         private readonly ILogger<ToDoService> _logger;
         private readonly IMapper _mapper;
 
+        public ToDoService(){}
+        
         public ToDoService(
             DataContext context,
             ILogger<ToDoService> logger,
@@ -166,8 +168,6 @@ namespace API.Helpers.Services
         {
             var totalTodosCreatedOnDate = await FetchNumberOfTotalTodosCreatedForDate(date);
             var totalTodosCompletedOnDate = await FetchNumberOfTotalTodosCompletedOnDate(date);
-
-            //var tasksCompletedForDate = todoList.Where(td => td.DateCompleted == date).Count();
 
             var performanceRatio = CalculatePerformance(totalTodosCompletedOnDate, totalTodosCreatedOnDate);
 
