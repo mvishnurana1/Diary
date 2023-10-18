@@ -19,15 +19,15 @@
       "ancmHostingModel": "InProcess",
       "nativeDebugging": true
     },
-    "DiaryApp": {
-      "commandName": "project",
-      "dotnetRunMessages": "true",
+    "DiaryApp.Kestral": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001"
+      "applicationUrl": "https://localhost:44315"
     }
   }
 }
