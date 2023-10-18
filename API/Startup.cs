@@ -25,20 +25,7 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var domain = $"https://{Configuration["Auth0:Domain"]}/";
-            var audience = $"{Configuration["Auth0:Audience"]}";
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = domain;
-                options.Audience = audience;
-            }).AddCookie();
-
+            AddAuthentication(services);
             AddServices(services);
 
             services.AddDbContext<DataContext>();
@@ -90,6 +77,23 @@ namespace API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IToDoService, ToDoService>();
             services.AddScoped<IChartService, ChartService>();
+        }
+
+        private void AddAuthentication(IServiceCollection services)
+        {
+            var domain = $"https://{Configuration["Auth0:Domain"]}/";
+            var audience = $"{Configuration["Auth0:Audience"]}";
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = domain;
+                options.Audience = audience;
+            }).AddCookie();
         }
     }
 }
