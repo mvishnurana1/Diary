@@ -6,20 +6,13 @@ namespace API.test.Services
     public class ToDoServiceTests
     {
         [Fact]
-        public async Task GivenToDoIsNotDuplicate_WhenToDoIsAdded_ItIsStoredCorrectly()
+        public async Task Test()
         {
             var todoService = new ToDoService();
+            var newTodo = new TodoDto();
+            var returnedToDo = await todoService.AddNewTodo(newTodo);
 
-            var dto = new TodoDto();
-
-            var x = await todoService.AddNewTodo(dto);
-            
-        }
-
-        [Fact]
-        public void GetAllTasksForLoggedInUserOnDate_ReturnsAllTasks()
-        {
-
+            Assert.Null(returnedToDo);
         }
     }
 }
