@@ -1,0 +1,15 @@
+@import "../../../global.scss";
+
+.error-container {
+    align-content: center;
+    align-items: center;
+    border: 2px solid $tomato;
+    border-radius: 1rem;
+    box-shadow: 1rem .25rem 1rem 0.5rem 
+        $grey;
+    display: flex;
+    flex-direction: column;
+    margin: 0 5%;
+    max-width: 90%;
+    padding: 2rem;
+}
