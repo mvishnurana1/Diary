@@ -1,15 +1,24 @@
+import { createContext, useState } from "react";
+
+const NotesContext = createContext({
+    consent: '',
+    names: [],
+    setNames: (...params) => {},
+    setConsent: (...params) => {}
+});
+
 function NotesProvider({children}) {
-    const [contentInTextBox, setContentInTextBox] = useState('');
+    // const [contentInTextBox, setContentInTextBox] = useState('');
+    const [consent, setConsent] = useState("Yes");
+    const [names, setNames] = useState([]);
 
     return (
         <NotesContext.Provider value={{
-            notes: {
-                ...rest,
-                addNote: (...params) => this.addNote(...params),
-                fetch: () => this.fetchNotes(),
-                updateNote: (...params) => this.updateNote(...params),
-                searchNotes: (...params) => this.searchForNotes(...params),
-            }}}>
+                names,
+                consent,
+                setNames,
+                setConsent
+            }}>
             {children}
         </NotesContext.Provider>
     )
