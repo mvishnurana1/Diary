@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
     faFaceSadCry,
@@ -25,6 +25,7 @@ import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
+import { NotesContext } from '../../context/notes/NotesProvider';
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -52,6 +53,8 @@ export function Notes(): JSX.Element {
         getIdTokenClaims,
         logout
     } = useAuth0();
+
+    const { consent, names, setNames, setConsent } = useContext(NotesContext);
 
     useEffect(() => {
         (async () => {
@@ -82,6 +85,16 @@ export function Notes(): JSX.Element {
             }
         })();
     }, []);
+
+    /**
+     * Test UseEffect for Context API:
+     */
+    // useEffect(() => {
+    //     setConsent('No');
+    //     setNames(['Simran', 'Saif']);
+    //     console.log('Here...Testing...');
+    //     console.log('There');
+    // }, [setConsent, setNames]);
 
     useEffect(() => {
         (async () => {
@@ -152,6 +165,10 @@ export function Notes(): JSX.Element {
     }
 
     async function fetchDiaryEntryContentByDate(date: Date) {
+        // Logging Updated Values:
+        // console.log(consent);
+        // console.log(names);
+
         try {
             let id = '';
 
@@ -398,16 +415,18 @@ export function Notes(): JSX.Element {
                     </div>
                     }
                     <div className="centre">
-                        <button
-                            className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
-                            onClick={() => {
-                                postNote();
-                                setContent('')
-                            }}
-                            title={content?.length === 0 ? 'Write note' : 'SAVE'}
-                            disabled={content?.length === 0}>
-                            {content?.length === 0 ? 'Write note' : 'SAVE'}
-                        </button>
+                    <button
+                        className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
+                        onClick={() => {
+                            postNote();
+                            setContent('');
+                            setNames([...names, 'Saif', 'Simran', 'Vish']);
+                            setContent('No');
+                        }}
+                        title={content?.length === 0 ? 'Write note' : 'SAVE'}
+                        disabled={content?.length === 0}>
+                        {content?.length === 0 ? 'Write note' : 'SAVE'}
+                    </button>
                     </div>
                     {displayCard()}
                 </div>
