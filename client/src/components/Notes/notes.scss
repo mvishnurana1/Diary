@@ -56,6 +56,10 @@
         padding: 2rem;
     }
 
+    .hide {
+        display: none;
+    }
+
     .red {
         color: $tomato;
         margin-left: 1rem;
@@ -93,10 +97,6 @@
         &:hover {
             background-color: $pink; 
         }
-    }
-
-    .no-display {
-        display: none;
     }
 
     .save {
