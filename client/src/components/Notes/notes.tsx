@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +21,7 @@ import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
+import NotesContext from '../../context/notes/NotesContext';
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -29,19 +30,25 @@ const defaultUser: LoggedInUser = {
 }
 
 export function Notes(): JSX.Element {
-    const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
-    const [error, setError] = useState(false);
     const [searchedContent, setSearchedContent] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
-    const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
-    const [recentlyPosted, setRecentlyPosted] = useState(false);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
-    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect,
-        user, getIdTokenClaims, logout } = useAuth0();
+    const {
+        getAccessTokenSilently, isAuthenticated, 
+        loginWithRedirect, user, 
+        getIdTokenClaims, logout 
+    } = useAuth0();
+    
+    const {
+        content, setContent,
+        startDate, setStartDate,
+        error, setError,
+        recentlyPosted, setRecentlyPosted,
+        validNoteDates, setValidNoteDates 
+    } = useContext(NotesContext);
 
     useEffect(() => {
         (async () => {
@@ -71,7 +78,8 @@ export function Notes(): JSX.Element {
                 setError(true);
             }
         })();
-    }, []);
+    }, [setError]);
+
 
     useEffect(() => {
         (async () => {
@@ -92,10 +100,10 @@ export function Notes(): JSX.Element {
                 }
 
             } catch (err) {
-                // console.error('Could not fetch dates');
+                setError(true);
             }
         })();
-    }, [loggedInUser]);
+    }, [loggedInUser, setValidNoteDates, setError]);
 
     useEffect(() => {
         (async () => {
@@ -104,10 +112,10 @@ export function Notes(): JSX.Element {
                 const dates = x?.map(date => new Date(date));
                 setValidNoteDates(dates!);
             } catch (err) {
-                // console.error('Could not fetch dates');
+                setError(true);
             }
         })();
-    }, [recentlyPosted, loggedInUser.userID]);
+    }, [recentlyPosted, loggedInUser.userID, setValidNoteDates, setError]);
 
     async function postCachedActivity() {
         const active = JSON.parse(localStorage.getItem('active')!);
@@ -327,48 +335,34 @@ export function Notes(): JSX.Element {
                     <div className='mobile'>
                         {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
                             <input
-                                className='search'
-                                placeholder='find submitted entries...'
-                                value={searchedContent}
-                                onChange={(e) => setSearchedContent(e.target.value)}
-                            />
+                                className='search' placeholder='find submitted entries...'
+                                value={searchedContent} onChange={(e) => setSearchedContent(e.target.value)} />
 
                             <FontAwesomeIcon
-                                className='red'
-                                icon={faMagnifyingGlass}
-                                onClick={() => getSearchedEntryByContent()}
-                                size="lg"
-                            />
+                                className='red' icon={faMagnifyingGlass}
+                                size="lg" onClick={() => getSearchedEntryByContent()} />
                         </div>}
                     </div>
 
                     <div className='desktop search-box-container'>
                         <input
-                            className='search'
-                            placeholder='find submitted entries...'
-                            value={searchedContent}
-                            onChange={(e) => setSearchedContent(e.target.value)}
-                        />
+                            className='search' placeholder='find submitted entries...'
+                            value={searchedContent} onChange={(e) => setSearchedContent(e.target.value)} />
 
                         <FontAwesomeIcon
-                            className='red'
-                            icon={faMagnifyingGlass}
-                            onClick={() => getSearchedEntryByContent()}
-                            size="lg"
-                        />
+                            className='red' icon={faMagnifyingGlass}
+                            size="lg" onClick={() => getSearchedEntryByContent()} />
                     </div>
 
                     <div className={searchedResult?.length > 0 || error ? 'hide' : 'centre'}>
                         <textarea
-                            className={error ? 'hide' : 'textArea'}
-                            rows={15}
+                            className={error ? 'hide' : 'textArea'} rows={15}
                             placeholder="Dear Diary..."
                             onChange={(e) => {
                                 setContent(e.target.value);
                                 cacheActiveEntry(e);
                             }}
-                            spellCheck={false}
-                            value={content}
+                            value={content} spellCheck={false}
                         />
                     </div>
 
