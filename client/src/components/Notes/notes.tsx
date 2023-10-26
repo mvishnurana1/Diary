@@ -1,11 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import {
-    faFaceSadCry,
-    faMagnifyingGlass,
-    faXmark,
-    faCalendar
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
@@ -19,13 +14,13 @@ import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
+import ErrorComponent from '../common/ErrorComponent/ErrorComponent';
 import ToDos  from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
 import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
-import { NotesContext } from '../../context/notes/NotesProvider';
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -45,16 +40,8 @@ export function Notes(): JSX.Element {
     const [recentlyPosted, setRecentlyPosted] = useState(false);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
-    const {
-        getAccessTokenSilently,
-        isAuthenticated,
-        loginWithRedirect,
-        user,
-        getIdTokenClaims,
-        logout
-    } = useAuth0();
-
-    const { consent, names, setNames, setConsent } = useContext(NotesContext);
+    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect,
+        user, getIdTokenClaims, logout } = useAuth0();
 
     useEffect(() => {
         (async () => {
@@ -85,16 +72,6 @@ export function Notes(): JSX.Element {
             }
         })();
     }, []);
-
-    /**
-     * Test UseEffect for Context API:
-     */
-    // useEffect(() => {
-    //     setConsent('No');
-    //     setNames(['Simran', 'Saif']);
-    //     console.log('Here...Testing...');
-    //     console.log('There');
-    // }, [setConsent, setNames]);
 
     useEffect(() => {
         (async () => {
@@ -165,10 +142,6 @@ export function Notes(): JSX.Element {
     }
 
     async function fetchDiaryEntryContentByDate(date: Date) {
-        // Logging Updated Values:
-        // console.log(consent);
-        // console.log(names);
-
         try {
             let id = '';
 
@@ -288,10 +261,7 @@ export function Notes(): JSX.Element {
         <div className='notes-landing-page'>
             {user && isAuthenticated &&
                 <div className='mobile' id='header'>
-                    <Header
-                        user={user}
-                        logout={logout}
-                    />
+                    <Header user={user} logout={logout} />
                 </div>
             }
 
@@ -302,12 +272,12 @@ export function Notes(): JSX.Element {
 
                 {validNoteDates && !searchedResult.length &&
                     <div className='left'>
-                        <div className={error ? 'no-display' : 'datepicker'}>
+                        <div className={error ? 'hide' : 'datepicker'}>
                             <div className='mobile'>
                                 {active === activeOnMobileDisplay.calendar &&
-                                    <DatePicker
-                                        highlightDates={validNoteDates}
-                                        inline
+                                    <DatePicker 
+                                        highlightDates={validNoteDates} 
+                                        inline 
                                         maxDate={new Date()}
                                         onChange={(date: Date) => {
                                             postCachedActivity();
@@ -319,7 +289,7 @@ export function Notes(): JSX.Element {
                                     />
                                 }
                             </div>
-                            <div className={error ? 'no-display' : 'desktop datepicker'}>
+                            <div className={error ? 'hide' : 'desktop datepicker'}>
                                 <ToDos />
                                 <h1 className='title'>Pick a Date</h1>
                                 <h2 className='sub-title'>Write journal</h2>
@@ -342,17 +312,15 @@ export function Notes(): JSX.Element {
                                 <PerformanceChart />
                             </div>
                         </div>
-                    </div>}
+                    </div>
+                }
 
-                <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
+                <div className={searchedResult.length > 0 ? 'hide' : 'vertical-rule'}></div>
 
                 <div className='column'>
                     {isAuthenticated && user &&
                         <div className='desktop'>
-                            <Header
-                                user={user}
-                                logout={logout}
-                            />
+                            <Header user={user} logout={logout} />
                         </div>
                     }
 
@@ -390,9 +358,9 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
+                    <div className={searchedResult?.length > 0 || error ? 'hide' : 'centre'}>
                         <textarea
-                            className={error ? 'no-display' : 'textArea'}
+                            className={error ? 'hide' : 'textArea'}
                             rows={15}
                             placeholder="Dear Diary..."
                             onChange={(e) => {
@@ -404,24 +372,14 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    {error && <div
-                        className='error-container'
-                        data-testid="error-emoji">
-                        <FontAwesomeIcon
-                            icon={faFaceSadCry}
-                            size="3x"
-                        />
-                        <h6>Something went wrong. Please try again later!</h6>
-                    </div>
-                    }
+                    {error && <ErrorComponent />}
+
                     <div className="centre">
                     <button
-                        className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
+                        className={searchedResult.length > 0 || error ? 'hide' : 'save button'}
                         onClick={() => {
                             postNote();
                             setContent('');
-                            setNames([...names, 'Saif', 'Simran', 'Vish']);
-                            setContent('No');
                         }}
                         title={content?.length === 0 ? 'Write note' : 'SAVE'}
                         disabled={content?.length === 0}>
