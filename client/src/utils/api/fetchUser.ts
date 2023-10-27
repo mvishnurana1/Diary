@@ -1,5 +1,5 @@
-import { LoggedInUser } from "../../models/LoggedInUser";
 import { BASE_URL } from "../url";
+import { LoggedInUser } from "../../models";
 
 export async function fetchUser(): Promise<LoggedInUser> {
 
