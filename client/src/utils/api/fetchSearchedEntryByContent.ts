@@ -1,6 +1,5 @@
 import { GetToken } from "../../helper/getToken";
-import { DiaryEntry } from "../../models/DiaryEntry";
-import { SearchViaContentRequestDto } from "../../models/SearchViaContentRequestDto";
+import { DiaryEntry, SearchViaContentRequestDto } from "../../models";
 import { BASE_URL } from "../url";
 
 export async function fetchSearchedEntryByContent(request: SearchViaContentRequestDto): Promise<DiaryEntry[]> {

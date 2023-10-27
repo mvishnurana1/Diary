@@ -1,5 +1,5 @@
-import { FetchEntriesByDateModel } from "../../models/FetchEntriesByDateModel";
 import { BASE_URL } from '../url';
+import { FetchEntriesByDateModel } from '../../models';
 
 export async function fetchEntryByDate(request: FetchEntriesByDateModel): Promise<string> {
     const accessToken = window.localStorage.getItem("accessToken");
