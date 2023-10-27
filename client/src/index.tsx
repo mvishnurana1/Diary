@@ -19,6 +19,9 @@ root.render(
   <React.StrictMode>
       <Auth0Provider
         audience={secrets.audience}
+        authorizationParams={{
+          redirect_uri: window.location.origin
+        }}
         clientId={secrets.clientID}
         domain={secrets.domain}
         onRedirectCallback={onRedirectCallback}
