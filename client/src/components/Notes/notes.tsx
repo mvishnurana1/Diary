@@ -6,22 +6,18 @@ import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper/date-fn';
-import { DiaryEntry } from '../../models/DiaryEntry';
-import { LoggedInUser } from '../../models/LoggedInUser';
-import { fetchUser } from '../../utils/api/fetchUser';
-import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
-import { postNewNotes } from '../../utils/api/postNewNotes';
-import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
-import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
+import NotesContext from '../../context/notes/NotesContext';
 import { Header } from '../common/Header/Header';
+import { fetchDatesOfNotesForLoggedInUser, fetchUser, postNewNotes, 
+    fetchEntryByDate, fetchSearchedEntryByContent } from '../../utils/api';
+import { LoggedInUser } from '../../models/LoggedInUser';
+import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import ErrorComponent from '../common/ErrorComponent/ErrorComponent';
 import ToDos  from '../ToDos/todos';
-// import { MonthGoal } from '../MonthGoal/monthGoal';
 import PerformanceChart from '../ActivityChart/ActivityChart';
-import "react-datepicker/dist/react-datepicker.css";
+// import { MonthGoal } from '../MonthGoal/monthGoal';
 import './notes.scss';
-import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
-import NotesContext from '../../context/notes/NotesContext';
+import "react-datepicker/dist/react-datepicker.css";
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -32,7 +28,6 @@ const defaultUser: LoggedInUser = {
 export function Notes(): JSX.Element {
     const [displaySearch, setDisplaySearch] = useState(false);
     const [searchedContent, setSearchedContent] = useState('');
-    const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
@@ -47,6 +42,7 @@ export function Notes(): JSX.Element {
         startDate, setStartDate,
         error, setError,
         recentlyPosted, setRecentlyPosted,
+        searchedResult, setSearchedResult,
         validNoteDates, setValidNoteDates 
     } = useContext(NotesContext);
 
@@ -103,19 +99,7 @@ export function Notes(): JSX.Element {
                 setError(true);
             }
         })();
-    }, [loggedInUser, setValidNoteDates, setError]);
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const x = await fetchDatesOfNotesForLoggedInUser(loggedInUser.userID);
-                const dates = x?.map(date => new Date(date));
-                setValidNoteDates(dates!);
-            } catch (err) {
-                setError(true);
-            }
-        })();
-    }, [recentlyPosted, loggedInUser.userID, setValidNoteDates, setError]);
+    }, [recentlyPosted, loggedInUser, setValidNoteDates, setError]);
 
     async function postCachedActivity() {
         const active = JSON.parse(localStorage.getItem('active')!);
