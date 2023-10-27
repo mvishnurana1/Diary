@@ -1,4 +1,4 @@
-import { DiaryEntry } from "./DiaryEntry";
+import { DiaryEntry } from ".";
 
 export interface DiaryEntryResponse {
     userName: string,
