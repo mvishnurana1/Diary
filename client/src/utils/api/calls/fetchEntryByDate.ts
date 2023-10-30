@@ -1,4 +1,4 @@
-import { FetchEntriesByDateModel } from "../../../models/AppModels/FetchEntriesByDateModel";
+import { FetchEntriesByDateModel } from "../../../models";
 import { BASE_URL } from '../../url';
 
 export async function fetchEntryByDate(request: FetchEntriesByDateModel): Promise<string> {

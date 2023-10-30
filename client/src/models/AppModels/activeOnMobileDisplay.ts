@@ -1,4 +1,6 @@
-export enum activeOnMobileDisplay {
+enum activeOnMobileDisplay {
     calendar = 'calendar',
     search = 'search'
 }
+
+export { activeOnMobileDisplay };

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
 import { dateFormat } from '../../helper';
-import { DiaryEntry } from "../../models/AppModels/DiaryEntry";
+import { DiaryEntry } from "../../models";
 import './SearchResults.scss';
 
 interface searchResultsProp {

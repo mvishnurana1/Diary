@@ -1,9 +1,11 @@
-export interface Priority {
+interface Priority {
     content: string,
     date: Date
 }
 
-export interface Todos {
+interface Todos {
     id: string,
     content: string,
 }
+
+export { type Priority, type Todos };

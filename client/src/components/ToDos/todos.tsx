@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { localisedDate } from "../../helper/fns/date-fn";
-import { UserTask } from "../../models/AppModels/UserTask";
+import { localisedDate } from "../../helper";
+import { UserTask } from "../../models";
 import './todos.scss';
 
 const defaultTask: UserTask = {

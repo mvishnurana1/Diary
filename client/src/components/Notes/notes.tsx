@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
-import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper';
-import { DiaryEntry } from '../../models/AppModels/DiaryEntry';
-import { LoggedInUser } from '../../models/AppModels/LoggedInUser';
+import { DiaryEntry, LoggedInUser } from '../../models';
 import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
-         fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
+    fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { activeOnMobileDisplay } from '../../models/AppModels/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
+import { SearchResults } from '../SearchResults/SearchResults';
 import ToDos  from '../ToDos/todos';
+import { OnError } from '../Error/error';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
 // import PerformanceChart from '../ActivityChart/ActivityChart';
-import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
