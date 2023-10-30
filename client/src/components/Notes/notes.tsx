@@ -17,14 +17,14 @@ import { fetchUser } from '../../utils/api/fetchUser';
 import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
 import { postNewNotes } from '../../utils/api/postNewNotes';
 import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
+import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import ToDos  from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';
-import PerformanceChart from '../ActivityChart/ActivityChart';
+// import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
-import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
 
 const defaultUser: LoggedInUser = {
     email: undefined!,
@@ -41,7 +41,7 @@ export function Notes(): JSX.Element {
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
-    const [recentlyPosted, setRecentlyPosted] = useState(false);
+    const [hasInit, setInit] = useState(false);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
     const {
@@ -73,51 +73,23 @@ export function Notes(): JSX.Element {
     });
 
     useEffect(() => {
-        (async () => {
-            try {
-                const user = await fetchUser();
-                setLoggedInUser(user);
-            } catch (err) {
-                setError(true);
-            }
-        })();
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            try {
-                let id = '';
-
+        if (hasInit) {
+            return;
+        }
+        fetchUser()
+            .then(user => { setLoggedInUser(user)})
+            .then(() => {
                 if (loggedInUser.userID === undefined) {
-                    const user = await fetchUser();
-                    id = user.userID;
-                    setLoggedInUser(user);
-                }
-
-                if (id !== undefined) {
-                    const x = await fetchDatesOfNotesForLoggedInUser(id);
-
-                    const dates = x?.map(date => new Date(date));
+                    return;
+                } 
+                setInit(true);
+                fetchDatesOfNotesForLoggedInUser(loggedInUser.userID)
+                .then(res => {
+                    const dates = res?.map(res => new Date(res));
                     setValidNoteDates(dates!);
-                }
-
-            } catch (err) {
-                // console.error('Could not fetch dates');
-            }
-        })();
-    }, [loggedInUser]);
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const x = await fetchDatesOfNotesForLoggedInUser(loggedInUser.userID);
-                const dates = x?.map(date => new Date(date));
-                setValidNoteDates(dates!);
-            } catch (err) {
-                // console.error('Could not fetch dates');
-            }
-        })();
-    }, [recentlyPosted, loggedInUser.userID]);
+                })
+            });
+    }, [hasInit, loggedInUser]);
 
     async function postCachedActivity() {
         const active = JSON.parse(localStorage.getItem('active')!);
@@ -126,26 +98,18 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                let id = undefined;
-
-                if (loggedInUser.userID === undefined) {
-                    const user = await fetchUser();
-                    id = user.userID;
-                    setLoggedInUser(user);
-                }
 
                 const diaryEntry = await postNewNotes(
-                    {
-                        UserID: loggedInUser.userID ?? id,
-                        Content: active?.content,
-                        SubmittedDateTime: dateFormat(active?.startDate)
-                    });
+                {
+                    UserID: loggedInUser.userID,
+                    Content: active?.content,
+                    SubmittedDateTime: dateFormat(active?.startDate)
+                });
 
                 setContent(diaryEntry.content);
             } catch (err) {
-
+                setError(true);
             } finally {
-                setRecentlyPosted(true);
                 localStorage.removeItem('active');
             }
         }
@@ -175,29 +139,21 @@ export function Notes(): JSX.Element {
     async function postNote() {
         if (content === null || content.match(/^ *$/) !== null) {
             return;
-        } else {
-            try {
-                let id = '';
+        }
+        try {
+            const diaryEntry = await postNewNotes(
+            {
+                UserID: loggedInUser.userID,
+                Content: content,
+                SubmittedDateTime: dateFormat(startDate)
+            });
 
-                if (loggedInUser.userID === undefined) {
-                    const user = await fetchUser();
-                    id = user.userID;
-                    setLoggedInUser(user);
-                }
-
-                const diaryEntry = await postNewNotes(
-                    {
-                        UserID: loggedInUser.userID ?? id,
-                        Content: content,
-                        SubmittedDateTime: dateFormat(startDate)
-                    });
-
-                setContent(diaryEntry.content);
-            } catch (err) {
-                setError(true);
-            } finally {
-                setRecentlyPosted(true);
-            }
+            setContent(diaryEntry.content);
+        } catch (err) {
+            setError(true);
+        } finally {
+            setValidNoteDates([...validNoteDates, startDate]);
+            setContent('');
         }
     }
 
@@ -207,16 +163,8 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                let id = '';
-
-                if (loggedInUser.userID === undefined) {
-                    const user = await fetchUser();
-                    id = user.userID;
-                    setLoggedInUser(user);
-                }
-
                 const searchResult = await fetchSearchedEntryByContent
-                    ({ userID: loggedInUser.userID ?? id, content: searchedContent });
+                    ({ userID: loggedInUser.userID, content: searchedContent });
 
                 setSearchedResult(searchResult);
             } catch (err) {
@@ -322,7 +270,7 @@ export function Notes(): JSX.Element {
                                 </div>
                                 {/* <hr />
                             <MonthGoal />  */}
-                                <PerformanceChart />
+                                {/* <PerformanceChart /> */}
                             </div>
                         </div>
                     </div>}
