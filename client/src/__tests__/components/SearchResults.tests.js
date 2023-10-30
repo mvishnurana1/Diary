@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { SearchResults } from '../../components/SearchResults/SearchResults';
-import { dateFormat } from '../../helper/date-fn';
+import { dateFormat } from '../../helper/';
 
 describe("SearchResults Component:", () => {
     const entries = [{

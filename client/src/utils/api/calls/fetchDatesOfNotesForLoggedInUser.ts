@@ -1,5 +1,5 @@
-import { GetToken } from "../../helper/getToken";
-import { BASE_URL } from "../url";
+import { GetToken } from "../../../helper";
+import { BASE_URL } from "../../url";
 
 export async function fetchDatesOfNotesForLoggedInUser(loggedInUserID: string) {
     if (!loggedInUserID) {

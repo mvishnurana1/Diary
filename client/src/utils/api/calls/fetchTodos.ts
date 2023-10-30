@@ -1,12 +1,11 @@
-import { LoggedInUser } from "../../models/LoggedInUser";
-import { BASE_URL } from "../url";
+import { Todos } from "../../../models";
+import { BASE_URL } from "../../url";
 
-export async function fetchUser(): Promise<LoggedInUser> {
+export async function fetchTodos(): Promise<Todos> {
 
-    const defaultUser: LoggedInUser = {
-        email: undefined!,
-        userID: undefined!,
-        userName: undefined!
+    const defaultUser: Todos = {
+        content: undefined!,
+        id: undefined!,
     }
 
     const accessToken = window.localStorage.getItem("accessToken");
@@ -17,10 +16,10 @@ export async function fetchUser(): Promise<LoggedInUser> {
     }
 
     const ID_TOKEN = window.localStorage.getItem("idToken");
-    
+
     if (accessToken && ID_TOKEN) {
         const response = await fetch(`${BASE_URL}user?token=${ID_TOKEN}`, { headers });
-        const responseUser = await await response.json() as Promise<LoggedInUser>;
+        const responseUser = await await response.json() as Promise<Todos>;
         const loggedInPerson = await responseUser;
         return loggedInPerson;
     }

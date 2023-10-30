@@ -1,4 +1,4 @@
-export function GetToken(): string | null {
+function GetToken(): string | null {
     const token = localStorage.getItem('accessToken');
 
     if (!token) {
@@ -7,3 +7,5 @@ export function GetToken(): string | null {
 
     return token;
 }
+
+export { GetToken };

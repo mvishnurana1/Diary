@@ -1,7 +1,9 @@
 import { DiaryEntry } from "./DiaryEntry";
 
-export interface DiaryEntryResponse {
+interface DiaryEntryResponse {
     userName: string,
     email: string,
     DiaryEntry: DiaryEntry
 };
+
+export { type DiaryEntryResponse };

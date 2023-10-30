@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Routes } from 'react-router';
 import { Notes } from './components/Notes/notes';
 import { LandingPage } from './components/LandingPage/landingPage';
-import { NoPage }  from './components/common/NoPage/NoPage';
+import { NoPage }  from './components/common';
 import './App.scss';
 
 function App(): JSX.Element {

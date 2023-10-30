@@ -24,7 +24,7 @@ export function Header(props: headerProps): JSX.Element {
                         <img
                             alt="user-google-avatar"
                             className="logo"
-                            src={require('../../../assets/user.png')}
+                            src={user?.picture?.length ? user.picture : require('../../../assets/user.png')}
                             title={user?.nickname}
                         />
                         {user?.nickname}

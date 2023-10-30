@@ -1,27 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import {
-    faFaceSadCry,
-    faMagnifyingGlass,
-    faXmark,
-    faCalendar
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
+import { dateFormat } from '../../helper';
+import { DiaryEntry, LoggedInUser } from '../../models';
+import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
+    fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
+import { activeOnMobileDisplay } from '../../models/AppModels/activeOnMobileDisplay';
+import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
-import { dateFormat } from '../../helper/date-fn';
-import { DiaryEntry } from '../../models/DiaryEntry';
-import { LoggedInUser } from '../../models/LoggedInUser';
-import { fetchUser } from '../../utils/api/fetchUser';
-import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
-import { postNewNotes } from '../../utils/api/postNewNotes';
-import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
-import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
-import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
-import { Header } from '../common/Header/Header';
 import ToDos  from '../ToDos/todos';
-// import { MonthGoal } from '../MonthGoal/monthGoal';
+import { OnError } from '../Error/error';
 // import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
@@ -44,14 +34,9 @@ export function Notes(): JSX.Element {
     const [hasInit, setInit] = useState(false);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
-    const {
-        getAccessTokenSilently,
-        isAuthenticated,
-        loginWithRedirect,
-        user,
-        getIdTokenClaims,
-        logout
-    } = useAuth0();
+    const { 
+        getAccessTokenSilently, isAuthenticated, loginWithRedirect,
+        user, getIdTokenClaims, logout } = useAuth0();
 
     useEffect(() => {
         (async () => {
@@ -117,16 +102,8 @@ export function Notes(): JSX.Element {
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            let id = '';
-
-            if (loggedInUser.userID === undefined) {
-                const user = await fetchUser();
-                id = user.userID;
-                setLoggedInUser(user);
-            }
-
             const content = await fetchEntryByDate(
-                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID ?? id }
+                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID }
             );
 
             setContent(content);
@@ -219,10 +196,7 @@ export function Notes(): JSX.Element {
         <div className='notes-landing-page'>
             {user && isAuthenticated &&
                 <div className='mobile' id='header'>
-                    <Header
-                        user={user}
-                        logout={logout}
-                    />
+                    <Header user={user} logout={logout} />
                 </div>
             }
 
@@ -269,7 +243,6 @@ export function Notes(): JSX.Element {
                                     />
                                 </div>
                                 {/* <hr />
-                            <MonthGoal />  */}
                                 {/* <PerformanceChart /> */}
                             </div>
                         </div>
@@ -280,10 +253,7 @@ export function Notes(): JSX.Element {
                 <div className='column'>
                     {isAuthenticated && user &&
                         <div className='desktop'>
-                            <Header
-                                user={user}
-                                logout={logout}
-                            />
+                            <Header user={user} logout={logout} />
                         </div>
                     }
 
@@ -335,16 +305,7 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    {error && <div
-                        className='error-container'
-                        data-testid="error-emoji">
-                        <FontAwesomeIcon
-                            icon={faFaceSadCry}
-                            size="3x"
-                        />
-                        <h6>Something went wrong. Please try again later!</h6>
-                    </div>
-                    }
+                    {error && <OnError />}
                     <div className="centre">
                         <button
                             className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
@@ -364,21 +325,11 @@ export function Notes(): JSX.Element {
             <div className='mobile'>
                 {searchedContent.length <= 0 && <div className='fab-container'>
                     <button className='button iconbutton centre' onClick=
-                        {
-                            () => active === activeOnMobileDisplay.calendar
+                        {() => active === activeOnMobileDisplay.calendar
                                 ? setActive(activeOnMobileDisplay.search)
-                                : setActive(activeOnMobileDisplay.calendar)
-                        }>
-                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
-                            color='white'
-                            icon={faCalendar}
-                            size="2x"
-                        />}
-                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
-                            color='white'
-                            icon={faMagnifyingGlass}
-                            size="2x"
-                        />}
+                                : setActive(activeOnMobileDisplay.calendar)}>
+                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon color='white' icon={faCalendar} size="2x" />}
+                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon color='white' icon={faMagnifyingGlass} size="2x" />}
                     </button>
                 </div>}
             </div>
