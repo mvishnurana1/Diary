@@ -1,7 +1,6 @@
-import React from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@fortawesome/free-solid-svg-icons";
-import { dateFormat } from '../../helper/date-fn';
+import { dateFormat } from '../../helper';
 import { DiaryEntry } from "../../models/DiaryEntry";
 import './SearchResults.scss';
 

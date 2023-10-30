@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { getMonthTitle } from "../../helper/date-fn";
+import { getMonthTitle } from "../../helper/fns/date-fn";
 import { UserTask } from "../../models/UserTask";
 import './monthGoal.scss';
 

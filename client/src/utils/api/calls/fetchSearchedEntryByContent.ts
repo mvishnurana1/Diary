@@ -1,4 +1,4 @@
-import { GetToken } from "../../../helper/getToken";
+import { GetToken } from "../../../helper";
 import { DiaryEntry } from "../../../models/DiaryEntry";
 import { SearchViaContentRequestDto } from "../../../models/SearchViaContentRequestDto";
 import { BASE_URL } from "../../url";

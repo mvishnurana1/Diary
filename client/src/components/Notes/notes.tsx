@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import { SearchResults } from '../SearchResults/SearchResults';
-import { dateFormat } from '../../helper/date-fn';
+import { dateFormat } from '../../helper';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { LoggedInUser } from '../../models/LoggedInUser';
 import { fetchUser, fetchDatesOfNotesForLoggedInUser, 

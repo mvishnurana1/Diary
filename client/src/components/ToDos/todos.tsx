@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { localisedDate } from "../../helper/date-fn";
+import { localisedDate } from "../../helper/fns/date-fn";
 import { UserTask } from "../../models/UserTask";
 import './todos.scss';
 
