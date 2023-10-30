@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBullseye, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { getMonthTitle } from "../../helper/fns/date-fn";
-import { UserTask } from "../../models/UserTask";
+import { UserTask } from "../../models/AppModels/UserTask";
 import './monthGoal.scss';
 
 const defaultTask: UserTask = {

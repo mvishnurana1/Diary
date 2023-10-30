@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react';
 import DatePicker from "react-datepicker";
 import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper';
-import { DiaryEntry } from '../../models/DiaryEntry';
-import { LoggedInUser } from '../../models/LoggedInUser';
+import { DiaryEntry } from '../../models/AppModels/DiaryEntry';
+import { LoggedInUser } from '../../models/AppModels/LoggedInUser';
 import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
          fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
-import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
+import { activeOnMobileDisplay } from '../../models/AppModels/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import ToDos  from '../ToDos/todos';
 // import { MonthGoal } from '../MonthGoal/monthGoal';

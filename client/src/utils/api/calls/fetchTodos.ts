@@ -1,4 +1,4 @@
-import { Todos } from "../../../models/Priority";
+import { Todos } from "../../../models/AppModels/Priority";
 import { BASE_URL } from "../../url";
 
 export async function fetchTodos(): Promise<Todos> {
