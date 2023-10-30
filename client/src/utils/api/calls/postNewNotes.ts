@@ -1,7 +1,7 @@
-import { GetToken } from "../../helper/getToken";
-import { DiaryEntry } from "../../models/DiaryEntry";
-import { postNewDiaryEntryModel } from "../../models/PostNewDiaryEntryModel";
-import { BASE_URL } from "../url";
+import { GetToken } from "../../../helper/getToken";
+import { DiaryEntry } from "../../../models/DiaryEntry";
+import { postNewDiaryEntryModel } from "../../../models/PostNewDiaryEntryModel";
+import { BASE_URL } from "../../url";
 
 export async function postNewNotes(newNote: postNewDiaryEntryModel): Promise<DiaryEntry> {
     const token = GetToken();

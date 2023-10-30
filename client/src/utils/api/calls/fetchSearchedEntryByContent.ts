@@ -1,7 +1,7 @@
-import { GetToken } from "../../helper/getToken";
-import { DiaryEntry } from "../../models/DiaryEntry";
-import { SearchViaContentRequestDto } from "../../models/SearchViaContentRequestDto";
-import { BASE_URL } from "../url";
+import { GetToken } from "../../../helper/getToken";
+import { DiaryEntry } from "../../../models/DiaryEntry";
+import { SearchViaContentRequestDto } from "../../../models/SearchViaContentRequestDto";
+import { BASE_URL } from "../../url";
 
 export async function fetchSearchedEntryByContent(request: SearchViaContentRequestDto): Promise<DiaryEntry[]> {
     const defaultEntry: DiaryEntry = {

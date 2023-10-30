@@ -8,11 +8,8 @@ import { SearchResults } from '../SearchResults/SearchResults';
 import { dateFormat } from '../../helper/date-fn';
 import { DiaryEntry } from '../../models/DiaryEntry';
 import { LoggedInUser } from '../../models/LoggedInUser';
-import { fetchUser } from '../../utils/api/fetchUser';
-import { fetchEntryByDate } from '../../utils/api/fetchEntryByDate';
-import { postNewNotes } from '../../utils/api/postNewNotes';
-import { fetchSearchedEntryByContent } from '../../utils/api/fetchSearchedEntryByContent';
-import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api/fetchDatesOfNotesForLoggedInUser';
+import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
+         fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { activeOnMobileDisplay } from '../../models/activeOnMobileDisplay';
 import { Header } from '../common/Header/Header';
 import ToDos  from '../ToDos/todos';
