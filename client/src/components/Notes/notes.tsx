@@ -5,14 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
 import { dateFormat } from '../../helper';
 import { DiaryEntry, LoggedInUser } from '../../models';
+import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
 import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
     fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
-import { activeOnMobileDisplay } from '../../models/AppModels/activeOnMobileDisplay';
 import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
-// import PerformanceChart from '../ActivityChart/ActivityChart';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
@@ -32,7 +31,7 @@ export function Notes(): JSX.Element {
     const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
     const [hasInit, setInit] = useState(false);
-    const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
+    const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
 
     const { 
         getAccessTokenSilently, isAuthenticated, loginWithRedirect,
@@ -76,37 +75,11 @@ export function Notes(): JSX.Element {
             });
     }, [hasInit, loggedInUser]);
 
-    async function postCachedActivity() {
-        const active = JSON.parse(localStorage.getItem('active')!);
-
-        if (!active?.content || !active?.startDate) {
-            return;
-        } else {
-            try {
-
-                const diaryEntry = await postNewNotes(
-                {
-                    UserID: loggedInUser.userID,
-                    Content: active?.content,
-                    SubmittedDateTime: dateFormat(active?.startDate)
-                });
-
-                setContent(diaryEntry.content);
-            } catch (err) {
-                setError(true);
-            } finally {
-                localStorage.removeItem('active');
-            }
-        }
-    }
-
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
-            const content = await fetchEntryByDate(
-                { formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID }
-            );
-
+            const content = await fetchEntryByDate({ formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID });
             setContent(content);
+
             return content;
         } catch (error) {
             setError(true);
@@ -118,14 +91,9 @@ export function Notes(): JSX.Element {
             return;
         }
         try {
-            const diaryEntry = await postNewNotes(
-            {
-                UserID: loggedInUser.userID,
-                Content: content,
-                SubmittedDateTime: dateFormat(startDate)
-            });
-
+            const diaryEntry = await postNewNotes({ UserID: loggedInUser.userID, Content: content, SubmittedDateTime: dateFormat(startDate)});
             setContent(diaryEntry.content);
+
         } catch (err) {
             setError(true);
         } finally {
@@ -140,10 +108,9 @@ export function Notes(): JSX.Element {
             return;
         } else {
             try {
-                const searchResult = await fetchSearchedEntryByContent
-                    ({ userID: loggedInUser.userID, content: searchedContent });
-
+                const searchResult = await fetchSearchedEntryByContent({ userID: loggedInUser.userID, content: searchedContent });
                 setSearchedResult(searchResult);
+
             } catch (err) {
                 setError(true);
             }
@@ -192,90 +159,70 @@ export function Notes(): JSX.Element {
         }
     }
 
-    return (
-        <div className='notes-landing-page'>
-            {user && isAuthenticated &&
-                <div className='mobile' id='header'>
-                    <Header user={user} logout={logout} />
-                </div>
-            }
+    return (<div className='notes-landing-page'>
+        {user && isAuthenticated &&
+            <div className='mobile' id='header'>
+                <Header user={user} logout={logout} />
+            </div>
+        }
 
-            <div className='notes'>
-                <>
-                    {displayError()}
-                </>
+        <div className='notes'>
+            <>
+                {displayError()}
+            </>
 
-                {validNoteDates && !searchedResult.length &&
-                    <div className='left'>
-                        <div className={error ? 'no-display' : 'datepicker'}>
-                            <div className='mobile'>
-                                {active === activeOnMobileDisplay.calendar &&
-                                    <DatePicker
-                                        highlightDates={validNoteDates}
-                                        inline
-                                        maxDate={new Date()}
-                                        onChange={(date: Date) => {
-                                            postCachedActivity();
-                                            fetchDiaryEntryContentByDate(date);
-                                            setStartDate(new Date(date));
-                                        }}
-                                        selected={startDate}
-                                        title="date-picker"
-                                    />
-                                }
-                            </div>
-                            <div className={error ? 'no-display' : 'desktop datepicker'}>
-                                <ToDos />
-                                <h1 className='title'>Pick a Date</h1>
-                                <h2 className='sub-title'>Write journal</h2>
-                                <div className='centralise'>
-                                    <DatePicker
-                                        highlightDates={validNoteDates}
-                                        inline
-                                        maxDate={new Date()}
-                                        onChange={(date: Date) => {
-                                            postCachedActivity();
-                                            fetchDiaryEntryContentByDate(date);
-                                            setStartDate(new Date(date));
-                                        }}
-                                        selected={startDate}
-                                        title="date-picker"
-                                    />
-                                </div>
-                                {/* <hr />
-                                {/* <PerformanceChart /> */}
-                            </div>
+            {validNoteDates && !searchedResult.length &&
+                <div className='left'>
+                    <div className={error ? 'no-display' : 'datepicker'}>
+                        <div className='mobile'>
+                            {active === ActiveOnMobileDisplay.calendar &&
+                                <DatePicker
+                                    highlightDates={validNoteDates}
+                                    inline
+                                    maxDate={new Date()}
+                                    onChange={(date: Date) => {
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                    }}
+                                    selected={startDate}
+                                    title="date-picker"
+                                />
+                            }
                         </div>
-                    </div>}
-
-                <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
-
-                <div className='column'>
-                    {isAuthenticated && user &&
-                        <div className='desktop'>
-                            <Header user={user} logout={logout} />
+                        <div className={error ? 'no-display' : 'desktop datepicker'}>
+                            <ToDos />
+                            <h1 className='title'>Pick a Date</h1>
+                            <h2 className='sub-title'>Write journal</h2>
+                            <div className='centralise'>
+                                <DatePicker
+                                    highlightDates={validNoteDates}
+                                    inline
+                                    maxDate={new Date()}
+                                    onChange={(date: Date) => {
+                                        fetchDiaryEntryContentByDate(date);
+                                        setStartDate(new Date(date));
+                                    }}
+                                    selected={startDate}
+                                    title="date-picker"
+                                />
+                            </div>
+                            {/* <hr />
+                            {/* <PerformanceChart /> */}
                         </div>
-                    }
-
-                    <div className='mobile'>
-                        {(active === activeOnMobileDisplay.search) && <div className='search-box-container'>
-                            <input
-                                className='search'
-                                placeholder='find submitted entries...'
-                                value={searchedContent}
-                                onChange={(e) => setSearchedContent(e.target.value)}
-                            />
-
-                            <FontAwesomeIcon
-                                className='red'
-                                icon={faMagnifyingGlass}
-                                onClick={() => getSearchedEntryByContent()}
-                                size="lg"
-                            />
-                        </div>}
                     </div>
+                </div>}
 
-                    <div className='desktop search-box-container'>
+            <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
+
+            <div className='column'>
+                {isAuthenticated && user &&
+                    <div className='desktop'>
+                        <Header user={user} logout={logout} />
+                    </div>
+                }
+
+                <div className='mobile'>
+                    {(active === ActiveOnMobileDisplay.search) && <div className='search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -289,50 +236,67 @@ export function Notes(): JSX.Element {
                             onClick={() => getSearchedEntryByContent()}
                             size="lg"
                         />
-                    </div>
-
-                    <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
-                        <textarea
-                            className={error ? 'no-display' : 'textArea'}
-                            rows={15}
-                            placeholder="Dear Diary..."
-                            onChange={(e) => {
-                                setContent(e.target.value);
-                                cacheActiveEntry(e);
-                            }}
-                            spellCheck={false}
-                            value={content}
-                        />
-                    </div>
-
-                    {error && <OnError />}
-                    <div className="centre">
-                        <button
-                            className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
-                            onClick={() => {
-                                postNote();
-                                setContent('')
-                            }}
-                            title={content?.length === 0 ? 'Write note' : 'SAVE'}
-                            disabled={content?.length === 0}>
-                            {content?.length === 0 ? 'Write note' : 'SAVE'}
-                        </button>
-                    </div>
-                    {displayCard()}
+                    </div>}
                 </div>
-            </div>
 
-            <div className='mobile'>
-                {searchedContent.length <= 0 && <div className='fab-container'>
-                    <button className='button iconbutton centre' onClick=
-                        {() => active === activeOnMobileDisplay.calendar
-                                ? setActive(activeOnMobileDisplay.search)
-                                : setActive(activeOnMobileDisplay.calendar)}>
-                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon color='white' icon={faCalendar} size="2x" />}
-                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon color='white' icon={faMagnifyingGlass} size="2x" />}
+                <div className='desktop search-box-container'>
+                    <input
+                        className='search'
+                        placeholder='find submitted entries...'
+                        value={searchedContent}
+                        onChange={(e) => setSearchedContent(e.target.value)}
+                    />
+
+                    <FontAwesomeIcon
+                        className='red'
+                        icon={faMagnifyingGlass}
+                        onClick={() => getSearchedEntryByContent()}
+                        size="lg"
+                    />
+                </div>
+
+                <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
+                    <textarea
+                        className={error ? 'no-display' : 'textArea'}
+                        rows={15}
+                        placeholder="Dear Diary..."
+                        onChange={(e) => {
+                            setContent(e.target.value);
+                            cacheActiveEntry(e);
+                        }}
+                        spellCheck={false}
+                        value={content}
+                    />
+                </div>
+
+                {error && <OnError />}
+                <div className="centre">
+                    <button
+                        className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
+                        onClick={() => {
+                            postNote();
+                            setContent('')
+                        }}
+                        title={content?.length === 0 ? 'Write note' : 'SAVE'}
+                        disabled={content?.length === 0}>
+                        {content?.length === 0 ? 'Write note' : 'SAVE'}
                     </button>
-                </div>}
+                </div>
+                {displayCard()}
             </div>
         </div>
+
+        <div className='mobile'>
+            {searchedContent.length <= 0 && <div className='fab-container'>
+                <button className='button iconbutton centre' onClick=
+                    {() => active === ActiveOnMobileDisplay.calendar
+                            ? setActive(ActiveOnMobileDisplay.search)
+                            : setActive(ActiveOnMobileDisplay.calendar)}>
+                    {(active === ActiveOnMobileDisplay.search) && <FontAwesomeIcon color='white' icon={faCalendar} size="2x" />}
+                    {(active === ActiveOnMobileDisplay.calendar) && <FontAwesomeIcon color='white' icon={faMagnifyingGlass} size="2x" />}
+                </button>
+            </div>}
+        </div>
+    </div>
     )
 }
