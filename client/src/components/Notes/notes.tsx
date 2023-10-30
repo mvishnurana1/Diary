@@ -34,14 +34,9 @@ export function Notes(): JSX.Element {
     const [hasInit, setInit] = useState(false);
     const [active, setActive] = useState<activeOnMobileDisplay>(activeOnMobileDisplay.search);
 
-    const {
-        getAccessTokenSilently,
-        isAuthenticated,
-        loginWithRedirect,
-        user,
-        getIdTokenClaims,
-        logout
-    } = useAuth0();
+    const { 
+        getAccessTokenSilently, isAuthenticated, loginWithRedirect,
+        user, getIdTokenClaims, logout } = useAuth0();
 
     useEffect(() => {
         (async () => {
@@ -201,10 +196,7 @@ export function Notes(): JSX.Element {
         <div className='notes-landing-page'>
             {user && isAuthenticated &&
                 <div className='mobile' id='header'>
-                    <Header
-                        user={user}
-                        logout={logout}
-                    />
+                    <Header user={user} logout={logout} />
                 </div>
             }
 
@@ -261,10 +253,7 @@ export function Notes(): JSX.Element {
                 <div className='column'>
                     {isAuthenticated && user &&
                         <div className='desktop'>
-                            <Header
-                                user={user}
-                                logout={logout}
-                            />
+                            <Header user={user} logout={logout} />
                         </div>
                     }
 
@@ -336,21 +325,11 @@ export function Notes(): JSX.Element {
             <div className='mobile'>
                 {searchedContent.length <= 0 && <div className='fab-container'>
                     <button className='button iconbutton centre' onClick=
-                        {
-                            () => active === activeOnMobileDisplay.calendar
+                        {() => active === activeOnMobileDisplay.calendar
                                 ? setActive(activeOnMobileDisplay.search)
-                                : setActive(activeOnMobileDisplay.calendar)
-                        }>
-                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon
-                            color='white'
-                            icon={faCalendar}
-                            size="2x"
-                        />}
-                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon
-                            color='white'
-                            icon={faMagnifyingGlass}
-                            size="2x"
-                        />}
+                                : setActive(activeOnMobileDisplay.calendar)}>
+                        {(active === activeOnMobileDisplay.search) && <FontAwesomeIcon color='white' icon={faCalendar} size="2x" />}
+                        {(active === activeOnMobileDisplay.calendar) && <FontAwesomeIcon color='white' icon={faMagnifyingGlass} size="2x" />}
                     </button>
                 </div>}
             </div>
