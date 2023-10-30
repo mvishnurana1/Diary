@@ -1,8 +1,8 @@
 import { GetToken } from "../../../helper";
-import { DiaryEntry, postNewDiaryEntryModel } from "../../../models";
+import { DiaryEntry, PostNewDiaryEntryModel } from "../../../models";
 import { BASE_URL } from "../../url";
 
-export async function postNewNotes(newNote: postNewDiaryEntryModel): Promise<DiaryEntry> {
+export async function postNewNotes(newNote: PostNewDiaryEntryModel): Promise<DiaryEntry> {
     const token = GetToken();
 
     const response = await fetch(`${BASE_URL}post/`, {
