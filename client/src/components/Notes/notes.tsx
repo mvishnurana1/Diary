@@ -8,7 +8,7 @@ import { DiaryEntry, LoggedInUser } from '../../models';
 import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
     fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { activeOnMobileDisplay } from '../../models/AppModels/activeOnMobileDisplay';
-import { Header } from '../common/Header/Header';
+import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
