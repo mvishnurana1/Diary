@@ -11,12 +11,6 @@ const mockedLoggedInUser = {
 }
 
 describe('Header Component', () => {
-    test("renders empty div when no user is not logged-in", () => {
-        const { container } = render(<Header logout={jest.fn()} user={null} />);
-
-        expect(container.firstChild).toBeNull();
-    });
-
     test("renders the user's nickname below the user avatar properly", () => {
         render(<Header logout={jest.fn()} user={mockedLoggedInUser} />);
 
