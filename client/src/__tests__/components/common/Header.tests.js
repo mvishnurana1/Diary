@@ -7,10 +7,18 @@ const mockedLoggedInUser = {
     email: "johndoe@me.com",
     email_verified: true,
     sub: "google-oauth2|12345678901234",
-    nickname: "user_nick_name"
+    nickname: "user_nick_name",
+    picture: "https://mocked_picture_url/"
 }
 
 describe('Header Component', () => {
+    test("renders the user's picture on Log Out button", () => {
+        render(<Header logout={jest.fn()} user={mockedLoggedInUser} />);
+        const imgUrl = document.querySelector("img");
+
+        expect(imgUrl.src).toEqual(mockedLoggedInUser.picture);
+    });
+
     test("renders the user's nickname below the user avatar properly", () => {
         render(<Header logout={jest.fn()} user={mockedLoggedInUser} />);
 
