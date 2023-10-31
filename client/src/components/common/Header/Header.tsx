@@ -1,5 +1,6 @@
 import { LogoutOptions, User } from '@auth0/auth0-react';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { useEffect, useState } from 'react';
 import './Header.scss';
 
 interface headerProps {
@@ -9,10 +10,14 @@ interface headerProps {
 
 export function Header(props: headerProps): JSX.Element {
     const { logout, user } = props;
+    const [pic, setPic] = useState('');
 
-    if (!user) {
-        return <></>;
-    }
+    useEffect(() => {
+        if (!user?.picture) {
+            return;
+        }
+        setPic(user?.picture);
+    }, [user?.picture]);
 
     return (
         <div className="header-container layout">
@@ -24,7 +29,7 @@ export function Header(props: headerProps): JSX.Element {
                         <img
                             alt="user-google-avatar"
                             className="logo"
-                            src={user?.picture?.length ? user.picture : require('../../../assets/user.png')}
+                            src={pic ?? localStorage.getItem('photo')!}
                             title={user?.nickname}
                         />
                         {user?.nickname}
