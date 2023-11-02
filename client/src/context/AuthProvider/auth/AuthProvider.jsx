@@ -19,6 +19,7 @@ function AuthProvider({ children }) {
 
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem('idToken', idToken.__raw);
+                window.localStorage.setItem('pic', idToken.picture);
             }
             catch (err) {
                 if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
@@ -29,9 +30,7 @@ function AuthProvider({ children }) {
     });
 
     useEffect(() => {
-        if (hasInit) {
-            return;
-        }
+        if (hasInit) return;
 
         getIdTokenClaims().then(idToken => {
             if (!idToken) return;
