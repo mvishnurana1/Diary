@@ -1,23 +1,10 @@
-import { LogoutOptions, User } from '@auth0/auth0-react';
+import { useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { useEffect, useState } from 'react';
+import AuthContext from '../../../context/AuthProvider/auth/AuthContext';
 import './Header.scss';
 
-interface headerProps {
-    logout: (options?: LogoutOptions | undefined) => void,
-    user: User | undefined
-}
-
-export function Header(props: headerProps): JSX.Element {
-    const { logout, user } = props;
-    const [pic, setPic] = useState('');
-
-    useEffect(() => {
-        if (!user?.picture) {
-            return;
-        }
-        setPic(user?.picture);
-    }, [user?.picture]);
+export function Header(): JSX.Element {
+    const { loggedInUser } = useContext(AuthContext);
 
     return (
         <div className="header-container layout">
@@ -29,10 +16,10 @@ export function Header(props: headerProps): JSX.Element {
                         <img
                             alt="user-google-avatar"
                             className="logo"
-                            src={pic ?? localStorage.getItem('photo')!}
-                            title={user?.nickname}
+                            src={loggedInUser.picture}
+                            title={loggedInUser.nickname}
                         />
-                        {user?.nickname}
+                        {loggedInUser.nickname}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
@@ -44,7 +31,7 @@ export function Header(props: headerProps): JSX.Element {
                                 window.localStorage.removeItem('photo');
                                 window.localStorage.removeItem('todos');
 
-                                logout({
+                                loggedInUser.logout({
                                     returnTo: window.location.origin,
                                 })
                             }}
