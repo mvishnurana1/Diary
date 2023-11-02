@@ -52,7 +52,7 @@ function AuthProvider({ children }) {
             });
         });
 
-    }, [getIdTokenClaims, getAccessTokenSilently, hasInit, loggedInUser, user]);
+    }, [getIdTokenClaims, getAccessTokenSilently, hasInit, loggedInUser, user, isAuthenticated, logout]);
 
     return (
         <AuthContext.Provider value={{
