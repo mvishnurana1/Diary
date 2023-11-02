@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useContext, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
 import { dateFormat } from '../../helper';
-import { DiaryEntry, LoggedInUser } from '../../models';
+import { DiaryEntry } from '../../models';
 import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
-import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
-    fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
+import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
+import AuthContext from '../../context/AuthProvider/auth/AuthContext';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
-
-const defaultUser: LoggedInUser = {
-    email: undefined!,
-    userID: undefined!,
-    userName: undefined!
-}
 
 export function Notes(): JSX.Element {
     const [content, setContent] = useState('');
@@ -28,52 +21,10 @@ export function Notes(): JSX.Element {
     const [searchedContent, setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
-    const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
-    const [hasInit, setInit] = useState(false);
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
 
-    const { 
-        getAccessTokenSilently, isAuthenticated, loginWithRedirect,
-        user, getIdTokenClaims, logout } = useAuth0();
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const accessToken = await getAccessTokenSilently();
-                const idToken = await getIdTokenClaims();
-
-                window.localStorage.setItem("accessToken", accessToken);
-                window.localStorage.setItem("email", idToken?.email!);
-                window.localStorage.setItem('idToken', idToken?.__raw!);
-                window.localStorage.setItem('photo', user?.picture!);
-            }
-            catch (err: any) {
-                if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
-                    loginWithRedirect();
-                }
-            }
-        })();
-    });
-
-    useEffect(() => {
-        if (hasInit) {
-            return;
-        }
-        fetchUser()
-            .then(user => { setLoggedInUser(user)})
-            .then(() => {
-                if (loggedInUser.userID === undefined) {
-                    return;
-                } 
-                setInit(true);
-                fetchDatesOfNotesForLoggedInUser(loggedInUser.userID)
-                .then(res => {
-                    const dates = res?.map(res => new Date(res));
-                    setValidNoteDates(dates!);
-                })
-            });
-    }, [hasInit, loggedInUser]);
+    const { loggedInUser } = useContext(AuthContext);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
@@ -160,11 +111,9 @@ export function Notes(): JSX.Element {
     }
 
     return (<div className='notes-landing-page'>
-        {user && isAuthenticated &&
             <div className='mobile' id='header'>
-                <Header user={user} logout={logout} />
+                <Header />
             </div>
-        }
 
         <div className='notes'>
             <>
@@ -215,11 +164,9 @@ export function Notes(): JSX.Element {
             <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
 
             <div className='column'>
-                {isAuthenticated && user &&
-                    <div className='desktop'>
-                        <Header user={user} logout={logout} />
-                    </div>
-                }
+                <div className='desktop'>
+                    <Header />
+                </div>
 
                 <div className='mobile'>
                     {(active === ActiveOnMobileDisplay.search) && <div className='search-box-container'>
