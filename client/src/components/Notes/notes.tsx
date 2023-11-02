@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
 import { dateFormat } from '../../helper';
 import { DiaryEntry } from '../../models';
 import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
-import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
+import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent, fetchDatesOfNotesForLoggedInUser } from '../../utils/api';
 import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { AuthContext } from '../../context/AuthProvider/AuthContext';
@@ -25,6 +25,16 @@ export function Notes(): JSX.Element {
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
 
     const { loggedInUser } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!loggedInUser) return;
+
+        fetchDatesOfNotesForLoggedInUser(loggedInUser.userID).then(dates => {
+            if (!dates) return;
+            const x = dates?.map(k => new Date(k))
+            setValidNoteDates([...x!]);
+        })
+    }, [loggedInUser]);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
