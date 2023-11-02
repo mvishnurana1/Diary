@@ -6,6 +6,10 @@ import './Header.scss';
 export function Header(): JSX.Element {
     const { loggedInUser } = useContext(AuthContext);
 
+    if (!loggedInUser) {
+        return <></>;
+    }
+
     return (
         <div className="header-container layout">
             <div className="logout-btn-container">
@@ -16,7 +20,7 @@ export function Header(): JSX.Element {
                         <img
                             alt="user-google-avatar"
                             className="logo"
-                            src={loggedInUser.picture}
+                            src={loggedInUser.picture ?? localStorage.getItem('pic')}
                             title={loggedInUser.nickname}
                         />
                         {loggedInUser.nickname}
