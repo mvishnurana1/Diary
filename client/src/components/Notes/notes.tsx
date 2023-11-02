@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
@@ -8,7 +8,7 @@ import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisp
 import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
-import AuthContext from '../../context/AuthProvider/auth/AuthContext';
+import { AuthContext } from '../../context/AuthProvider/AuthContext';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
@@ -74,11 +74,6 @@ export function Notes(): JSX.Element {
                 setError(false)
             }, 5000)
         }
-    }
-
-    function cacheActiveEntry(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        const active = { startDate, content };
-        localStorage.setItem('active', JSON.stringify(active));
     }
 
     function displayCard() {
@@ -209,7 +204,6 @@ export function Notes(): JSX.Element {
                         placeholder="Dear Diary..."
                         onChange={(e) => {
                             setContent(e.target.value);
-                            cacheActiveEntry(e);
                         }}
                         spellCheck={false}
                         value={content}
