@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import AuthContext from '../../../context/AuthProvider/auth/AuthContext';
+import { AuthContext } from '../../../context/AuthProvider/AuthContext';
 import './Header.scss';
 
 export function Header(): JSX.Element {

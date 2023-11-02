@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
-import AuthContext from './AuthContext';
-import { fetchUser } from "../../../utils/api";
+import { AuthContext } from './AuthContext';
+import { fetchUser } from "../../utils/api";
 
-function AuthProvider({ children }) {
+export function AuthProvider({ children }) {
     const [loggedInUser, setloggedInUser] = useState({});
     const [hasInit, setInit] = useState(false);
 
@@ -51,8 +51,8 @@ function AuthProvider({ children }) {
                 .then(() => setInit(true));
             });
         });
-
-    }, [getIdTokenClaims, getAccessTokenSilently, hasInit, loggedInUser, user, isAuthenticated, logout]);
+    }, [getIdTokenClaims, getAccessTokenSilently, hasInit,
+        loggedInUser, user, isAuthenticated, logout]);
 
     return (
         <AuthContext.Provider value={{
@@ -62,5 +62,3 @@ function AuthProvider({ children }) {
         </AuthContext.Provider>
     )
 }
-
-export default AuthProvider;
