@@ -1,106 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useContext, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
-import { dateFormat } from '../../helper';
-import { DiaryEntry, LoggedInUser } from '../../models';
-import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
-import { fetchUser, fetchDatesOfNotesForLoggedInUser, 
-    fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { Header } from '../common';
+import { AuthContext, NotesContext } from '../../context';
+import { DiaryEntry } from '../../models';
+import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
+import { fetchSearchedEntryByContent } from '../../utils/api';
 import { SearchResults } from '../SearchResults/SearchResults';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
-const defaultUser: LoggedInUser = {
-    email: undefined!,
-    userID: undefined!,
-    userName: undefined!
-}
-
 export function Notes(): JSX.Element {
-    const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error, setError] = useState(false);
     const [searchedContent, setSearchedContent] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
-    const [loggedInUser, setLoggedInUser] = useState<LoggedInUser>(defaultUser);
-    const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
-    const [hasInit, setInit] = useState(false);
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
-
+    
+    const { loggedInUser } = useContext(AuthContext);
     const { 
-        getAccessTokenSilently, isAuthenticated, loginWithRedirect,
-        user, getIdTokenClaims, logout } = useAuth0();
-
-    useEffect(() => {
-        (async () => {
-            try {
-                const accessToken = await getAccessTokenSilently();
-                const idToken = await getIdTokenClaims();
-
-                window.localStorage.setItem("accessToken", accessToken);
-                window.localStorage.setItem("email", idToken?.email!);
-                window.localStorage.setItem('idToken', idToken?.__raw!);
-                window.localStorage.setItem('photo', user?.picture!);
-            }
-            catch (err: any) {
-                if (!isAuthenticated && (err.error === 'login_required' || err.error === 'consent_required')) {
-                    loginWithRedirect();
-                }
-            }
-        })();
-    });
-
-    useEffect(() => {
-        if (hasInit) {
-            return;
-        }
-        fetchUser()
-            .then(user => { setLoggedInUser(user)})
-            .then(() => {
-                if (loggedInUser.userID === undefined) {
-                    return;
-                } 
-                setInit(true);
-                fetchDatesOfNotesForLoggedInUser(loggedInUser.userID)
-                .then(res => {
-                    const dates = res?.map(res => new Date(res));
-                    setValidNoteDates(dates!);
-                })
-            });
-    }, [hasInit, loggedInUser]);
-
-    async function fetchDiaryEntryContentByDate(date: Date) {
-        try {
-            const content = await fetchEntryByDate({ formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID });
-            setContent(content);
-
-            return content;
-        } catch (error) {
-            setError(true);
-        }
-    }
-
-    async function postNote() {
-        if (content === null || content.match(/^ *$/) !== null) {
-            return;
-        }
-        try {
-            const diaryEntry = await postNewNotes({ UserID: loggedInUser.userID, Content: content, SubmittedDateTime: dateFormat(startDate)});
-            setContent(diaryEntry.content);
-
-        } catch (err) {
-            setError(true);
-        } finally {
-            setValidNoteDates([...validNoteDates, startDate]);
-            setContent('');
-        }
-    }
+        setContent, content,
+        validNoteDates, postNote, fetchDiaryEntryContentByDate,
+        setStartDate, startDate
+    } = useContext(NotesContext);
 
     async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
@@ -123,11 +48,6 @@ export function Notes(): JSX.Element {
                 setError(false)
             }, 5000)
         }
-    }
-
-    function cacheActiveEntry(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        const active = { startDate, content };
-        localStorage.setItem('active', JSON.stringify(active));
     }
 
     function displayCard() {
@@ -160,11 +80,9 @@ export function Notes(): JSX.Element {
     }
 
     return (<div className='notes-landing-page'>
-        {user && isAuthenticated &&
             <div className='mobile' id='header'>
-                <Header user={user} logout={logout} />
+                <Header />
             </div>
-        }
 
         <div className='notes'>
             <>
@@ -181,8 +99,11 @@ export function Notes(): JSX.Element {
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
+                                        try {
+                                            fetchDiaryEntryContentByDate(date);
+                                        } catch (err) {
+                                            setError(true);
+                                        }
                                     }}
                                     selected={startDate}
                                     title="date-picker"
@@ -199,8 +120,11 @@ export function Notes(): JSX.Element {
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
+                                        try {
+                                            fetchDiaryEntryContentByDate(date);
+                                        } catch (err) {
+                                            setError(true);
+                                        }
                                     }}
                                     selected={startDate}
                                     title="date-picker"
@@ -215,11 +139,9 @@ export function Notes(): JSX.Element {
             <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
 
             <div className='column'>
-                {isAuthenticated && user &&
-                    <div className='desktop'>
-                        <Header user={user} logout={logout} />
-                    </div>
-                }
+                <div className='desktop'>
+                    <Header />
+                </div>
 
                 <div className='mobile'>
                     {(active === ActiveOnMobileDisplay.search) && <div className='search-box-container'>
@@ -262,7 +184,6 @@ export function Notes(): JSX.Element {
                         placeholder="Dear Diary..."
                         onChange={(e) => {
                             setContent(e.target.value);
-                            cacheActiveEntry(e);
                         }}
                         spellCheck={false}
                         value={content}
@@ -274,8 +195,11 @@ export function Notes(): JSX.Element {
                     <button
                         className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
                         onClick={() => {
-                            postNote();
-                            setContent('')
+                            try {
+                                postNote();
+                            } catch (err) {
+                                setError(true);
+                            }
                         }}
                         title={content?.length === 0 ? 'Write note' : 'SAVE'}
                         disabled={content?.length === 0}>
