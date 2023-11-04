@@ -1,14 +1,15 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
 import { dateFormat } from '../../helper';
 import { DiaryEntry } from '../../models';
 import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
-import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent, fetchDatesOfNotesForLoggedInUser } from '../../utils/api';
+import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
 import { Header } from '../common';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { AuthContext } from '../../context/AuthProvider/AuthContext';
+import { NotesContext } from '../../context/NotesProvider/NotesContext';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,20 +22,10 @@ export function Notes(): JSX.Element {
     const [searchedContent, setSearchedContent] = useState('');
     const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
-    const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
-
+    
     const { loggedInUser } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (!loggedInUser) return;
-
-        fetchDatesOfNotesForLoggedInUser(loggedInUser.userID).then(dates => {
-            if (!dates) return;
-            const x = dates?.map(k => new Date(k))
-            setValidNoteDates([...x!]);
-        })
-    }, [loggedInUser]);
+    const { setValidNoteDates, validNoteDates } = useContext(NotesContext);
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {

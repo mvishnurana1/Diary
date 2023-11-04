@@ -4,6 +4,7 @@ interface LoggedInUser {
     userName: string,
     picture: string,
     nickname: string,
+    isAuthenticated: boolean,
     logout: ({...params}) => void
 }
 

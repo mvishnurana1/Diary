@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { AuthContext } from '../../../context/AuthProvider/AuthContext';
+import { AuthContext } from '../../../context';
 import './Header.scss';
 
 export function Header(): JSX.Element {
@@ -21,9 +21,9 @@ export function Header(): JSX.Element {
                             alt="user-google-avatar"
                             className="logo"
                             src={loggedInUser.picture ?? localStorage.getItem('pic')}
-                            title={loggedInUser.nickname}
+                            title={loggedInUser.userName}
                         />
-                        {loggedInUser.nickname}
+                        {loggedInUser.userName}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>

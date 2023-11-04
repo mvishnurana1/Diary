@@ -1,13 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from "../AuthProvider/AuthContext";
-import { NotesContext } from "./NotesContext";
+import { NotesContext } from './NotesContext';
+import { AuthContext } from '../AuthProvider/AuthContext';
+import Children from '../../models/Types/Children';
 import { fetchDatesOfNotesForLoggedInUser } from '../../utils/api';
 
-type Props = {
-    children: string | JSX.Element | JSX.Element[]
-}
-
-export function NotesProvider({children}: Props) {
+export function NotesProvider({children}: Children) {
     const [validNoteDates, setValidNoteDates] = useState<Date[]>([]);
     const { loggedInUser } = useContext(AuthContext);
 
