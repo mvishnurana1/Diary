@@ -4,11 +4,13 @@ import { Notes } from './components/Notes/notes';
 import { LandingPage } from './components/LandingPage/landingPage';
 import { NoPage }  from './components/common';
 import { AuthProvider } from "./context/AuthProvider/AuthProvider";
+import { NotesProvider } from "./context/NotesProvider/NotesProvider";
 import './App.scss';
 
 function App(): JSX.Element {
   return (
     <AuthProvider>
+      <NotesProvider>
       <Router>
         <Routes>
             <Route path="" element={<LandingPage />} />
@@ -16,6 +18,7 @@ function App(): JSX.Element {
             <Route path="*" element={<NoPage />} />
         </Routes>
       </Router>
+      </NotesProvider>
     </AuthProvider>
   )
 }
