@@ -2,57 +2,30 @@ import { useContext, useState } from 'react';
 import { faMagnifyingGlass, faXmark, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
-import { dateFormat } from '../../helper';
+import { Header } from '../common';
+import { AuthContext, NotesContext } from '../../context';
 import { DiaryEntry } from '../../models';
 import { ActiveOnMobileDisplay } from '../../models/AppModels/ActiveOnMobileDisplay';
-import { fetchEntryByDate, postNewNotes, fetchSearchedEntryByContent } from '../../utils/api';
-import { Header } from '../common';
+import { fetchSearchedEntryByContent } from '../../utils/api';
 import { SearchResults } from '../SearchResults/SearchResults';
-import { AuthContext } from '../../context/AuthProvider/AuthContext';
-import { NotesContext } from '../../context/NotesProvider/NotesContext';
 import ToDos  from '../ToDos/todos';
 import { OnError } from '../Error/error';
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
 
 export function Notes(): JSX.Element {
-    const [content, setContent] = useState('');
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error, setError] = useState(false);
     const [searchedContent, setSearchedContent] = useState('');
-    const [startDate, setStartDate] = useState(new Date());
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
     
     const { loggedInUser } = useContext(AuthContext);
-    const { setValidNoteDates, validNoteDates } = useContext(NotesContext);
-
-    async function fetchDiaryEntryContentByDate(date: Date) {
-        try {
-            const content = await fetchEntryByDate({ formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID });
-            setContent(content);
-
-            return content;
-        } catch (error) {
-            setError(true);
-        }
-    }
-
-    async function postNote() {
-        if (content === null || content.match(/^ *$/) !== null) {
-            return;
-        }
-        try {
-            const diaryEntry = await postNewNotes({ UserID: loggedInUser.userID, Content: content, SubmittedDateTime: dateFormat(startDate)});
-            setContent(diaryEntry.content);
-
-        } catch (err) {
-            setError(true);
-        } finally {
-            setValidNoteDates([...validNoteDates, startDate]);
-            setContent('');
-        }
-    }
+    const { 
+        setContent, content,
+        validNoteDates, postNote, fetchDiaryEntryContentByDate,
+        setStartDate, startDate
+    } = useContext(NotesContext);
 
     async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
@@ -126,8 +99,12 @@ export function Notes(): JSX.Element {
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
+                                        try {
+                                            setStartDate(new Date(date));
+                                            fetchDiaryEntryContentByDate(date);
+                                        } catch (err) {
+                                            setError(true);
+                                        }
                                     }}
                                     selected={startDate}
                                     title="date-picker"
@@ -144,8 +121,12 @@ export function Notes(): JSX.Element {
                                     inline
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
-                                        fetchDiaryEntryContentByDate(date);
-                                        setStartDate(new Date(date));
+                                        try {
+                                            setStartDate(new Date(date));
+                                            fetchDiaryEntryContentByDate(date);
+                                        } catch (err) {
+                                            setError(true);
+                                        }
                                     }}
                                     selected={startDate}
                                     title="date-picker"
@@ -216,8 +197,11 @@ export function Notes(): JSX.Element {
                     <button
                         className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
                         onClick={() => {
-                            postNote();
-                            setContent('')
+                            try {
+                                postNote();
+                            } catch (err) {
+                                setError(true);
+                            }
                         }}
                         title={content?.length === 0 ? 'Write note' : 'SAVE'}
                         disabled={content?.length === 0}>

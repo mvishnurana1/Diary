@@ -3,7 +3,7 @@ import { Routes } from 'react-router';
 import { AuthProvider, NotesProvider } from "./context";
 import { Notes } from './components/Notes/notes';
 import { LandingPage } from './components/LandingPage/landingPage';
-import { NoPage }  from './components/common';
+import { NoPage } from "./components/common";
 import './App.scss';
 
 function App(): JSX.Element {
