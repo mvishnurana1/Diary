@@ -40,6 +40,7 @@ export function NotesProvider({children}: Children) {
 
     async function fetchDiaryEntryContentByDate(date: Date) {
         try {
+            setStartDate(new Date(date));
             const content = await fetchEntryByDate({ formattedDate: dateFormat(date), loggedInUserID: loggedInUser.userID });
             setContent(content);
 

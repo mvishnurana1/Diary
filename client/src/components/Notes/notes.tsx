@@ -100,7 +100,6 @@ export function Notes(): JSX.Element {
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
                                         try {
-                                            setStartDate(new Date(date));
                                             fetchDiaryEntryContentByDate(date);
                                         } catch (err) {
                                             setError(true);
@@ -122,7 +121,6 @@ export function Notes(): JSX.Element {
                                     maxDate={new Date()}
                                     onChange={(date: Date) => {
                                         try {
-                                            setStartDate(new Date(date));
                                             fetchDiaryEntryContentByDate(date);
                                         } catch (err) {
                                             setError(true);
