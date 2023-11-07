@@ -6,7 +6,7 @@ export async function fetchUser(accessToken: string, idToken: string): Promise<L
 
     headers.Authorization = `bearer ${accessToken}`;
     
-    const response = await fetch(`${BASE_URL}user?token=${idToken}`, { headers });
+    const response = await fetch(`${BASE_URL}user`, { headers });
     const responseUser = await await response.json() as Promise<LoggedInUser>;
     const loggedInPerson = await responseUser;
     return loggedInPerson;
