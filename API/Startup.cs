@@ -77,6 +77,9 @@ namespace API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IToDoService, ToDoService>();
             services.AddScoped<IChartService, ChartService>();
+
+            services.AddScoped<IAuthenticatedUser, AuthenticatedUser>();
+            services.AddScoped<JwtEventHandler>();
         }
 
         private void AddAuthentication(IServiceCollection services)
@@ -93,7 +96,9 @@ namespace API
             {
                 options.Authority = domain;
                 options.Audience = audience;
-            }).AddCookie();
+                options.MetadataAddress = $"{domain}.well-known/openid-configuration";
+                options.EventsType = typeof(JwtEventHandler);
+            });
         }
     }
 }
