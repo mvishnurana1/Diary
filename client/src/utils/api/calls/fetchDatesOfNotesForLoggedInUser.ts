@@ -2,9 +2,7 @@ import { GetToken } from "../../../helper";
 import { BASE_URL } from "../../url";
 
 export async function fetchDatesOfNotesForLoggedInUser(loggedInUserID: string) {
-    if (!loggedInUserID) {
-        return;
-    }
+    if (!loggedInUserID) return;
 
     const token = GetToken();
 

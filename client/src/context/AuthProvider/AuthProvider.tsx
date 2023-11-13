@@ -66,15 +66,13 @@ export function AuthProvider({ children }: Children) {
 
                 fetchUser(accessToken, idToken.__raw)
                 .then(dbUser => {
-                    if (!dbUser) {
-                        return;
-                    }
+                    if (!dbUser) return;
 
-                    const x = {
+                    const userInfo = {
                         ...dbUser, isAuthenticated, logout, user 
                     }
 
-                    setloggedInUser({ ...x });
+                    setloggedInUser({ ...userInfo });
                 })
                 .then(() => setInit(true));
             });

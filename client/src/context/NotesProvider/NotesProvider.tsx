@@ -17,15 +17,15 @@ export function NotesProvider({children}: Children) {
 
         fetchDatesOfNotesForLoggedInUser(loggedInUser.userID).then(dates => {
             if (!dates) return;
-            const x = dates?.map(k => new Date(k))
-            setValidNoteDates([...x!]);
+            
+            const newDates = dates?.map(k => new Date(k))
+            setValidNoteDates([...newDates!]);
         })
     }, [loggedInUser]);
 
     async function postNote() {
-        if (content === null || content.match(/^ *$/) !== null) {
-            return;
-        }
+        if (content === null || content.match(/^ *$/) !== null) return;
+        
         try {
             const diaryEntry = await postNewNotes({ UserID: loggedInUser.userID, Content: content, SubmittedDateTime: dateFormat(startDate)});
             setContent(diaryEntry.content);
