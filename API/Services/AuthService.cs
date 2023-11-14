@@ -4,8 +4,8 @@ using API.DTOs.Users;
 using API.model;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace API.Helpers.Services
 {
@@ -20,7 +20,6 @@ namespace API.Helpers.Services
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContext;
-        public IConfiguration Configuration { get; }
 
         public AuthService(
             DataContext context,
@@ -37,25 +36,22 @@ namespace API.Helpers.Services
         {
             try
             {
-                var user = new User();
-                HttpClient client = new HttpClient();
-                var url = client.GetAsync($"{Configuration["Auth0:Issuer"]}", new HttpCompletionOption());
-                //var handler = new JwtSecurityTokenHandler();
-                //var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-                //var email = jsonToken.Claims.First(x => x.Type == "email").Value;
-                //var userName = jsonToken.Claims.First(x => x.Type == "nickname").Value;
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                var email = jsonToken.Claims.First(x => x.Type == "email").Value;
+                var userName = jsonToken.Claims.First(x => x.Type == "nickname").Value;
 
-                //var user = await Task.Run(() => _context.User
-                //                                        .Where(x => x.Email == email)
-                //                                        .ToList()
-                //                                        .FirstOrDefault());
+                var user = await Task.Run(() => _context.User
+                                                        .Where(x => x.Email == email)
+                                                        .ToList()
+                                                        .FirstOrDefault());
 
-                //if (user == null)
-                //{
-                //    var createdUser = await CreateUser(email, userName);
+                if (user == null)
+                {
+                    var createdUser = await CreateUser(email, userName);
 
-                //    return createdUser;
-                //}
+                    return createdUser;
+                }
                 return _mapper.Map<UserResponseDto>(user);
             } catch(Exception)
             {
