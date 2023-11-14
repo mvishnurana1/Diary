@@ -18,9 +18,9 @@ export function NotesProvider({children}: Children) {
         fetchDatesOfNotesForLoggedInUser(loggedInUser.userID).then(dates => {
             if (!dates) return;
             
-            const newDates = dates?.map(k => new Date(k))
+            const newDates = dates?.map(k => new Date(k));
             setValidNoteDates([...newDates!]);
-        })
+        });
     }, [loggedInUser]);
 
     async function postNote() {

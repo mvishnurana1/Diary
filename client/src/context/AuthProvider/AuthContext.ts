@@ -10,7 +10,6 @@ type userFields = {
     logout: ({ ...params }: { [x: string]: any; }) => void
 }
 
-
 const defaultUser: userFields = {
     userID: '',
     userName: '',
@@ -23,4 +22,6 @@ const defaultUser: userFields = {
 
 export const AuthContext = createContext({
     loggedInUser: defaultUser,
+    authError: false,
+    loading: false,
 });

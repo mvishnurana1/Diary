@@ -27,10 +27,13 @@ const defaultUser: userFields = {
 export function AuthProvider({ children }: Children) {
     const [loggedInUser, setloggedInUser] = useState<userFields>(defaultUser);
     const [hasInit, setInit] = useState(false);
+    const [authError, setAuthError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const {
         getAccessTokenSilently, isAuthenticated, loginWithRedirect,
-        getIdTokenClaims, user, logout } = useAuth0();
+        getIdTokenClaims, user, logout 
+    } = useAuth0();
 
     useEffect(() => {
         (async () => {
@@ -64,6 +67,7 @@ export function AuthProvider({ children }: Children) {
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem('idToken', idToken.__raw);
 
+                setLoading(true);
                 fetchUser(accessToken, idToken.__raw)
                 .then(dbUser => {
                     if (!dbUser) return;
@@ -73,18 +77,20 @@ export function AuthProvider({ children }: Children) {
                     }
 
                     setloggedInUser({ ...userInfo });
+                    setLoading(false);
                 })
-                .then(() => setInit(true));
+                .then(() => setInit(true))
+                .catch(() => setAuthError(true));
             });
         });
-
-        
     }, [getIdTokenClaims, getAccessTokenSilently, hasInit,
         loggedInUser, user, isAuthenticated, logout]);
 
     return (
         <AuthContext.Provider value={{
-            loggedInUser: loggedInUser
+            loggedInUser: loggedInUser,
+            authError: authError,
+            loading: loading
         }}>
             {children}
         </AuthContext.Provider>
