@@ -29,16 +29,14 @@ export function Notes(): JSX.Element {
 
     async function getSearchedEntryByContent() {
         setDisplaySearch(!displaySearch);
-        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) {
-            return;
-        } else {
-            try {
-                const searchResult = await fetchSearchedEntryByContent({ userID: loggedInUser.userID, content: searchedContent });
-                setSearchedResult(searchResult);
+        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) return;
+        
+        try {
+            const searchResult = await fetchSearchedEntryByContent({ userID: loggedInUser.userID, content: searchedContent });
+            setSearchedResult(searchResult);
 
-            } catch (err) {
-                setError(true);
-            }
+        } catch (err) {
+            setError(true);
         }
     }
 

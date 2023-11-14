@@ -25,10 +25,11 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             AddAuthentication(services);
             AddServices(services);
 
-            services.AddDbContext<DataContext>();
+            services.AddDbContext<DataContext>(ServiceLifetime.Singleton);
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
@@ -71,8 +72,8 @@ namespace API
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddSingleton<IAuthService, AuthService>();
+            
             services.AddScoped<IDiaryService, DiaryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IToDoService, ToDoService>();

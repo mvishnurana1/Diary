@@ -29,8 +29,6 @@ namespace API.Helpers.Services
         private readonly ILogger<ToDoService> _logger;
         private readonly IMapper _mapper;
 
-        public ToDoService(){}
-        
         public ToDoService(
             DataContext context,
             ILogger<ToDoService> logger,

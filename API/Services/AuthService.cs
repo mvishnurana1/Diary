@@ -1,30 +1,35 @@
 ﻿using System;
-using System.Linq;
-using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using API.DTOs.Users;
 using API.model;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace API.Helpers.Services
 {
     public interface IAuthService
     {
         Task<UserResponseDto> GetLoggedInUser(string token);
+        Task<string> GetLoggedInUser();
     }
 
     public class AuthService : IAuthService
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContext;
 
         public AuthService(
             DataContext context,
-            IMapper mapper
+            IMapper mapper,
+            IHttpContextAccessor httpContext
         )
         {
             _context = context;
             _mapper = mapper;
+            _httpContext = httpContext;
         }
 
         public async Task<UserResponseDto> GetLoggedInUser(string token)
@@ -47,12 +52,19 @@ namespace API.Helpers.Services
 
                     return createdUser;
                 }
-
                 return _mapper.Map<UserResponseDto>(user);
             } catch(Exception)
             {
                 return null;
             }
+        }
+
+        public async Task<string> GetLoggedInUser()
+        {
+            var x = _httpContext.HttpContext.Request.Headers.Authorization;
+
+
+            return await Task.Run(() => "");
         }
 
         private async Task<UserResponseDto> CreateUser(string email, string userName)
