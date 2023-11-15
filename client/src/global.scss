@@ -30,6 +30,11 @@ $white-smoke: rgb(214, 206, 206);
     width: 250px;
 }
 
+.horizontally-centred {
+    display: flex;
+    justify-content: center;
+}
+
 .logo {
     border-radius: 50%;
     height: 30px;
@@ -62,9 +67,22 @@ $white-smoke: rgb(214, 206, 206);
     margin: 0;
 }
 
+.red {
+    color: $tomato;
+    margin-left: 1rem;
+
+    &:hover {
+        background-color: $silver-dark; 
+    }
+}
+
 .sub-title {
     font-size: 0.8rem;
     font-weight: 800;
     padding: 0 0 0.25rem 0;
     text-transform: uppercase;
+}
+
+.m-5 {
+    margin: 5rem;
 }
