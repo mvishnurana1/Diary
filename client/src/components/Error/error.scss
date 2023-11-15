@@ -1,7 +1,6 @@
 @import "../../global.scss";
 
 .error-container {
-    align-content: center;
     align-items: center;
     border: 2px solid $tomato;
     border-radius: 1rem;
@@ -9,7 +8,5 @@
         $grey;
     display: flex;
     flex-direction: column;
-    margin: 0 5%;
-    max-width: 90%;
     padding: 2rem;
 }
