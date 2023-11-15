@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { faFaceSadCry } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './error.scss';
@@ -5,10 +6,12 @@ import './error.scss';
 interface Props {
     classes?: string,
     message?: string,
+    renderBackButton?: boolean
 }
 
 export function OnError(props: Props): JSX.Element {
-    const { message, classes } = props;
+    const navigate = useNavigate();
+    const { message, classes, renderBackButton } = props;
 
     return (<div
         className={ 'error-container ' + classes }
@@ -17,6 +20,13 @@ export function OnError(props: Props): JSX.Element {
             icon={faFaceSadCry}
             size="3x"
         />
-        <h6>{message ?? 'Something went wrong. Please try again later!'}</h6>
+        <span>{message ?? 'Something went wrong. Please try again later!'}</span>
+        {renderBackButton && <div>
+            <button
+                className='button red' 
+                onClick={() => { console.log('Log Buttons'); navigate("/");}}>
+                GO BACK
+            </button>
+        </div>}
     </div>)
 }
