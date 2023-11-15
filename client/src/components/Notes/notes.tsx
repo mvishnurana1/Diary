@@ -80,7 +80,11 @@ export function Notes(): JSX.Element {
 
     return (
     <>
-        {<div className='notes-landing-page centralise'> <ClipLoader loading={loading && !authError} size={150} /> </div>}
+        {loading && !authError && 
+            <div className='horizontally-centred m-5'> 
+                <ClipLoader color='rgb(235, 88, 88)' size={150} /> 
+            </div>
+        }
         {loggedInUser.isAuthenticated && <div className='notes-landing-page'>
                 <div className='mobile' id='header'>
                     <Header />
@@ -93,7 +97,7 @@ export function Notes(): JSX.Element {
 
                 {validNoteDates && !searchedResult.length &&
                     <div className='left'>
-                        <div className={error ? 'no-display' : 'datepicker'}>
+                        <div className={error ? 'hide' : 'datepicker'}>
                             <div className='mobile'>
                                 {active === ActiveOnMobileDisplay.calendar &&
                                     <DatePicker
@@ -112,7 +116,7 @@ export function Notes(): JSX.Element {
                                     />
                                 }
                             </div>
-                            <div className={error ? 'no-display' : 'desktop datepicker'}>
+                            <div className={error ? 'hide' : 'desktop datepicker'}>
                                 <ToDos />
                                 <h1 className='title'>Pick a Date</h1>
                                 <h2 className='sub-title'>Write journal</h2>
@@ -138,7 +142,7 @@ export function Notes(): JSX.Element {
                         </div>
                     </div>}
 
-                <div className={searchedResult.length > 0 ? 'no-display' : 'vertical-rule'}></div>
+                <div className={searchedResult.length > 0 ? 'hide' : 'vertical-rule'}></div>
 
                 <div className='column'>
                     <div className='desktop'>
@@ -179,9 +183,9 @@ export function Notes(): JSX.Element {
                         />
                     </div>
 
-                    <div className={searchedResult?.length > 0 || error ? 'no-display' : 'centre'}>
+                    <div className={searchedResult?.length > 0 || error ? 'hide' : 'centre'}>
                         <textarea
-                            className={error ? 'no-display' : 'textArea'}
+                            className={error ? 'hide' : 'textArea'}
                             rows={15}
                             placeholder="Dear Diary..."
                             onChange={(e) => {
@@ -195,7 +199,7 @@ export function Notes(): JSX.Element {
                     {error && <OnError />}
                     <div className="centre">
                         <button
-                            className={searchedResult.length > 0 || error ? 'no-display' : 'save button'}
+                            className={searchedResult.length > 0 || error ? 'hide' : 'save button'}
                             onClick={() => {
                                 try {
                                     postNote();
@@ -224,7 +228,13 @@ export function Notes(): JSX.Element {
                 </div>}
             </div>
         </div>}
-        {authError && <OnError classes='m-5' message='Something went terribly wrong. Please try again later...!' />}
+        {authError && 
+            <OnError 
+                classes='m-5' 
+                message='Something went terribly wrong. Please try again later...!' 
+                renderBackButton
+            />
+        }
     </>
     )
 }
