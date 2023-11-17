@@ -17,7 +17,7 @@ import './notes.scss';
 export function Notes(): JSX.Element {
     const [displaySearch, setDisplaySearch] = useState(false);
     const [error, setError] = useState(false);
-    const [searchedContent, setSearchedContent] = useState('');
+    // const [searchedContent, setSearchedContent] = useState('');
     const [searchedResult, setSearchedResult] = useState<DiaryEntry[]>([]);
     const [active, setActive] = useState<ActiveOnMobileDisplay>(ActiveOnMobileDisplay.search);
     
@@ -28,18 +28,18 @@ export function Notes(): JSX.Element {
         setStartDate, startDate
     } = useContext(NotesContext);
 
-    async function getSearchedEntryByContent() {
-        setDisplaySearch(!displaySearch);
-        if (searchedContent === null || searchedContent.match(/^ *$/) !== null) return;
+    // async function getSearchedEntryByContent() {
+    //     setDisplaySearch(!displaySearch);
+    //     if (searchedContent === null || searchedContent.match(/^ *$/) !== null) return;
         
-        try {
-            const searchResult = await fetchSearchedEntryByContent({ userID: loggedInUser.userID, content: searchedContent });
-            setSearchedResult(searchResult);
+    //     try {
+    //         const searchResult = await fetchSearchedEntryByContent({ userID: loggedInUser.userID, content: searchedContent });
+    //         setSearchedResult(searchResult);
 
-        } catch (err) {
-            setError(true);
-        }
-    }
+    //     } catch (err) {
+    //         setError(true);
+    //     }
+    // }
 
     function displayError() {
         if (error) {
@@ -54,13 +54,13 @@ export function Notes(): JSX.Element {
             return (
                 <div className="entry-card-container">
                     <div>
-                        <SearchResults
+                        {/* <SearchResults
                             entries={searchedResult}
                             setContent={setContent}
                             setSearchedContent={setSearchedContent}
                             setStartDate={setStartDate}
                             setSearchedResult={setSearchedResult}
-                        />
+                        /> */}
                     </div>
                     <div className="center">
                         <FontAwesomeIcon
@@ -68,7 +68,7 @@ export function Notes(): JSX.Element {
                             icon={faXmark}
                             onClick={() => {
                                 setSearchedResult([]);
-                                setSearchedContent('');
+                                // setSearchedContent('');
                             }}
                             size="lg"
                         />
@@ -149,7 +149,7 @@ export function Notes(): JSX.Element {
                         <Header />
                     </div>
 
-                    <div className='mobile'>
+                    {/* <div className='mobile'>
                         {(active === ActiveOnMobileDisplay.search) && <div className='search-box-container'>
                             <input
                                 className='search'
@@ -165,9 +165,9 @@ export function Notes(): JSX.Element {
                                 size="lg"
                             />
                         </div>}
-                    </div>
+                    </div> */}
 
-                    <div className='desktop search-box-container'>
+                    {/* <div className='desktop search-box-container'>
                         <input
                             className='search'
                             placeholder='find submitted entries...'
@@ -181,7 +181,7 @@ export function Notes(): JSX.Element {
                             onClick={() => getSearchedEntryByContent()}
                             size="lg"
                         />
-                    </div>
+                    </div> */}
 
                     <div className={searchedResult?.length > 0 || error ? 'hide' : 'centre'}>
                         <textarea
@@ -216,7 +216,7 @@ export function Notes(): JSX.Element {
                 </div>
             </div>
 
-            <div className='mobile'>
+            {/* <div className='mobile'>
                 {searchedContent.length <= 0 && <div className='fab-container'>
                     <button className='button iconbutton centre' onClick=
                         {() => active === ActiveOnMobileDisplay.calendar
@@ -226,7 +226,7 @@ export function Notes(): JSX.Element {
                         {(active === ActiveOnMobileDisplay.calendar) && <FontAwesomeIcon color='white' icon={faMagnifyingGlass} size="2x" />}
                     </button>
                 </div>}
-            </div>
+            </div> */}
         </div>}
         {authError && 
             <OnError 
