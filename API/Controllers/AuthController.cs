@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using API.DTOs.Users;
 using API.Helpers.Services;
+using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
 
 namespace API.Controllers.Users
 {
@@ -21,7 +24,11 @@ namespace API.Controllers.Users
         public async Task<ActionResult<UserResponseDto>> GetLoggedInUser(string token)
         {
             var user = await _authService.GetLoggedInUser(token);
-           
+
+            var f = await _authService.GetLoggedInUser(token, null);
+
+            await Console.Out.WriteLineAsync("Heeee....!");
+
             if (user == null)
             {
                 return NotFound("No such user found...!");
