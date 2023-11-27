@@ -6,13 +6,17 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authentication;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace API.Helpers.Services
 {
     public interface IAuthService
     {
         Task<UserResponseDto> GetLoggedInUser(string token);
-        Task<string> GetLoggedInUser();
+        Task<string> GetLoggedInUser(string token, string x = null);
     }
 
     public class AuthService : IAuthService
@@ -20,16 +24,22 @@ namespace API.Helpers.Services
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly HttpClient _httpClient;
+        public IConfiguration _configuration { get; }
 
         public AuthService(
             DataContext context,
             IMapper mapper,
-            IHttpContextAccessor httpContext
+            IHttpContextAccessor httpContext,
+            HttpClient httpClient,
+            IConfiguration configuration
         )
         {
             _context = context;
+            _configuration = configuration;
             _mapper = mapper;
             _httpContext = httpContext;
+            _httpClient = httpClient;
         }
 
         public async Task<UserResponseDto> GetLoggedInUser(string token)
@@ -59,12 +69,21 @@ namespace API.Helpers.Services
             }
         }
 
-        public async Task<string> GetLoggedInUser()
+        public async Task<string> GetLoggedInUser(string token, string k)
         {
-            var x = _httpContext.HttpContext.Request.Headers.Authorization;
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+            //HttpResponseMessage response = await _httpClient.GetAsync($"{_configuration["Auth0:Issuer"]}");
+            HttpResponseMessage response = await _httpClient.GetAsync("https://dev-qq2tsu06.au.auth0.com/userinfo");
+            if (response.IsSuccessStatusCode)
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                return apiResponse;
+            } else
+            {
+                await Console.Out.WriteLineAsync("Something Went Wrong...!");
+            }
 
-
-            return await Task.Run(() => "");
+            return "Something Went Wrong";
         }
 
         private async Task<UserResponseDto> CreateUser(string email, string userName)

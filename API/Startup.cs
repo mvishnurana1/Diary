@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using API.Auth;
+using API.Middleware;
 
 namespace API
 {
@@ -26,6 +27,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddHttpClient();
+
             AddAuthentication(services);
             AddServices(services);
 
@@ -59,6 +62,8 @@ namespace API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<OAuthMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
