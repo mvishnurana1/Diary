@@ -72,8 +72,8 @@ namespace API
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-            services.AddSingleton<IAuthService, AuthService>();
             
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDiaryService, DiaryService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IToDoService, ToDoService>();
