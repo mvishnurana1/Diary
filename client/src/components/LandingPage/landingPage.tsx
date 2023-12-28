@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { googleLogo } from '../../assets';
 import './landingPage.scss';
 
 export function LandingPage(): JSX.Element {
@@ -12,7 +13,7 @@ export function LandingPage(): JSX.Element {
             </div>
             <div>
                 <button className="blue button flex" onClick={() => loginWithRedirect()}>
-                    <img className='logo' src={require("../../assets/google-logo.png")} alt="google-logo" />
+                    <img className='logo' src={googleLogo} alt="google-logo" />
                     <div>Log In / Sign up</div>
                 </button>
             </div>

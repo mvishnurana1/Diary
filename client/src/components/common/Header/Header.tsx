@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { AuthContext } from '../../../context';
+import { user } from '../../../assets';
 import './Header.scss';
 
 export function Header(): JSX.Element {
@@ -14,7 +15,19 @@ export function Header(): JSX.Element {
         <div className="header-container layout">
             <div className="logout-btn-container">
                 <Dropdown>
+                    {!loggedInUser? 
                     <Dropdown.Toggle
+                    className='logout'
+                    data-testid="dropdown-basic">
+                    <img
+                        alt="user-google-avatar"
+                        className="logo"
+                        src={user}
+                        title={"user"}
+                    />
+                    user
+                    </Dropdown.Toggle>
+                    : <Dropdown.Toggle
                         className='logout'
                         data-testid="dropdown-basic">
                         <img
@@ -24,7 +37,7 @@ export function Header(): JSX.Element {
                             title={loggedInUser.userName}
                         />
                         {loggedInUser.userName}
-                    </Dropdown.Toggle>
+                    </Dropdown.Toggle>}
 
                     <Dropdown.Menu>
                         <Dropdown.Item
