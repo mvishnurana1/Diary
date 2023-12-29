@@ -12,7 +12,7 @@ function App(): JSX.Element {
       <NotesProvider>
       <Router>
         <Routes>
-            <Route path="" element={<LandingPage />} />
+            <Route path="/login" element={<LandingPage />} />
             <Route path="new" element={<Notes />} />
             <Route path="*" element={<NoPage />} />
         </Routes>

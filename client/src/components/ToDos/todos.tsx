@@ -54,6 +54,7 @@ function ToDos(): JSX.Element {
                                     {todo.content}
                                 </div>
                                 <button
+                                    aria-label="delete task"
                                     data-testid="trash-button"
                                     className="trash-button"
                                     onClick={() => {
@@ -96,6 +97,7 @@ function ToDos(): JSX.Element {
                 }
 
                 <button
+                    aria-label="add task"
                     className="logo-button centre"
                     title="Add"
                     onClick={() => {

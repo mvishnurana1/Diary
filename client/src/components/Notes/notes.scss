@@ -56,12 +56,33 @@
         padding: 2rem;
     }
 
-    .red {
-        color: $tomato;
+    .hide {
+        display: none;
+    }
+
+    .left {
+        padding: 1rem;
+
+        .datepicker {
+            margin-top: 1rem;
+        }
+    }
+
+    .logout {
+        background-color: $purple;
+
+        &:hover {
+            background-color: $black;
+            color: $white;
+        }
+    }
+
+    .purple {
+        color: $purple;
         margin-left: 1rem;
 
         &:hover {
-            background-color: $pink; 
+            background-color: transparent; 
         }
     }
 
@@ -79,43 +100,22 @@
         width: 50%;
     }
 
-    .left {
-        padding: 1rem;
-
-        .datepicker {
-            margin-top: 1rem;
-        }
-    }
-
-    .logout {
-        background-color: $tomato;
-
-        &:hover {
-            background-color: $pink; 
-        }
-    }
-
-    .hide {
-        display: none;
-    }
-
     .save {
-        background-color: $tomato;
+        background-color: $purple;
+        color: $white;
 
         &:hover {
-            background-color: $pink;
+            background-color: $black;
         }
     }
 
     .textArea {
-        border: 1rem solid $white-dark;
+        background: url(https://i.stack.imgur.com/ynxjD.png) repeat-y;
         border-radius: 1rem;
-        box-shadow: 0.25rem 0.25rem 0.5rem 0.5rem $grey-shadow;
-        font-size: xx-large;
+        font-size: x-large verdana;
         font-weight: 500;
+        padding: 0 0 0 10px;
         width: 80%;
-        margin-left: 1rem;
-        padding: 1rem;
         resize: vertical;
     }
 
@@ -173,18 +173,18 @@
             right: 20px;
             cursor: pointer;
 
+            .button {
+                width: 60px;
+                height: 60px;
+                background: $tomato;
+            }
+
             .iconbutton {
                 width: 50px;
                 height: 50px;
                 border-radius: 100%;
                 background: #FF4F79;
                 box-shadow: 10px 10px 5px #aaaaaa;
-            }
-            
-            .button{
-                width: 60px;
-                height: 60px;
-                background: $tomato;
             }
         }
     }
