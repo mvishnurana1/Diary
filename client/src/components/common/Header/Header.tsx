@@ -17,14 +17,14 @@ export function Header(): JSX.Element {
                 <Dropdown>
                     {!loggedInUser? 
                     <Dropdown.Toggle
-                    className='logout'
-                    data-testid="dropdown-basic">
-                    <img
-                        alt="user-google-avatar"
-                        className="logo"
-                        src={user}
-                        title={"user"}
-                    />
+                        className='logout'
+                        data-testid="dropdown-basic">
+                        <img
+                            alt="user-google-avatar"
+                            className="logo"
+                            src={user}
+                            title={"user"}
+                        />
                     user
                     </Dropdown.Toggle>
                     : <Dropdown.Toggle

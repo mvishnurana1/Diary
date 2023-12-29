@@ -23,6 +23,7 @@ export function OnError(props: Props): JSX.Element {
         <span>{message ?? 'Something went wrong. Please try again later!'}</span>
         {renderBackButton && <div>
             <button
+                aria-label="go back button"
                 className='button red' 
                 onClick={() => { console.log('Log Buttons'); navigate("/");}}>
                 GO BACK

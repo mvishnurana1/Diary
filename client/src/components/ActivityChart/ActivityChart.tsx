@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import './ActivityChart.scss';
+import '../../../src/global.scss';
 
 ChartJS.register(
     CategoryScale,
@@ -53,7 +54,7 @@ export default function PerformanceChart(): JSX.Element {
         datasets: [
             {
                 backgroundColor: "rgb(235, 88, 88)",
-                borderColor: "rgb(235, 88, 88)",
+                borderColor: "rgb(140, 52, 235)",
                 data: [122, 52, 82, 12, 42, 62, 12, 42, 72, 32, 2, 42, 12, 2, 142, 22, 62, 142, 128, 65, 21, 92, 72, 32, 92, 32, 72, 62, 122, 21],
                 tension: 0.3
             }

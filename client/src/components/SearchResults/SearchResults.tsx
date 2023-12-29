@@ -48,6 +48,7 @@ export function SearchResults(props: searchResultsProp): JSX.Element {
                                 </>
                                 <>
                                     <button
+                                        aria-label="edit entry"
                                         className='icon-button'
                                         name='edit-button' 
                                         onClick={() => handleClick(entry)}>

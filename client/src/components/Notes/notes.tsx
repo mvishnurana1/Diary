@@ -13,6 +13,7 @@ import { OnError } from '../Error/error';
 import ClipLoader from "react-spinners/ClipLoader";
 import "react-datepicker/dist/react-datepicker.css";
 import './notes.scss';
+import PerformanceChart from '../ActivityChart/ActivityChart';
 
 export function Notes(): JSX.Element {
     const [displaySearch, setDisplaySearch] = useState(false);
@@ -136,8 +137,8 @@ export function Notes(): JSX.Element {
                                         title="date-picker"
                                     />
                                 </div>
-                                {/* <hr />
-                                {/* <PerformanceChart /> */}
+                                <hr />
+                                <PerformanceChart />
                             </div>
                         </div>
                     </div>}
@@ -176,7 +177,7 @@ export function Notes(): JSX.Element {
                         />
 
                         <FontAwesomeIcon
-                            className='red'
+                            className='purple'
                             icon={faMagnifyingGlass}
                             onClick={() => getSearchedEntryByContent()}
                             size="lg"
@@ -199,6 +200,7 @@ export function Notes(): JSX.Element {
                     {error && <OnError />}
                     <div className="centre">
                         <button
+                            aria-label={content?.length === 0 ? 'Write note' : 'SAVE'}
                             className={searchedResult.length > 0 || error ? 'hide' : 'save button'}
                             onClick={() => {
                                 try {
@@ -218,6 +220,7 @@ export function Notes(): JSX.Element {
 
             <div className='mobile'>
                 {searchedContent.length <= 0 && <div className='fab-container'>
+                    {/* ToDo: Add an aria-label */}
                     <button className='button iconbutton centre' onClick=
                         {() => active === ActiveOnMobileDisplay.calendar
                                 ? setActive(ActiveOnMobileDisplay.search)
